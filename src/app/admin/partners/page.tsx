@@ -87,7 +87,7 @@ const Partners = () => {
                         <h2 className="text-2xl font-bold mb-4">Partners</h2>
                         <Link
                             href="/admin/partners/add-partner"
-                            className="bg-blue-600 text-white py-2 px-6 rounded-md flex items-center hover:bg-blue-700"
+                            className="bg text-white py-2 px-6 rounded-md flex items-center hover:bg-blue-700"
                         >
                             <PlusCircleIcon className="size-6 mr-2" />
                             Add

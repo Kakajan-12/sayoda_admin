@@ -63,7 +63,7 @@ const Career = () => {
                         <h2 className="text-2xl font-bold mb-4">Career</h2>
                         <Link
                             href="/admin/career/add-career"
-                            className="bg-blue-600 text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center"
+                            className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center"
                         >
                             <PlusCircleIcon className="size-6" color="#ffffff" />
                             <div className="ml-2">Add</div>
@@ -98,7 +98,7 @@ const Career = () => {
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link
                                             href={`/admin/career/view-career/${item.id}`}
-                                            className="bg-blue-600 text-white py-2 px-8 rounded-md cursor-pointer flex w-32"
+                                            className="bg text-white py-2 px-8 rounded-md cursor-pointer flex w-32"
                                         >
                                             <EyeIcon color="#ffffff" />
                                             <div className="ml-2">View</div>

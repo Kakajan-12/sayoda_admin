@@ -66,7 +66,7 @@ const Events = () => {
                         <h2 className="text-2xl font-bold">Events</h2>
                         <Link
                             href="/admin/events/add-event"
-                            className="bg-blue-600 text-white py-2 px-4 rounded-md flex items-center hover:bg-blue-700 transition"
+                            className="bg text-white py-2 px-4 rounded-md flex items-center hover:bg-blue-700 transition"
                         >
                             <PlusCircleIcon className="size-5 mr-2" />
                             Add
@@ -111,7 +111,7 @@ const Events = () => {
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link
                                             href={`/admin/events/view-event/${event.id}`}
-                                            className="bg-blue-600 text-white py-2 px-4 rounded-md flex items-center hover:bg-blue-700 transition w-fit"
+                                            className="bg text-white py-2 px-4 rounded-md flex items-center hover:bg-blue-700 transition w-fit"
                                         >
                                             <EyeIcon className="size-5 mr-2" />
                                             View

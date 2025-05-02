@@ -67,7 +67,7 @@ const Locations = () => {
                         <h2 className="text-2xl font-bold mb-4">Project Locations</h2>
                         <Link
                             href="/admin/locations/add-location"
-                            className="bg-blue-600 text-white h-fit py-2 px-6 rounded-md cursor-pointer flex items-center hover:bg-blue-700"
+                            className="bg text-white h-fit py-2 px-6 rounded-md cursor-pointer flex items-center hover:bg-blue-700"
                         >
                             <PlusCircleIcon className="w-5 h-5 mr-2" />
                             Add
@@ -102,7 +102,7 @@ const Locations = () => {
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link
                                             href={`/admin/locations/view-location/${location.id}`}
-                                            className="bg-blue-600 text-white py-2 px-6 rounded-md flex items-center hover:bg-blue-700 w-fit"
+                                            className="bg text-white py-2 px-6 rounded-md flex items-center hover:bg-blue-700 w-fit"
                                         >
                                             <EyeIcon className="w-5 h-5 mr-2" />
                                             View

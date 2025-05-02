@@ -89,7 +89,7 @@ const Applied = () => {
                                 <tr key={data.id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Image
-                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.photo}`}
+                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.photo}`.replace(/\\/g, '/')}
                                             alt={`Photo ${data.id}`}
                                             width={100}
                                             height={100}

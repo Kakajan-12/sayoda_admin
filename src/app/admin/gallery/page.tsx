@@ -70,7 +70,7 @@ const Gallery = () => {
                     <div className="w-full flex justify-between items-center">
                         <h2 className="text-2xl font-bold mb-4">Gallery</h2>
                         <Link href="/admin/gallery/add-gallery"
-                              className="bg-blue-600 text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-blue-700">
+                              className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-blue-700">
                             <PlusCircleIcon className="w-6 h-6" color="#ffffff" />
                             <div className="ml-2">Add</div>
                         </Link>
@@ -114,7 +114,7 @@ const Gallery = () => {
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link href={`/admin/gallery/view-gallery/${data.id}`}
-                                              className="bg-green-600 text-white py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-green-700 w-fit">
+                                              className="bg text-white py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-green-700 w-fit">
                                             <EyeIcon className="w-5 h-5" color="#ffffff" />
                                             <div className="ml-2">View</div>
                                         </Link>

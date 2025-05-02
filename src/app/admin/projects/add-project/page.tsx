@@ -219,7 +219,7 @@ const AddProject = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             disabled={loading}
                         >
                             {loading ? 'Adding...' : 'Add Project'}

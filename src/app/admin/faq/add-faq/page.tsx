@@ -161,7 +161,7 @@ const AddFaq = () => {
 
                         <button
                             type="submit"
-                            className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150"
+                            className="mt-6 w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150"
                         >
                             Add FAQ
                         </button>
