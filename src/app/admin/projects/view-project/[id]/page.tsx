@@ -24,6 +24,7 @@ interface Project {
     location_en: string;
     ru: string;
     text_ru: string;
+    date: string;
     location_ru: string;
 }
 
@@ -150,6 +151,7 @@ const ViewProject = () => {
                                     className="rounded mb-6"
                                 />
                             )}
+                            <div>Date: <span className="font-bolder">{data.date}</span></div>
                         </div>
 
                         <div className="space-y-10 divide-y-1 ml-4">

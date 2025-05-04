@@ -20,6 +20,7 @@ const EditProject = () => {
         text_tk: '',
         text_en: '',
         text_ru: '',
+        date:"",
         location_id: ''
     });
 
@@ -158,12 +159,26 @@ const EditProject = () => {
                                 />
                             </div>
                             <div className="w-1/2">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Date:
+                                </label>
+                                <input
+                                    type="date"
+                                    id="date"
+                                    name="date"
+                                    value={data.date}
+                                    onChange={(e) => setData((prev) => ({...prev, date: e.target.value}))}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                                />
+                            </div>
+                            <div className="w-1/2">
                                 <label className="block font-semibold mb-2">Project location:</label>
                                 <select
                                     id="location_id"
                                     name="location_id"
                                     value={String(data.location_id)}
-                                    onChange={(e) => setData((prev) => ({ ...prev, location_id: e.target.value }))}
+                                    onChange={(e) => setData((prev) => ({...prev, location_id: e.target.value}))}
                                     required
                                     className="border rounded p-2 w-full"
                                 >

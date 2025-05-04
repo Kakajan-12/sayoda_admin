@@ -22,6 +22,12 @@ const AddProject = () => {
     const [text_tk, setTextTk] = useState('');
     const [text_en, setTextEn] = useState('');
     const [text_ru, setTextRu] = useState('');
+    const getTodayDate = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    };
+
+    const [date, setDate] = useState(getTodayDate());
     const [location_id, setLocationId] = useState('');
     const [locations, setLocations] = useState<Location[]>([]);
     const [loading, setLoading] = useState(false);
@@ -63,6 +69,7 @@ const AddProject = () => {
         formData.append('text_tk', text_tk);
         formData.append('text_en', text_en);
         formData.append('text_ru', text_ru);
+        formData.append('date', date);
         formData.append('location_id', location_id);
 
         try {
@@ -121,6 +128,20 @@ const AddProject = () => {
                                     onChange={(e) => setImage(e.target.files?.[0] || null)}
                                     required
                                     className="border border-gray-300 rounded p-2 w-full"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Date:
+                                </label>
+                                <input
+                                    type="date"
+                                    id="date"
+                                    name="date"
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                                 />
                             </div>
                             <div className="w-full">
