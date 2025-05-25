@@ -94,11 +94,12 @@ const AddFaq = () => {
                                 <div className="tab-content bg-base-100 border border-gray-200 rounded-md p-4">
                                     <div className="mb-4">
                                         <label className="block text-gray-700 font-semibold mb-2">Question (TK):</label>
-                                        <Editor
-                                            apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                            init={editorConfig}
+                                        <input
                                             value={tk}
-                                            onEditorChange={(content) => setTitleTk(content)}
+                                            onChange={(e) => setTitleTk(e.target.value)}
+                                            type="text"
+                                            required
+                                            className="border border-gray-300 rounded p-2 w-full"
                                         />
                                     </div>
                                     <div className="mb-4">
@@ -116,11 +117,12 @@ const AddFaq = () => {
                                 <div className="tab-content bg-base-100 border border-gray-200 rounded-md p-4">
                                     <div className="mb-4">
                                         <label className="block text-gray-700 font-semibold mb-2">Question (EN):</label>
-                                        <Editor
-                                            apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                            init={editorConfig}
+                                        <input
                                             value={en}
-                                            onEditorChange={(content) => setTitleEn(content)}
+                                            onChange={(e) => setTitleEn(e.target.value)}
+                                            type="text"
+                                            required
+                                            className="border border-gray-300 rounded p-2 w-full"
                                         />
                                     </div>
                                     <div className="mb-4">
@@ -138,11 +140,12 @@ const AddFaq = () => {
                                 <div className="tab-content bg-base-100 border border-gray-200 rounded-md p-4">
                                     <div className="mb-4">
                                         <label className="block text-gray-700 font-semibold mb-2">Question (RU):</label>
-                                        <Editor
-                                            apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                            init={editorConfig}
+                                        <input
                                             value={ru}
-                                            onEditorChange={(content) => setTitleRu(content)}
+                                            onChange={(e) => setTitleRu(e.target.value)}
+                                            type="text"
+                                            required
+                                            className="border border-gray-300 rounded p-2 w-full"
                                         />
                                     </div>
                                     <div className="mb-4">
