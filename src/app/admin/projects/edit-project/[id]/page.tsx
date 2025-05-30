@@ -21,6 +21,8 @@ const EditProject = () => {
         text_en: '',
         text_ru: '',
         date:"",
+        end_date:"",
+        link:"",
         location_id: ''
     });
 
@@ -160,7 +162,7 @@ const EditProject = () => {
                             </div>
                             <div className="w-1/2">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Date:
+                                    Start date:
                                 </label>
                                 <input
                                     type="date"
@@ -168,6 +170,32 @@ const EditProject = () => {
                                     name="date"
                                     value={data.date}
                                     onChange={(e) => setData((prev) => ({...prev, date: e.target.value}))}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                                />
+                            </div>
+                            <div className="w-1/2">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    End date:
+                                </label>
+                                <input
+                                    type="date"
+                                    id="end_date"
+                                    name="end_date"
+                                    value={data.end_date}
+                                    onChange={(e) => setData((prev) => ({...prev, end_date: e.target.value}))}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                                />
+                            </div>
+                            <div className="w-1/2">
+                                <label className="block text-gray-700 font-semibold mb-2">Link</label>
+                                <input
+                                    type="text"
+                                    id="link"
+                                    name="link"
+                                    value={data.link}
+                                    onChange={(e) => setData((prev) => ({...prev, link: e.target.value}))}
                                     required
                                     className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                                 />

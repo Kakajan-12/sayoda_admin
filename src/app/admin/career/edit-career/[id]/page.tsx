@@ -58,7 +58,6 @@ const EditCareer = () => {
         if (id) fetchData();
     }, [id]);
 
-    // Указываем тип для события в handleChange
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setData((prev) => ({ ...prev, [name]: value }));

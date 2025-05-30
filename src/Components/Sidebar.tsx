@@ -1,9 +1,18 @@
 import React from "react";
 import {
     BriefcaseIcon,
-    CalendarIcon, ClipboardDocumentCheckIcon, EnvelopeIcon, ListBulletIcon, MapIcon,
+    CircleStackIcon,
+    ClipboardDocumentCheckIcon,
+    ClipboardDocumentListIcon,
+    EnvelopeIcon,
+    LinkIcon,
+    ListBulletIcon,
+    MapIcon,
     MapPinIcon,
-    NewspaperIcon, PhotoIcon, PresentationChartLineIcon, QuestionMarkCircleIcon,
+    NewspaperIcon,
+    PhotoIcon,
+    PresentationChartLineIcon,
+    QuestionMarkCircleIcon,
     UserPlusIcon,
     WindowIcon
 } from "@heroicons/react/16/solid";
@@ -32,13 +41,6 @@ const Sidebar = () => {
                             <span className="ml-3">Sliders</span>
                         </a>
                     </li>
-                    <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/events') ? 'bg text-white' : 'color'} `}>
-                        <CalendarIcon className={`size-6 ${isActive('/admin/events') ? 'text-white' : 'color'}`}/>
-                        <a href="/admin/events"
-                           className="w-full">
-                            <span className="ml-3">Upcoming Events</span>
-                        </a>
-                    </li>
                     <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/news') ? 'bg text-white' : 'color'} `}>
                         <NewspaperIcon className={`size-6 ${isActive('/admin/news') ? 'text-white' : 'color'}`}/>
                         <a href="/admin/news"
@@ -47,7 +49,8 @@ const Sidebar = () => {
                         </a>
                     </li>
                     <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/news-category') ? 'bg text-white' : 'color'} `}>
-                        <NewspaperIcon className={`size-6 ${isActive('/admin/news-category') ? 'text-white' : 'color'}`}/>
+                        <NewspaperIcon
+                            className={`size-6 ${isActive('/admin/news-category') ? 'text-white' : 'color'}`}/>
                         <a href="/admin/news-category"
                            className="w-full">
                             <span className="ml-3">News Category</span>
@@ -81,6 +84,13 @@ const Sidebar = () => {
                             <span className="ml-3">Contacts</span>
                         </a>
                     </li>
+                    <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/contact-address') ? 'bg text-white' : 'color'} `}>
+                        <MapPinIcon className={`size-6 ${isActive('/admin/contact-address') ? 'text-white' : 'color'}`}/>
+                        <a href="/admin/contact-address"
+                           className="w-full">
+                            <span className="ml-3">Contact Locations</span>
+                        </a>
+                    </li>
                     <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/gallery') ? 'bg text-white' : 'color'} `}>
                         <PhotoIcon className={`size-6 ${isActive('/admin/gallery') ? 'text-white' : 'color'}`}/>
                         <a href="/admin/gallery"
@@ -96,28 +106,32 @@ const Sidebar = () => {
                         </a>
                     </li>
                     <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/career') ? 'bg text-white' : 'color'} `}>
-                        <PresentationChartLineIcon className={`size-6 ${isActive('/admin/career') ? 'text-white' : 'color'}`}/>
+                        <PresentationChartLineIcon
+                            className={`size-6 ${isActive('/admin/career') ? 'text-white' : 'color'}`}/>
                         <a href="/admin/career"
                            className="w-full">
                             <span className="ml-3">Career</span>
                         </a>
                     </li>
                     <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/career-requirements') ? 'bg text-white' : 'color'} `}>
-                        <ListBulletIcon className={`size-6 ${isActive('/admin/career-requirements') ? 'text-white' : 'color'}`}/>
+                        <ListBulletIcon
+                            className={`size-6 ${isActive('/admin/career-requirements') ? 'text-white' : 'color'}`}/>
                         <a href="/admin/career-requirements"
                            className="w-full">
                             <span className="ml-3">Career Requirements</span>
                         </a>
                     </li>
                     <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/faq') ? 'bg text-white' : 'color'} `}>
-                        <QuestionMarkCircleIcon className={`size-6 ${isActive('/admin/faq') ? 'text-white' : 'color'}`}/>
+                        <QuestionMarkCircleIcon
+                            className={`size-6 ${isActive('/admin/faq') ? 'text-white' : 'color'}`}/>
                         <a href="/admin/faq"
                            className="w-full">
                             <span className="ml-3">FAQ</span>
                         </a>
                     </li>
                     <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/services') ? 'bg text-white' : 'color'} `}>
-                        <ClipboardDocumentCheckIcon className={`size-6 ${isActive('/admin/services') ? 'text-white' : 'color'}`}/>
+                        <ClipboardDocumentCheckIcon
+                            className={`size-6 ${isActive('/admin/services') ? 'text-white' : 'color'}`}/>
                         <a href="/admin/services"
                            className="w-full">
                             <span className="ml-3">Services</span>
@@ -128,6 +142,28 @@ const Sidebar = () => {
                         <a href="/admin/subscribes"
                            className="w-full">
                             <span className="ml-3">Subscribes</span>
+                        </a>
+                    </li>
+                    <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/social-links') ? 'bg text-white' : 'color'} `}>
+                        <LinkIcon className={`size-6 ${isActive('/admin/social-links') ? 'text-white' : 'color'}`}/>
+                        <a href="/admin/social-links"
+                           className="w-full">
+                            <span className="ml-3">Social links</span>
+                        </a>
+                    </li>
+                    <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/cookie') ? 'bg text-white' : 'color'} `}>
+                        <CircleStackIcon className={`size-6 ${isActive('/admin/cookie') ? 'text-white' : 'color'}`}/>
+                        <a href="/admin/cookie"
+                           className="w-full">
+                            <span className="ml-3">Cookie</span>
+                        </a>
+                    </li>
+                    <li className={`flex items-center p-2 rounded-md font-semibold ${isActive('/admin/privacy') ? 'bg text-white' : 'color'} `}>
+                        <ClipboardDocumentListIcon
+                            className={`size-6 ${isActive('/admin/privacy') ? 'text-white' : 'color'}`}/>
+                        <a href="/admin/privacy"
+                           className="w-full">
+                            <span className="ml-3">Privacy Policy</span>
                         </a>
                     </li>
                 </ul>

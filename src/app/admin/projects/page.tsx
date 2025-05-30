@@ -8,7 +8,6 @@ import Link from "next/link";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
-// Определяем интерфейс для проекта
 interface Project {
     id: number;
     image: string;

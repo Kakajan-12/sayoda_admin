@@ -9,9 +9,6 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, PencilIcon } from '@heroicons/react/16/solid';
 
 interface ContactData {
-    tk?: string;
-    en?: string;
-    ru?: string;
     mail?: string;
     number?: string;
 }
@@ -100,24 +97,6 @@ const Contacts = () => {
                     </div>
 
                     <div className="bg-white p-6 rounded-md shadow border border-gray-200">
-                        {data.tk && (
-                            <div className="mb-8">
-                                <h3 className="font-bold text-lg mb-2">Turkmen</h3>
-                                <div dangerouslySetInnerHTML={{ __html: String(data.tk) }} />
-                            </div>
-                        )}
-                        {data.en && (
-                            <div className="mb-8">
-                                <h3 className="font-bold text-lg mb-2">English</h3>
-                                <div dangerouslySetInnerHTML={{ __html: String(data.en) }} />
-                            </div>
-                        )}
-                        {data.ru && (
-                            <div className="mb-8">
-                                <h3 className="font-bold text-lg mb-2">Russian</h3>
-                                <div dangerouslySetInnerHTML={{ __html: String(data.ru) }} />
-                            </div>
-                        )}
                         {data.mail && (
                             <div className="mb-6">
                                 <h3 className="font-bold text-lg mb-2">Email</h3>

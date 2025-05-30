@@ -22,12 +22,9 @@ const AddProject = () => {
     const [text_tk, setTextTk] = useState('');
     const [text_en, setTextEn] = useState('');
     const [text_ru, setTextRu] = useState('');
-    const getTodayDate = () => {
-        const today = new Date();
-        return today.toISOString().split('T')[0];
-    };
-
-    const [date, setDate] = useState(getTodayDate());
+    const [date, setDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [link, setLink] = useState('');
     const [location_id, setLocationId] = useState('');
     const [locations, setLocations] = useState<Location[]>([]);
     const [loading, setLoading] = useState(false);
@@ -70,6 +67,8 @@ const AddProject = () => {
         formData.append('text_en', text_en);
         formData.append('text_ru', text_ru);
         formData.append('date', date);
+        formData.append('end_date', endDate);
+        formData.append('link', link);
         formData.append('location_id', location_id);
 
         try {
@@ -117,7 +116,7 @@ const AddProject = () => {
                         <h2 className="text-2xl font-bold mb-4 text-left">Add New Project</h2>
 
                         <div className="mb-4 flex space-x-4">
-                            <div className="w-full">
+                            <div className="w-1/5">
                                 <label htmlFor="image" className="block text-gray-700 font-semibold mb-2">
                                     Image:
                                 </label>
@@ -130,9 +129,9 @@ const AddProject = () => {
                                     className="border border-gray-300 rounded p-2 w-full"
                                 />
                             </div>
-                            <div>
+                            <div className="w-1/5">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Date:
+                                    Start date:
                                 </label>
                                 <input
                                     type="date"
@@ -144,7 +143,35 @@ const AddProject = () => {
                                     className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                                 />
                             </div>
-                            <div className="w-full">
+                            <div className="w-1/5">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    End date:
+                                </label>
+                                <input
+                                    type="date"
+                                    id="end_date"
+                                    name="end_date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                                />
+                            </div>
+                            <div className="w-1/5">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Link:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="link"
+                                    name="link"
+                                    value={link}
+                                    onChange={(e) => setLink(e.target.value)}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                                />
+                            </div>
+                            <div className="w-1/5">
                                 <label className="block text-gray-700 font-semibold mb-2">
                                     Project Location:
                                 </label>
