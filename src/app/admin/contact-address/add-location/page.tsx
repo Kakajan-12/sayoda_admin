@@ -14,6 +14,7 @@ const ContactLocation = () => {
     const [location_tk, setLocationTk] = useState('');
     const [location_en, setLocationEn] = useState('');
     const [location_ru, setLocationRu] = useState('');
+    const [iframe_code, setIframe] = useState('')
     const router = useRouter();
 
     useEffect(() => {
@@ -36,6 +37,7 @@ const ContactLocation = () => {
             location_tk,
             location_en,
             location_ru,
+            iframe_code,
         };
 
         try {
@@ -57,6 +59,7 @@ const ContactLocation = () => {
                 setLocationTk('');
                 setLocationEn('');
                 setLocationRu('');
+                setIframe('')
                 router.push('/admin/contact-address');
             } else {
                 const errorText = await response.text();
@@ -87,10 +90,21 @@ const ContactLocation = () => {
                     >
                         <h2 className="text-2xl font-bold mb-4">Add contact locations</h2>
 
+                        <div className="mb-5">
+                            <label className="block text-gray-700 font-semibold mb-2">Add location iframe code</label>
+                            <input
+                                type="text"
+                                value={iframe_code}
+                                onChange={(e) => setIframe(e.target.value)}
+                                className="border border-gray-300 rounded p-2 w-full"
+                            />
+
+                        </div>
+
                         {isClient && (
                             <>
                                 <div className="tabs tabs-lift">
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
+                                <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
                                            defaultChecked/>
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">

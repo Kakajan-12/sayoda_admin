@@ -11,7 +11,7 @@ const EditLocationAddress = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState({ tk: '', en: '', ru: '', location_tk: '', location_en: '', location_ru: ''});
+    const [data, setData] = useState({ tk: '', en: '', ru: '', location_tk: '', location_en: '', location_ru: '', iframe_code: ''});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -86,7 +86,18 @@ const EditLocationAddress = () => {
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">Edit Contact Location</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                        <div className="mb-5">
+                            <label className="block text-gray-700 font-semibold mb-2">Change location iframe code</label>
+                            <input
+                                name="iframe_code"
+                                type="text"
+                                value={data.iframe_code}
+                                onChange={handleChange}
+                                required
+                                className="border border-gray-300 rounded p-2 w-full"
+                            />
 
+                        </div>
                         <div className="tabs tabs-lift">
                             <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">

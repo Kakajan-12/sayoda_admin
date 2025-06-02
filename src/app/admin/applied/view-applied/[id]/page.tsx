@@ -1,41 +1,52 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
+import {Menu, Transition} from "@headlessui/react";
+import {ChevronDownIcon, TrashIcon} from "@heroicons/react/16/solid";
 
 interface AppliedData {
     id: number;
-    photo?: string;
-    name?: string;
-    surname?: string;
-    email?: string;
-    number?: string;
-    address?: string;
-    education?: string;
-    experience?: string;
-    comment?: string;
-    career_id?: string;
+    photo: string;
+    name: string;
+    surname: string;
+    email: string;
+    number: string;
+    address: string;
+    education: string;
+    experience: string;
+    comment: string;
+    tk: string;
+    en: string;
+    ru: string;
 }
 
 const ViewApplied = () => {
     const { id } = useParams();
     const [data, setData] = useState<AppliedData | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    router.push('/');
+                    return;
+                }
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/apply-job/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 setData(response.data[0]);
+                console.log('Response data:', response.data);
             } catch (err: unknown) {
                 console.error("Ошибка при загрузке:", err);
                 setError('Ошибка при загрузке');
@@ -51,7 +62,24 @@ const ViewApplied = () => {
 
     if (error) return <div>{error}</div>;
     if (!data) return <div>Загрузка...</div>;
-
+    const handleDelete = async () => {
+        setIsDeleting(true);
+        try {
+            const token = localStorage.getItem('auth_token');
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/apply-job/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setIsDeleting(false);
+            setShowModal(false);
+            router.push('/admin/applied');
+        } catch (err: unknown) {
+            console.error("Ошибка при удалении:", err);
+            setIsDeleting(false);
+            setShowModal(false);
+        }
+    };
     return (
         <div className="flex bg-gray-200 h-screen">
             <Sidebar />
@@ -60,13 +88,47 @@ const ViewApplied = () => {
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
                         <h2 className="text-2xl font-bold mb-4">View Applied</h2>
+                        <Menu as="div" className="relative inline-block text-left">
+                            <Menu.Button className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white shadow-inner hover:bg-gray-700 focus:outline-none cursor-pointer">
+                                Options
+                                <ChevronDownIcon className="w-4 h-4 fill-white/60" />
+                            </Menu.Button>
+
+                            <Transition
+                                as={Fragment}
+                                enter="transition ease-out duration-100"
+                                enterFrom="transform opacity-0 scale-95"
+                                enterTo="transform opacity-100 scale-100"
+                                leave="transition ease-in duration-75"
+                                leaveFrom="transform opacity-100 scale-100"
+                                leaveTo="transform opacity-0 scale-95"
+                            >
+                                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                                    <div className="py-1">
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <button
+                                                    onClick={() => setShowModal(true)}
+                                                    className={`${
+                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                    } group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
+                                                >
+                                                    <TrashIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                                    Delete
+                                                </button>
+                                            )}
+                                        </Menu.Item>
+                                    </div>
+                                </Menu.Items>
+                            </Transition>
+                        </Menu>
                     </div>
 
                     <div className="bg-white p-4 rounded-md border-gray-200 flex">
                         <div>
                             {data.photo ? (
                                 <Image
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${data.photo.replace(/\\/g, '/')}`}
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${data.photo.replace(/\\/g, '/')}`}
                                     alt="Photo"
                                     width={500}
                                     height={400}
@@ -115,26 +177,74 @@ const ViewApplied = () => {
                                 </div>
                             )}
                             {data.experience && (
-                                <div>
-                                    <strong>Experience:</strong>
-                                    <p>{data.experience}</p>
+                                <div className="flex flex-col gap-x-2">
+                                    <strong>CV:</strong>
+                                    <div className="flex space-x-2 items-center">
+                                        <Image src="/pdf.png" alt="pdf" width={30} height={30}
+                                               className="rounded mb-6"/>
+                                        <a
+                                            href={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${data.experience}`}
+                                            download
+                                            className="text-blue-600 underline"
+                                        >
+                                            Download PDF
+                                        </a>
+
+                                    </div>
                                 </div>
                             )}
+
                             {data.comment && (
                                 <div>
-                                    <strong>Comment:</strong>
+                                    <strong>Experience:</strong>
                                     <p>{data.comment}</p>
                                 </div>
                             )}
-                            {data.career_id && (
+                            <div className="font-bold">Career name:</div>
+                            {data.tk && (
                                 <div>
-                                    <strong>Career:</strong>
-                                    <p>{data.career_id}</p>
+                                    <p>{data.tk}</p>
+                                </div>
+                            )}
+
+                            {data.en && (
+                                <div>
+                                    <p>{data.en}</p>
+                                </div>
+                            )}
+
+                            {data.ru && (
+                                <div>
+                                    <p>{data.ru}</p>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
+                {showModal && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded shadow-md w-96">
+                            <h2 className="text-lg font-bold mb-4">Remove CV</h2>
+                            <p className="mb-6">Are you sure you want to delete this CV?</p>
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+                                    onClick={() => setShowModal(false)}
+                                    disabled={isDeleting}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+                                    onClick={handleDelete}
+                                    disabled={isDeleting}
+                                >
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

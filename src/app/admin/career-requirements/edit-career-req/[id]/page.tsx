@@ -23,7 +23,7 @@ const EditCareerReq = () => {
                 const data = await res.json();
                 setCareer(data);
             } catch (err) {
-                console.error('Ошибка при загрузке категорий:', err);
+                console.error('Ошибка при загрузке:', err);
             }
         };
         fetchCareer();
@@ -39,25 +39,21 @@ const EditCareerReq = () => {
                     },
                 });
 
-                if (Array.isArray(response.data) && response.data.length > 0) {
+                if (response.data && response.data.length > 0) {
                     const rawData = response.data[0];
 
                     setData({
-                        career_req_tk: rawData.career_req_tk || '',
-                        career_req_en: rawData.career_req_en || '',
-                        career_req_ru: rawData.career_req_ru || '',
-                        career_id: rawData.career_id?.toString() || '',
+                        ...rawData
                     });
 
-                    setError('');
+                    setLoading(false);
                 } else {
-                    throw new Error("Данные не найдены для этой записи");
+                    throw new Error("Данные не найдены для этой новости");
                 }
 
             } catch (err) {
-                console.error('Ошибка при загрузке данных:', err);
+                console.error('Ошибка при загрузке проекта:', err);
                 setError('Ошибка при загрузке');
-            } finally {
                 setLoading(false);
             }
         };
@@ -66,13 +62,7 @@ const EditCareerReq = () => {
     }, [id]);
 
 
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('auth_token');
@@ -101,15 +91,16 @@ const EditCareerReq = () => {
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">Edit Career Req</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div>
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="w-fit">
                                 <label className="block text-gray-700 font-semibold mb-2">
                                     Career:
                                 </label>
                                 <select
+                                    id="career_id"
                                     name="career_id"
-                                    value={data.career_id}
-                                    onChange={handleChange}
+                                    value={String(data.career_id)}
+                                    onChange={(e) => setData((prev) => ({...prev, career_id: e.target.value}))}
                                     required
                                     className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200"
                                 >
@@ -124,9 +115,10 @@ const EditCareerReq = () => {
                             <div>
                                 <label className="block font-semibold mb-2">Turkmen:</label>
                                 <input
+                                    id="career_req_tk"
                                     name="career_req_tk"
                                     value={data.career_req_tk}
-                                    onChange={handleChange}
+                                    onChange={(e) => setData((prev) => ({...prev, career_req_tk: e.target.value}))}
                                     type="text"
                                     required
                                     className="border border-gray-300 rounded p-2 w-full"
@@ -138,7 +130,7 @@ const EditCareerReq = () => {
                                 <input
                                     name="career_req_en"
                                     value={data.career_req_en}
-                                    onChange={handleChange}
+                                    onChange={(e) => setData((prev) => ({...prev, career_req_en: e.target.value}))}
                                     type="text"
                                     required
                                     className="border border-gray-300 rounded p-2 w-full"
@@ -150,7 +142,7 @@ const EditCareerReq = () => {
                                 <input
                                     name="career_req_ru"
                                     value={data.career_req_ru}
-                                    onChange={handleChange}
+                                    onChange={(e) => setData((prev) => ({...prev, career_req_ru: e.target.value}))}
                                     type="text"
                                     required
                                     className="border border-gray-300 rounded p-2 w-full"

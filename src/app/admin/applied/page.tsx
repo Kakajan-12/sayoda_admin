@@ -8,7 +8,6 @@ import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
-// ✅ Тип для одной заявки
 type AppliedItem = {
     id: number;
     photo: string;
@@ -19,7 +18,6 @@ type AppliedItem = {
 };
 
 const Applied = () => {
-    // ✅ Применяем тип
     const [applied, setApplied] = useState<AppliedItem[]>([]);
     const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +43,6 @@ const Applied = () => {
                 console.error(err);
                 setError('Ошибка при получении данных');
 
-                // ✅ Типизация ошибки
                 if (axios.isAxiosError(err) && err.response?.status === 401) {
                     router.push('/');
                 }
@@ -89,7 +86,7 @@ const Applied = () => {
                                 <tr key={data.id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Image
-                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.photo}`.replace(/\\/g, '/')}
+                                            src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${data.photo}`.replace(/\\/g, '/')}
                                             alt={`Photo ${data.id}`}
                                             width={100}
                                             height={100}

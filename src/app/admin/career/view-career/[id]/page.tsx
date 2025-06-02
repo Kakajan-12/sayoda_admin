@@ -42,7 +42,6 @@ const ViewCareer = () => {
                 console.error(err);
                 setError('Ошибка при получении данных');
 
-                // ✅ Типизация ошибки
                 if (axios.isAxiosError(err) && err.response?.status === 401) {
                     router.push('/');
                 }
@@ -145,7 +144,7 @@ const ViewCareer = () => {
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Date</h3>
-                            <p>{data.date}</p>
+                            {new Date(data.date).toLocaleDateString("tm-TM")}
                         </div>
                     </div>
                 </div>

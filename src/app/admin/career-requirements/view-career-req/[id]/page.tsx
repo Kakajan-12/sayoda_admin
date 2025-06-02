@@ -13,6 +13,8 @@ interface CareerRequirement {
     career_req_en: string;
     career_req_ru: string;
     tk: string;
+    en: string;
+    ru: string;
 }
 
 const ViewCareerReq = () => {
@@ -134,33 +136,40 @@ const ViewCareerReq = () => {
                         <div className="space-y-2 ml-4">
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Turkmen</div>
+                                <div className="flex space-x-2">
+                                    <div>Career Name:</div>
+                                    <p>{data.tk}</p>
+                                </div>
                                 {data.career_req_tk && (
-                                    <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.career_req_tk }} />
+                                    <div className="flex space-x-2">
+                                        <div>Career Requirement:</div>
+                                        <div dangerouslySetInnerHTML={{__html: data.career_req_tk}}/>
                                     </div>
                                 )}
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">English</div>
+                                <div className="flex space-x-2">
+                                    <div>Career Name:</div>
+                                    <p>{data.en}</p>
+                                </div>
                                 {data.career_req_en && (
-                                    <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.career_req_en }} />
+                                    <div className="flex space-x-2">
+                                        <div>Career Requirements:</div>
+                                        <div dangerouslySetInnerHTML={{__html: data.career_req_en}}/>
                                     </div>
                                 )}
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Russian</div>
+                                <div className="flex space-x-2">
+                                    <div>Career Name:</div>
+                                    <p>{data.ru}</p>
+                                </div>
                                 {data.career_req_ru && (
-                                    <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.career_req_ru }} />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="mb-10">
-                                <div className="font-bold text-lg mb-4">Career name</div>
-                                {data.tk && (
-                                    <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.tk }} />
+                                    <div className="flex space-x-2">
+                                        <div>Career Requirements:</div>
+                                        <div dangerouslySetInnerHTML={{__html: data.career_req_ru}}/>
                                     </div>
                                 )}
                             </div>

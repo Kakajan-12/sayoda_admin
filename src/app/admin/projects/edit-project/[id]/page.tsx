@@ -23,7 +23,7 @@ const EditProject = () => {
         date:"",
         end_date:"",
         link:"",
-        location_id: ''
+        location_id: '',
     });
 
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -61,9 +61,16 @@ const EditProject = () => {
 
                 if (response.data && response.data.id) {
                     const rawData = response.data;
-
+                    const formattedDate = rawData.date
+                        ? new Date(rawData.date).toISOString().split('T')[0]
+                        : '';
+                    const formattedEndDate = rawData.end_date
+                        ? new Date(rawData.end_date).toISOString().split('T')[0]
+                        : '';
                     setData({
                         ...rawData,
+                        date: formattedDate,
+                        end_date: formattedEndDate,
                     });
 
                     setImagePath(rawData.image);
@@ -72,22 +79,20 @@ const EditProject = () => {
                     throw new Error("Данные не найдены для этой новости");
                 }
 
-                setLoading(false);
             } catch (err) {
                 console.error('Ошибка при загрузке проекта:', err);
                 setError('Ошибка при загрузке');
                 setLoading(false);
             }
         };
-
-        fetchData();
+        if (id) fetchData();
     }, [id]);
 
-    const handleEditorChange = (name: string, content: string) => {
-        setData(prev => ({...prev, [name]: content}));
+    const handleEditorChange = (name: keyof typeof data, content: string) => {
+        setData((prev) => ({ ...prev, [name]: content }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
@@ -121,7 +126,7 @@ const EditProject = () => {
 
             router.push(`/admin/projects/view-project/${id}`);
         } catch (err) {
-            console.error('Ошибка при сохранении:', err);
+            console.error(err);
             setError('Ошибка при сохранении');
         }
     };
@@ -194,23 +199,25 @@ const EditProject = () => {
                                     type="text"
                                     id="link"
                                     name="link"
-                                    value={data.link}
+                                    value={data.link || ''}
                                     onChange={(e) => setData((prev) => ({...prev, link: e.target.value}))}
                                     required
                                     className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                                 />
                             </div>
-                            <div className="w-1/2">
-                                <label className="block font-semibold mb-2">Project location:</label>
+                            <div className="w-full">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Location:
+                                </label>
                                 <select
                                     id="location_id"
                                     name="location_id"
                                     value={String(data.location_id)}
                                     onChange={(e) => setData((prev) => ({...prev, location_id: e.target.value}))}
                                     required
-                                    className="border rounded p-2 w-full"
+                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                                 >
-                                    <option value="">Select location</option>
+                                    <option value="">Select category</option>
                                     {locations.map((loc) => (
                                         <option key={loc.id} value={String(loc.id)}>
                                             {loc.location_en} / {loc.location_tk} / {loc.location_ru}

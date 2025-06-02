@@ -9,7 +9,7 @@ import {
     ChevronDownIcon,
     PencilIcon,
     TrashIcon,
-} from '@heroicons/react/16/solid';
+} from '@heroicons/react/16/solid';;
 
 type LocationData = {
     id: number;
@@ -19,6 +19,7 @@ type LocationData = {
     location_tk: string;
     location_en: string;
     location_ru: string;
+    iframe_code: string;
 };
 
 const ViewLocation = () => {
@@ -135,17 +136,25 @@ const ViewLocation = () => {
                     </div>
 
                     <div className="bg-white p-4 rounded-md border-gray-200 flex">
+                        <div>
+                            {data.iframe_code && (
+                                <div>
+                                    <strong>Map:</strong>
+                                    <div dangerouslySetInnerHTML={{__html: data.iframe_code}}/>
+                                </div>
+                            )}
+                        </div>
                         <div className="space-y-2 ml-4">
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Turkmen</div>
                                 {data.tk && (
                                     <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.tk }} />
+                                        <div dangerouslySetInnerHTML={{__html: data.tk}}/>
                                     </div>
                                 )}
                                 {data.location_tk && (
                                     <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.location_tk }} />
+                                        <div dangerouslySetInnerHTML={{__html: data.location_tk}}/>
                                     </div>
                                 )}
                             </div>

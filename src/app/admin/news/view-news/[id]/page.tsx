@@ -145,7 +145,7 @@ const ViewNews = () => {
                             {data.date && (
                                 <div>
                                     <strong>Date:</strong>
-                                    <div dangerouslySetInnerHTML={{__html: data.date}}/>
+                                    {new Date(data.date).toLocaleDateString("tm-TM")}
                                 </div>
                             )}
                         </div>
