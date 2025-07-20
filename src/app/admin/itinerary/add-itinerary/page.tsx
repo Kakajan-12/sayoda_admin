@@ -6,21 +6,42 @@ import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
 import { Editor } from '@tinymce/tinymce-react';
 
-const AddBlog = () => {
+const AddItinerary = () => {
     const [isClient, setIsClient] = useState(false);
-    const [image, setImage] = useState<File | null>(null);
     const [title_tk, setTitleTk] = useState('');
     const [title_en, setTitleEn] = useState('');
     const [title_ru, setTitleRu] = useState('');
     const [text_tk, setTextTk] = useState('');
     const [text_en, setTextEn] = useState('');
     const [text_ru, setTextRu] = useState('');
-    const [date, setDate] = useState('');
+    const [tour_id, setTourId] = useState('');
+    const [tours, setTours] = useState<
+        { id: number; title_tk: string; title_en: string; title_ru: string }[]
+    >([]);
+
 
     const router = useRouter();
 
     useEffect(() => {
         setIsClient(true);
+
+        const fetchTours = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours`);
+                const data = await res.json();
+
+                if (Array.isArray(data)) {
+                    setTours(data);
+                } else {
+                    console.error('Неверный формат данных:', data);
+                }
+            } catch (err) {
+                console.error('Ошибка при загрузке:', err);
+            }
+        };
+
+
+        fetchTours();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -28,52 +49,47 @@ const AddBlog = () => {
 
         const token = localStorage.getItem('auth_token');
         if (!token) {
-            console.error('No token. User is not authenticated.');
+            console.error('Нет токена. Пользователь не авторизован.');
             return;
         }
 
-        const formData = new FormData();
-        if (image) {
-            formData.append('image', image);
-        } else {
-            console.error('No image selected.');
-            return;
-        }
-        formData.append('title_tk', title_tk);
-        formData.append('title_en', title_en);
-        formData.append('title_ru', title_ru);
-        formData.append('text_tk', text_tk);
-        formData.append('text_en', text_en);
-        formData.append('text_ru', text_ru);
-        formData.append('date', date);
+        const formData = {
+            title_tk,
+            title_en,
+            title_ru,
+            text_tk,
+            text_en,
+            text_ru,
+            tour_id,
+        };
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/itinerary`, {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: formData,
+                body: JSON.stringify(formData),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Service added successfully!', data);
-                setImage(null); // Reset the image state
+                console.log('добавлен!', data);
                 setTitleTk('');
                 setTitleEn('');
                 setTitleRu('');
                 setTextTk('');
                 setTextEn('');
                 setTextRu('');
-                setDate('');
-                router.push('/admin/blogs');
+                setTourId('');
+                router.push('/admin/itinerary');
             } else {
                 const errorText = await response.text();
-                console.error('Error adding blog:', errorText);
+                console.error('Ошибка при добавлении:', errorText);
             }
         } catch (error) {
-            console.error('Request error:', error);
+            console.error('Ошибка запроса', error);
         }
     };
 
@@ -95,39 +111,30 @@ const AddBlog = () => {
                         onSubmit={handleSubmit}
                         className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
                     >
-                        <h2 className="text-2xl font-bold mb-4 text-left">Add New Blog</h2>
+                        <h2 className="text-2xl font-bold mb-4 text-left">Add new itinerary</h2>
 
                         <div className="mb-4 flex space-x-4">
+
                             <div className="w-full">
-                                <label htmlFor="image" className="block text-gray-700 font-semibold mb-2">
-                                    Image:
-                                </label>
-                                <input
-                                    type="file"
-                                    id="image"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        if (e.target.files && e.target.files[0]) {
-                                            setImage(e.target.files[0]);
-                                        }
-                                    }}
-                                    required
-                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
-                                />
-                            </div>
-                            <div>
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Date:
+                                    Tours:
                                 </label>
-                                <input
-                                    type="date"
-                                    id="date"
-                                    name="date"
-                                    value={date}
-                                    onChange={(e) => setDate(e.target.value)}
+                                <select
+                                    id="tours"
+                                    name="tours"
+                                    value={tour_id}
+                                    onChange={(e) => setTourId(e.target.value)}
                                     required
-                                    className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
-                                />
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                >
+                                    <option value="">Select a category</option>
+                                    {tours.map((tour) => (
+                                        <option key={tour.id} value={tour.id}>
+                                            {tour.title_en} / {tour.title_tk} / {tour.title_ru}
+                                        </option>
+                                    ))}
+                                </select>
+
                             </div>
                         </div>
 
@@ -208,7 +215,7 @@ const AddBlog = () => {
                             type="submit"
                             className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150"
                         >
-                            Add Blog
+                            Add itinerary
                         </button>
                     </form>
                 </div>
@@ -217,4 +224,4 @@ const AddBlog = () => {
     );
 };
 
-export default AddBlog;
+export default AddItinerary;

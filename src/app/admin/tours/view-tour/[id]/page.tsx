@@ -12,17 +12,16 @@ import {
     TrashIcon,
 } from '@heroicons/react/16/solid';
 
-type NewsData = {
+type TourData = {
     image?: string;
-    date?: string;
     [key: string]: string | undefined;
 };
 
-const ViewNews = () => {
+const ViewTour = () => {
     const {id} = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState<NewsData | null>(null);
+    const [data, setData] = useState<TourData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -31,7 +30,7 @@ const ViewNews = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tours/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -55,12 +54,12 @@ const ViewNews = () => {
         setIsDeleting(true);
         try {
             const token = localStorage.getItem('auth_token');
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/tours/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            router.push('/admin/news');
+            router.push('/admin/tours');
         } catch (err) {
             console.error('Ошибка при удалении:', err);
         } finally {
@@ -79,7 +78,7 @@ const ViewNews = () => {
                 <TokenTimer/>
                 <div className="mt-8">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold">View News</h2>
+                        <h2 className="text-2xl font-bold">View Tour</h2>
                         <Menu as="div" className="relative inline-block text-left">
                             <Menu.Button
                                 className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white hover:bg-gray-700">
@@ -101,7 +100,7 @@ const ViewNews = () => {
                                         <Menu.Item>
                                             {({active}) => (
                                                 <button
-                                                    onClick={() => router.push(`/admin/news/edit-news/${id}`)}
+                                                    onClick={() => router.push(`/admin/tours/edit-tour/${id}`)}
                                                     className={`${
                                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                                                     } group flex items-center w-full px-4 py-2 text-sm`}
@@ -142,10 +141,10 @@ const ViewNews = () => {
                                     className="rounded"
                                 />
                             )}
-                            {data.date && (
+                            {data.map && (
                                 <div>
-                                    <strong>Date:</strong>
-                                    {new Date(data.date).toLocaleDateString("tm-TM")}
+                                    <strong>Map:</strong>
+                                    <div dangerouslySetInnerHTML={{__html: data.map}}/>
                                 </div>
                             )}
                         </div>
@@ -153,9 +152,9 @@ const ViewNews = () => {
                         <div className="flex-1 space-y-10 divide-y-1">
                             <div>
                                 <div className="font-bold text-lg mb-2">Turkmen</div>
-                                {data.tk && (
+                                {data.title_tk && (
                                     <div><strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.tk}}/>
+                                        <div dangerouslySetInnerHTML={{__html: data.title_tk}}/>
                                     </div>
                                 )}
                                 {data.text_tk && (
@@ -163,18 +162,33 @@ const ViewNews = () => {
                                         <div dangerouslySetInnerHTML={{__html: data.text_tk}}/>
                                     </div>
                                 )}
-                                {data.cat_tk && (
-                                    <div><strong>Category:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.cat_tk}}/>
+                                {data.destination_tk && (
+                                    <div><strong>Destination:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.destination_tk}}/>
+                                    </div>
+                                )}
+                                {data.duration_tk && (
+                                    <div><strong>Duration:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.duration_tk}}/>
+                                    </div>
+                                )}
+                                {data.lang_tk && (
+                                    <div><strong>Lang:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.lang_tk}}/>
+                                    </div>
+                                )}
+                                {data.type_tk && (
+                                    <div><strong>Type:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.type_tk}}/>
                                     </div>
                                 )}
 
                             </div>
                             <div>
                                 <div className="font-bold text-lg mb-2">English</div>
-                                {data.en && (
+                                {data.title_en && (
                                     <div><strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.en}}/>
+                                        <div dangerouslySetInnerHTML={{__html: data.title_en}}/>
                                     </div>
                                 )}
                                 {data.text_en && (
@@ -182,18 +196,33 @@ const ViewNews = () => {
                                         <div dangerouslySetInnerHTML={{__html: data.text_en}}/>
                                     </div>
                                 )}
-                                {data.cat_en && (
-                                    <div><strong>Category:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.cat_en}}/>
+                                {data.destination_en && (
+                                    <div><strong>Destination:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.destination_en}}/>
+                                    </div>
+                                )}
+                                {data.duration_en && (
+                                    <div><strong>Duration:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.duration_en}}/>
+                                    </div>
+                                )}
+                                {data.lang_en && (
+                                    <div><strong>Lang:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.lang_en}}/>
+                                    </div>
+                                )}
+                                {data.type_en && (
+                                    <div><strong>Type:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.type_en}}/>
                                     </div>
                                 )}
 
                             </div>
                             <div>
                                 <div className="font-bold text-lg mb-2">Russian</div>
-                                {data.ru && (
+                                {data.title_ru && (
                                     <div><strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.ru}}/>
+                                        <div dangerouslySetInnerHTML={{__html: data.title_ru}}/>
                                     </div>
                                 )}
                                 {data.text_ru && (
@@ -201,9 +230,24 @@ const ViewNews = () => {
                                         <div dangerouslySetInnerHTML={{__html: data.text_ru}}/>
                                     </div>
                                 )}
-                                {data.cat_ru && (
-                                    <div><strong>Category:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.cat_ru}}/>
+                                {data.destination_ru && (
+                                    <div><strong>Destiantion:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.destination_ru}}/>
+                                    </div>
+                                )}
+                                {data.duration_ru && (
+                                    <div><strong>Duration:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.duration_ru}}/>
+                                    </div>
+                                )}
+                                {data.lang_ru && (
+                                    <div><strong>Lang:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.lang_ru}}/>
+                                    </div>
+                                )}
+                                {data.type_ru && (
+                                    <div><strong>Type:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.type_ru}}/>
                                     </div>
                                 )}
                             </div>
@@ -215,8 +259,8 @@ const ViewNews = () => {
                 {showModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
                         <div className="bg-white p-6 rounded shadow-md w-96">
-                            <h2 className="text-lg font-bold mb-4">Remove news</h2>
-                            <p className="mb-6">Are you sure you want to delete this news?</p>
+                            <h2 className="text-lg font-bold mb-4">Remove tour</h2>
+                            <p className="mb-6">Are you sure you want to delete this tour?</p>
                             <div className="flex justify-end space-x-4">
                                 <button
                                     className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
@@ -241,4 +285,4 @@ const ViewNews = () => {
     );
 };
 
-export default ViewNews;
+export default ViewTour;

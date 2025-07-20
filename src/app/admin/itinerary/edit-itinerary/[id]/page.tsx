@@ -1,67 +1,60 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, {useEffect, useState} from 'react';
+import {useParams, useRouter} from 'next/navigation';
 import axios from 'axios';
-import { Editor } from '@tinymce/tinymce-react';
+import {Editor} from '@tinymce/tinymce-react';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
-import { DocumentIcon } from "@heroicons/react/16/solid";
-import Image from "next/image";
+import {DocumentIcon} from "@heroicons/react/16/solid";
 
-interface BlogData {
-    title_tk: string;
-    text_tk: string;
-    title_en: string;
-    text_en: string;
-    title_ru: string;
-    text_ru: string;
-    main_image: string;
-}
-
-const EditBlog = () => {
-    const { id } = useParams();
+const EditItinerary = () => {
+    const {id} = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState<BlogData>({
+    const [data, setData] = useState({
         title_tk: '',
-        text_tk: '',
         title_en: '',
-        text_en: '',
         title_ru: '',
+        text_tk: '',
+        text_en: '',
         text_ru: '',
-        main_image: ''
+        tour_id: ''
     });
-    const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [imagePath, setImagePath] = useState('');
+    const [tours, setTours] = useState<{ id: number, title_tk: string, title_en: string, title_ru: string }[]>([]);
+
+    useEffect(() => {
+        const fetchTours = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours`);
+                const data = await res.json();
+                setTours(data);
+            } catch (err) {
+                console.error('Ошибка при загрузке категорий:', err);
+            }
+        };
+
+        fetchTours();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/itinerary/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                console.log("Ответ от сервера:", response.data);
-
-                if (Array.isArray(response.data) && response.data.length > 0) {
-                    const rawData = response.data[0]; // Получаем первый элемент массива
+                if (response.data && response.data.id) {
+                    const rawData = response.data;
 
                     setData({
-                        title_tk: rawData.title_tk,
-                        text_tk: rawData.text_tk,
-                        title_en: rawData.title_en,
-                        text_en: rawData.text_en,
-                        title_ru: rawData.title_ru,
-                        text_ru: rawData.text_ru,
-                        main_image: rawData.main_image,
+                        ...rawData,
                     });
 
-                    setImagePath(rawData.image);
                     setLoading(false);
                 } else {
                     throw new Error("Данные не найдены");
@@ -76,45 +69,17 @@ const EditBlog = () => {
         if (id) fetchData();
     }, [id]);
 
-    // Update the type of 'name' to match the keys of the 'data' object
-    const handleEditorChange = (name: keyof BlogData, content: string) => {
-        setData((prev) => ({ ...prev, [name]: content }));
+    const handleEditorChange = (name: keyof typeof data, content: string) => {
+        setData((prev) => ({...prev, [name]: content}));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('auth_token');
 
-            let imageToSend: string | null = imagePath || null;
-
-            // Если пользователь выбрал новое изображение — загружаем его
-            if (imageFile) {
-                const formData = new FormData();
-                formData.append('image', imageFile);
-
-                const uploadResponse = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/sliders/upload`,
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    }
-                );
-
-                // Предполагается, что сервер возвращает имя файла в uploadResponse.data.filename
-                imageToSend = uploadResponse.data.filename;
-            }
-
-            // Отправляем PUT-запрос
-            await axios.put(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`,
-                {
-                    ...data,
-                    image: imageToSend ?? data.main_image, // <= используем main_image, если imageToSend нет
-                },
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/itinerary/${id}`,
+                {...data},
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -122,59 +87,51 @@ const EditBlog = () => {
                 }
             );
 
-            router.push(`/admin/blogs/view-blog/${id}`);
+            router.push(`/admin/itinerary/view-itinerary/${id}`);
         } catch (err) {
-            console.error('Ошибка при сохранении:', err);
+            console.error(err);
             setError('Ошибка при сохранении');
         }
     };
-
-
 
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar />
+            <Sidebar/>
             <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
+                <TokenTimer/>
                 <div className="mt-8">
-                    <h1 className="text-2xl font-bold mb-4">Edit Blogs</h1>
+                    <h1 className="text-2xl font-bold mb-4">Edit Itinerary</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-                        {data.main_image && (
-                            <div className="mb-4">
-                                <label className="block font-semibold mb-2">Current image:</label>
-                                <Image
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${data.main_image.replace('\\', '/')}`}
-                                    alt="Service"
-                                    width={200}
-                                    height={200}
-                                    className="w-64 rounded"
-                                />
-                            </div>
-                        )}
                         <div className="mb-4 flex space-x-4">
                             <div className="w-full">
-                                <div className="mb-4">
-                                    <label htmlFor="image" className="block font-semibold mb-2">New image:</label>
-                                    <input
-                                        type="file"
-                                        id="image"
-                                        accept="image/*"
-                                        onChange={(e) => {
-                                            if (e.target.files && e.target.files[0]) {
-                                                setImageFile(e.target.files[0]);
-                                            }
-                                        }}
+                                <div className="w-full">
+                                    <label className="block text-gray-700 font-semibold mb-2">
+                                        Select Tours:
+                                    </label>
+                                    <select
+                                        id="tours"
+                                        name="tour_id"
+                                        value={String(data.tour_id)}
+                                        onChange={(e) => setData((prev) => ({...prev, tour_id: e.target.value}))}
+                                        required
                                         className="border border-gray-300 rounded p-2 w-full"
-                                    />
+                                    >
+                                        <option value="">Select type</option>
+                                        {tours.map((tour) => (
+                                            <option key={tour.id} value={tour.id}>
+                                                {tour.title_en} / {tour.title_tk} / {tour.title_ru}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
                         <div className="tabs tabs-lift">
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked />
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title</label>
@@ -206,7 +163,7 @@ const EditBlog = () => {
                                 </div>
                             </div>
 
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="English" />
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title:</label>
@@ -238,7 +195,7 @@ const EditBlog = () => {
                                 </div>
                             </div>
 
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian" />
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title:</label>
@@ -275,7 +232,7 @@ const EditBlog = () => {
                             type="submit"
                             className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
                         >
-                            <DocumentIcon className="size-5 mr-2" />
+                            <DocumentIcon className="size-5 mr-2"/>
                             Save
                         </button>
                     </form>
@@ -285,4 +242,4 @@ const EditBlog = () => {
     );
 };
 
-export default EditBlog;
+export default EditItinerary;

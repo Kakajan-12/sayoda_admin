@@ -8,7 +8,6 @@ import Link from "next/link";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
-// Типизация элемента галереи
 type GalleryItem = {
     id: number;
     image: string;
@@ -66,7 +65,7 @@ const BlogsGallery = () => {
                 <TokenTimer />
                 <div className="mt-8">
                     <div className="w-full flex justify-between items-center">
-                        <h2 className="text-2xl font-bold mb-4">Blogs Gallery</h2>
+                        <h2 className="text-2xl font-bold mb-4">Tours Gallery</h2>
                         <Link href="/admin/gallery/add-gallery"
                               className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-blue-700">
                             <PlusCircleIcon className="w-6 h-6" color="#ffffff" />

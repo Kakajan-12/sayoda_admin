@@ -1,76 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import {
-    BriefcaseIcon,
-    MapPinIcon,
-    NewspaperIcon,
-    PhotoIcon,
-    WindowIcon,
-    UserPlusIcon,
-    MapIcon,
-    PresentationChartLineIcon,
-    ListBulletIcon,
-    QuestionMarkCircleIcon,
-    ClipboardDocumentCheckIcon,
-    EnvelopeIcon,
-    LinkIcon,
-    CircleStackIcon,
-    ClipboardDocumentListIcon,
-} from "@heroicons/react/16/solid";
+import { TfiLayoutSlider } from "react-icons/tfi";
+import { VscFeedback,VscTypeHierarchySub } from "react-icons/vsc";
+import { PiReadCvLogo } from "react-icons/pi";
+import { GrGallery } from "react-icons/gr";
+import { IoLocationSharp } from "react-icons/io5";
+import { LuMails, LuCalendarDays  } from "react-icons/lu";
+import { FaPhoneSquareAlt } from "react-icons/fa";
+import { MdTour } from "react-icons/md";
+import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
 
 const menuGroups = [
     {
         title: "Content Management",
         key: "content",
         links: [
-            { href: "/admin/sliders", label: "Sliders", icon: WindowIcon },
-            { href: "/admin/services", label: "Services", icon: ClipboardDocumentCheckIcon },
-            { href: "/admin/faq", label: "FAQ", icon: QuestionMarkCircleIcon },
+            { href: "/admin/sliders", label: "Sliders", icon: TfiLayoutSlider },
+            { href: "/admin/testimonials", label: "Testimonials", icon: VscFeedback },
         ],
     },
     {
-        title: "News",
-        key: "news",
+        title: "Blogs",
+        key: "blogs",
         links: [
-            { href: "/admin/news", label: "News", icon: NewspaperIcon },
-            { href: "/admin/news-category", label: "News Category", icon: NewspaperIcon },
-        ],
-    },
-    {
-        title: "Projects & Locations",
-        key: "projects",
-        links: [
-            { href: "/admin/projects", label: "Projects", icon: BriefcaseIcon },
-            { href: "/admin/locations", label: "Locations", icon: MapPinIcon },
-            { href: "/admin/gallery", label: "Gallery", icon: PhotoIcon },
-        ],
-    },
-    {
-        title: "Career",
-        key: "career",
-        links: [
-            { href: "/admin/career", label: "Career", icon: PresentationChartLineIcon },
-            { href: "/admin/career-requirements", label: "Career Requirements", icon: ListBulletIcon },
-            { href: "/admin/partners", label: "Partners", icon: UserPlusIcon },
-            { href: "/admin/applied", label: "Applied", icon: BriefcaseIcon },
+            { href: "/admin/blogs", label: "Blogs", icon: PiReadCvLogo},
+            { href: "/admin/blogs-gallery", label: "Blogs Gallery", icon: GrGallery },
         ],
     },
     {
         title: "Contacts",
         key: "contacts",
         links: [
-            { href: "/admin/social-links", label: "Social Links", icon: LinkIcon },
-            { href: "/admin/contacts", label: "Contacts", icon: MapIcon },
-            { href: "/admin/contact-address", label: "Contact Locations", icon: MapPinIcon },
+            { href: "/admin/address", label: "Address", icon: IoLocationSharp },
+            { href: "/admin/mails", label: "Mails", icon: LuMails },
+            { href: "/admin/numbers", label: "Numbers", icon: FaPhoneSquareAlt },
         ],
     },
     {
-        title: "Others",
-        key: "others",
+        title: "Tours",
+        key: "tours",
         links: [
-            { href: "/admin/subscribes", label: "Subscribes", icon: EnvelopeIcon },
-            { href: "/admin/cookie", label: "Cookie", icon: CircleStackIcon },
-            { href: "/admin/privacy", label: "Privacy Policy", icon: ClipboardDocumentListIcon },
+            { href: "/admin/tours", label: "Tours", icon: MdTour },
+            { href: "/admin/tour-types", label: "Types", icon: VscTypeHierarchySub },
+            { href: "/admin/itinerary", label: "Itinerary", icon: LuCalendarDays },
+            { href: "/admin/includes", label: "Includes", icon: IoMdCheckmarkCircleOutline },
+            { href: "/admin/excludes", label: "Excludes", icon: IoIosCloseCircleOutline  },
+            { href: "/admin/tour-gallery", label: "Gallery", icon: GrGallery  },
         ],
     },
 ];

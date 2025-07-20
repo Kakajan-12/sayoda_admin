@@ -6,27 +6,22 @@ import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import Link from "next/link";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
-import Image from "next/image";
 
-interface Blog {
-    id: number;
-    image: string;
-    title_tk: string;
-    title_en: string;
-    title_ru: string;
-    text_tk: string;
-    text_en: string;
-    text_ru: string;
-    date: string;
-}
+// Define the type for each news item
+type NewsItem = {
+    id: string;
+    type_tk: string;
+    type_en: string;
+    type_ru: string;
+};
 
-const Blogs = () => {
-    const [blogs, setBlogs] = useState<Blog[]>([]); // Type the state with Service[]
-    const [error, setError] = useState<string | null>(null); // Error state
+const TourTypes = () => {
+    const [types, setTypes] = useState<NewsItem[]>([]); // Specify the type for news state
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
-        const fetchServices = async () => {
+        const fetchTypes = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
                 if (!token) {
@@ -34,25 +29,25 @@ const Blogs = () => {
                     return;
                 }
 
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                setBlogs(response.data); // Assuming the response data is an array of services
+                setTypes(response.data);
             } catch (err) {
                 const axiosError = err as AxiosError;
                 console.error(axiosError);
-                setError('Ошибка при получении данных');
+                setError("Ошибка при получении данных");
 
                 if (axios.isAxiosError(axiosError) && axiosError.response?.status === 401) {
-                    router.push('/');
+                    router.push("/");
                 }
             }
         };
 
-        fetchServices();
+        fetchTypes();
     }, [router]);
 
     if (error) {
@@ -61,24 +56,21 @@ const Blogs = () => {
 
     return (
         <div className="flex bg-gray-200">
-            <Sidebar/>
+            <Sidebar />
             <div className="flex-1 p-10 ml-62">
-                <TokenTimer/>
+                <TokenTimer />
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
-                        <h2 className="text-2xl font-bold mb-4">Blogs</h2>
-                        <Link
-                            href="/admin/blogs/add-blog"
-                            className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center"
-                        >
-                            <PlusCircleIcon className="size-6" color="#ffffff"/>
+                        <h2 className="text-2xl font-bold mb-4">Tours Types</h2>
+                        <Link href="/admin/tour-types/add-tour-type"
+                              className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center">
+                            <PlusCircleIcon className="size-6" color="#ffffff" />
                             <div className="ml-2">Add</div>
                         </Link>
                     </div>
                     <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                         <thead>
                         <tr>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Image</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Turkmen</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">English</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Russian</th>
@@ -86,36 +78,26 @@ const Blogs = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {blogs.length === 0 ? (
+                        {types.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="text-center py-4">No blogs available</td>
+                                <td colSpan={5} className="text-center py-4">No sliders available</td>
                             </tr>
                         ) : (
-                            blogs.map((blog) => (
-                                <tr key={blog.id}>
+                            types.map((type) => (
+                                <tr key={type.id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <Image
-                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${blog.image}`}
-                                            alt={`Service ${blog.id}`}
-                                            width={100}
-                                            height={100}
-                                        />
+                                        <div dangerouslySetInnerHTML={{ __html: type.type_tk }} />
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: blog.title_tk}}/>
+                                        <div dangerouslySetInnerHTML={{ __html: type.type_en }} />
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: blog.title_en}}/>
+                                        <div dangerouslySetInnerHTML={{ __html: type.type_ru }} />
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: blog.title_ru}}/>
-                                    </td>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <Link
-                                            href={`/admin/blogs/view-blog/${blog.id}`}
-                                            className="bg text-white py-2 px-8 rounded-md cursor-pointer flex w-32"
-                                        >
-                                            <EyeIcon color="#ffffff"/>
+                                        <Link href={`/admin/tour-types/view-tour-type/${type.id}`}
+                                              className="bg text-white py-2 px-8 rounded-md cursor-pointer flex w-32">
+                                            <EyeIcon color="#ffffff" />
                                             <div className="ml-2">View</div>
                                         </Link>
                                     </td>
@@ -127,8 +109,7 @@ const Blogs = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 
-export default Blogs;
+export default TourTypes;

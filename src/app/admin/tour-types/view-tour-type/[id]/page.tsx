@@ -1,27 +1,26 @@
 'use client';
-
 import React, { useEffect, useState, Fragment } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import axios, {AxiosError} from 'axios';
-import Image from 'next/image';
+import axios, { AxiosError } from 'axios';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
+import {
+    ChevronDownIcon,
+    PencilIcon,
+    TrashIcon,
+} from '@heroicons/react/16/solid';
 
-interface ServiceData {
-    title_tk: string;
-    title_en: string;
-    title_ru: string;
-    text_tk?: string;
-    text_en?: string;
-    text_ru?: string;
-    main_image?: string;
-}
+type NewsCategory = {
+    id: string;
+    type_tk: string;
+    type_en: string;
+    type_ru: string;
+};
 
-const ViewBlog = () => {
+const ViewTourType = () => {
     const { id } = useParams();
-    const [data, setData] = useState<ServiceData | null>(null);
+    const [data, setData] = useState<NewsCategory | null>(null); // ✅ Тип указан
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -31,19 +30,20 @@ const ViewBlog = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                console.log("Полученные данные:", response.data);
                 setData(response.data[0]);
             } catch (err) {
                 const axiosError = err as AxiosError;
                 console.error(axiosError);
-                setError('Ошибка при получении данных');
+                setError("Ошибка при получении данных");
 
                 if (axios.isAxiosError(axiosError) && axiosError.response?.status === 401) {
-                    router.push('/');
+                    router.push("/");
                 }
             }
         };
@@ -55,32 +55,32 @@ const ViewBlog = () => {
         setIsDeleting(true);
         try {
             const token = localStorage.getItem('auth_token');
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             setIsDeleting(false);
             setShowModal(false);
-            router.push('/admin/blogs');
+            router.push('/admin/tour-types');
         } catch (err) {
-            console.error("Error deleting blogs:", err);
+            console.error("Ошибка при удалении:", err);
             setIsDeleting(false);
             setShowModal(false);
         }
     };
 
     if (error) return <div>{error}</div>;
-    if (!data) return <div>Loading...</div>;
+    if (!data) return <div>Загрузка...</div>;
 
     return (
-        <div className="flex bg-gray-200 h-screen">
+        <div className="flex bg-gray-200 min-h-screen">
             <Sidebar />
             <div className="flex-1 p-10 ml-62">
                 <TokenTimer />
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
-                        <h2 className="text-2xl font-bold mb-4">View Blogs</h2>
+                        <h2 className="text-2xl font-bold mb-4">View Tour Types</h2>
                         <Menu as="div" className="relative inline-block text-left">
                             <Menu.Button className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white shadow-inner hover:bg-gray-700 focus:outline-none cursor-pointer">
                                 Options
@@ -101,8 +101,10 @@ const ViewBlog = () => {
                                         <Menu.Item>
                                             {({ active }) => (
                                                 <button
-                                                    onClick={() => router.push(`/admin/blogs/edit-blog/${id}`)}
-                                                    className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
+                                                    onClick={() => router.push(`/admin/tour-types/edit-tour-type/${id}`)}
+                                                    className={`${
+                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                    } group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
                                                 >
                                                     <PencilIcon className="w-4 h-4 mr-2 text-gray-400" />
                                                     Edit
@@ -114,7 +116,9 @@ const ViewBlog = () => {
                                             {({ active }) => (
                                                 <button
                                                     onClick={() => setShowModal(true)}
-                                                    className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
+                                                    className={`${
+                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                    } group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
                                                 >
                                                     <TrashIcon className="w-4 h-4 mr-2 text-gray-400" />
                                                     Delete
@@ -128,67 +132,34 @@ const ViewBlog = () => {
                     </div>
 
                     <div className="bg-white p-4 rounded-md border-gray-200 flex">
-                        <div>
-                            {data.main_image && (
-                                <Image
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${data.main_image.replace(/\\/g, '/')}`}
-                                    alt="Blog image"
-                                    width={500}
-                                    height={400}
-                                    className="rounded mb-6"
-                                />
-                            )}
-
-                        </div>
-
                         <div className="space-y-2 ml-4">
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Turkmen</div>
-                                {data.title_tk && (
+                                {data.type_tk && (
                                     <div>
-                                        <strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.title_tk}}/>
-                                    </div>
-                                )}
-                                {data.text_tk && (
-                                    <div>
-                                        <strong>Text:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.text_tk}}/>
+                                        <strong>Type:</strong>
+                                        <div dangerouslySetInnerHTML={{ __html: data.type_tk }} />
                                     </div>
                                 )}
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">English</div>
-                                {data.title_en && (
+                                {data.type_en && (
                                     <div>
-                                        <strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.title_en}}/>
-                                    </div>
-                                )}
-
-                                {data.text_en && (
-                                    <div>
-                                        <strong>Text:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.text_en}}/>
+                                        <strong>Type:</strong>
+                                        <div dangerouslySetInnerHTML={{ __html: data.type_en }} />
                                     </div>
                                 )}
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Russian</div>
-                                {data.title_ru && (
+                                {data.type_ru && (
                                     <div>
-                                        <strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.title_ru}}/>
-                                    </div>
-                                )}
-                                {data.text_ru && (
-                                    <div>
-                                        <strong>Text:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.text_ru}}/>
+                                        <strong>Type:</strong>
+                                        <div dangerouslySetInnerHTML={{ __html: data.type_ru }} />
                                     </div>
                                 )}
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -196,8 +167,8 @@ const ViewBlog = () => {
                 {showModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
                         <div className="bg-white p-6 rounded shadow-md w-96">
-                            <h2 className="text-lg font-bold mb-4">Remove Blogs</h2>
-                            <p className="mb-6">Are you sure you want to delete this blog?</p>
+                            <h2 className="text-lg font-bold mb-4">Remove tour type</h2>
+                            <p className="mb-6">Are you sure you want to delete this tour type?</p>
                             <div className="flex justify-end space-x-4">
                                 <button
                                     className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
@@ -222,4 +193,4 @@ const ViewBlog = () => {
     );
 };
 
-export default ViewBlog;
+export default ViewTourType;
