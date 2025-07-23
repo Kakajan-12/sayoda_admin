@@ -9,9 +9,9 @@ import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
 interface SliderData {
-    tk: string;
-    en: string;
-    ru: string;
+    title_tk: string;
+    title_en: string;
+    title_ru: string;
     image: string;
 }
 
@@ -19,7 +19,7 @@ const EditSlider = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [slider, setSlider] = useState<SliderData>({ tk: '', en: '', ru: '', image: '' });
+    const [slider, setSlider] = useState<SliderData>({ title_tk: '', title_en: '', title_ru: '', image: '' });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
@@ -138,8 +138,8 @@ const EditSlider = () => {
                             <label className="block font-semibold mb-2">Turkmen</label>
                             <Editor
                                 apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                value={slider.tk}
-                                onEditorChange={(content) => handleEditorChange('tk', content)}
+                                value={slider.title_tk}
+                                onEditorChange={(content) => handleEditorChange('title_tk', content)}
                                 init={{
                                     height: 200,
                                     menubar: false,
@@ -153,8 +153,8 @@ const EditSlider = () => {
                             <label className="block font-semibold mb-2">English</label>
                             <Editor
                                 apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                value={slider.en}
-                                onEditorChange={(content) => handleEditorChange('en', content)}
+                                value={slider.title_en}
+                                onEditorChange={(content) => handleEditorChange('title_en', content)}
                                 init={{
                                     height: 200,
                                     menubar: false,
@@ -168,8 +168,8 @@ const EditSlider = () => {
                             <label className="block font-semibold mb-2">Russian</label>
                             <Editor
                                 apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                value={slider.ru}
-                                onEditorChange={(content) => handleEditorChange('ru', content)}
+                                value={slider.title_ru}
+                                onEditorChange={(content) => handleEditorChange('title_ru', content)}
                                 init={{
                                     height: 200,
                                     menubar: false,

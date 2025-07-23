@@ -16,24 +16,23 @@ const EditGallery = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>('');
     const [imagePath, setImagePath] = useState<string>('');
-    const [blogs, setBlogs] = useState<{ id: number, title_tk: string, title_en: string, title_ru: string }[]>([]);
+    const [tours, setTours] = useState<{ id: number, title_tk: string, title_en: string, title_ru: string }[]>([]);
     const [previewURL, setPreviewURL] = useState<string | null>(null);
 
-    // Загрузка проектов
     useEffect(() => {
-        const fetchBlogs = async () => {
+        const fetchTours = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`);
-                if (!res.ok) throw new Error('Ошибка при загрузке проектов');
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours`);
+                if (!res.ok) throw new Error('Ошибка при загрузке');
                 const data = await res.json();
-                setBlogs(data);
+                setTours(data);
             } catch (err) {
                 console.error('Ошибка при загрузке:', err);
-                setError('Ошибка при загрузке проектов');
+                setError('Ошибка при загрузке');
             }
         };
 
-        fetchBlogs();
+        fetchTours();
     }, []);
 
     // Загрузка данных галереи
@@ -41,7 +40,7 @@ const EditGallery = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-gallery/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-gallery/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -65,7 +64,6 @@ const EditGallery = () => {
         if (id) fetchData();
     }, [id]);
 
-    // Обработка отправки формы
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -91,7 +89,7 @@ const EditGallery = () => {
             }
 
             await axios.put(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/blog-gallery/${id}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/tour-gallery/${id}`,
                 { ...data, image: imageToSend },
                 {
                     headers: {
@@ -100,7 +98,7 @@ const EditGallery = () => {
                 }
             );
 
-            router.push(`/admin/blogs-gallery/view-gallery/${id}`);
+            router.push(`/admin/tour-gallery/view-gallery/${id}`);
         } catch (err) {
             console.error(err);
             setError('Ошибка при сохранении');
@@ -116,7 +114,7 @@ const EditGallery = () => {
             <div className="flex-1 p-10 ml-62">
                 <TokenTimer />
                 <div className="mt-8">
-                    <h1 className="text-2xl font-bold mb-4">Edit Blog Gallery</h1>
+                    <h1 className="text-2xl font-bold mb-4">Edit Tour Gallery</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
                         {data.image && (
                             <div className="mb-4">
@@ -161,9 +159,9 @@ const EditGallery = () => {
                                     className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                                 >
                                     <option value="">Select project</option>
-                                    {blogs.map((blog) => (
-                                        <option key={blog.id} value={String(blog.id)}>
-                                            {blog.title_en} / {blog.title_tk} / {blog.title_ru}
+                                    {tours.map((tour) => (
+                                        <option key={tour.id} value={String(tour.id)}>
+                                            {tour.title_en} / {tour.title_tk} / {tour.title_ru}
                                         </option>
                                     ))}
                                 </select>

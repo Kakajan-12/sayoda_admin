@@ -1,27 +1,23 @@
 'use client';
+
 import React, { useEffect, useState, Fragment } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import axios, { AxiosError } from 'axios';
+import axios, {AxiosError} from 'axios';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import { Menu, Transition } from '@headlessui/react';
-import {
-    ChevronDownIcon,
-    PencilIcon,
-    TrashIcon,
-} from '@heroicons/react/16/solid';
+import { ChevronDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
 
-// Типизация объекта Location
-type LocationData = {
-    id: number;
-    location_tk: string;
-    location_en: string;
-    location_ru: string;
-};
+interface ServiceData {
+    address_tk: string;
+    address_en: string;
+    address_ru: string;
+    iframe: string;
+}
 
-const ViewLocation = () => {
+const ViewAddress = () => {
     const { id } = useParams();
-    const [data, setData] = useState<LocationData | null>(null);  // Типизация состояния
+    const [data, setData] = useState<ServiceData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -31,20 +27,19 @@ const ViewLocation = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/locations/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log("Полученные данные:", response.data); // ← проверка
                 setData(response.data[0]);
             } catch (err) {
                 const axiosError = err as AxiosError;
                 console.error(axiosError);
-                setError("Ошибка при получении данных");
+                setError('Ошибка при получении данных');
 
                 if (axios.isAxiosError(axiosError) && axiosError.response?.status === 401) {
-                    router.push("/");
+                    router.push('/');
                 }
             }
         };
@@ -56,23 +51,23 @@ const ViewLocation = () => {
         setIsDeleting(true);
         try {
             const token = localStorage.getItem('auth_token');
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/locations/${id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             setIsDeleting(false);
             setShowModal(false);
-            router.push('/admin/locations');
+            router.push('/admin/address');
         } catch (err) {
-            console.error("Ошибка при удалении:", err);
+            console.error("Error deleting blogs:", err);
             setIsDeleting(false);
             setShowModal(false);
         }
     };
 
     if (error) return <div>{error}</div>;
-    if (!data) return <div>Загрузка...</div>;
+    if (!data) return <div>Loading...</div>;
 
     return (
         <div className="flex bg-gray-200 h-screen">
@@ -81,7 +76,7 @@ const ViewLocation = () => {
                 <TokenTimer />
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
-                        <h2 className="text-2xl font-bold mb-4">View Location</h2>
+                        <h2 className="text-2xl font-bold mb-4">View Address</h2>
                         <Menu as="div" className="relative inline-block text-left">
                             <Menu.Button className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white shadow-inner hover:bg-gray-700 focus:outline-none cursor-pointer">
                                 Options
@@ -102,10 +97,8 @@ const ViewLocation = () => {
                                         <Menu.Item>
                                             {({ active }) => (
                                                 <button
-                                                    onClick={() => router.push(`/admin/locations/edit-location/${id}`)}
-                                                    className={`${
-                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                    } group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
+                                                    onClick={() => router.push(`/admin/address/edit-address/${id}`)}
+                                                    className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
                                                 >
                                                     <PencilIcon className="w-4 h-4 mr-2 text-gray-400" />
                                                     Edit
@@ -117,9 +110,7 @@ const ViewLocation = () => {
                                             {({ active }) => (
                                                 <button
                                                     onClick={() => setShowModal(true)}
-                                                    className={`${
-                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                    } group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
+                                                    className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
                                                 >
                                                     <TrashIcon className="w-4 h-4 mr-2 text-gray-400" />
                                                     Delete
@@ -133,28 +124,40 @@ const ViewLocation = () => {
                     </div>
 
                     <div className="bg-white p-4 rounded-md border-gray-200 flex">
+                        <div>
+                            {data.iframe && (
+                                <div>
+                                    <strong>Map:</strong>
+                                    <div dangerouslySetInnerHTML={{__html: data.iframe}}/>
+                                </div>
+                            )}
+                        </div>
+
                         <div className="space-y-2 ml-4">
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Turkmen</div>
-                                {data.location_tk && (
+                                {data.address_tk && (
                                     <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.location_tk }} />
+                                        <strong>Address:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.address_tk}}/>
                                     </div>
                                 )}
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">English</div>
-                                {data.location_en && (
+                                {data.address_en && (
                                     <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.location_en }} />
+                                        <strong>Address:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.address_en}}/>
                                     </div>
                                 )}
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Russian</div>
-                                {data.location_ru && (
+                                {data.address_ru && (
                                     <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.location_ru }} />
+                                        <strong>Address:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.address_ru}}/>
                                     </div>
                                 )}
                             </div>
@@ -165,8 +168,8 @@ const ViewLocation = () => {
                 {showModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
                         <div className="bg-white p-6 rounded shadow-md w-96">
-                            <h2 className="text-lg font-bold mb-4">Remove location</h2>
-                            <p className="mb-6">Are you sure you want to delete this location?</p>
+                            <h2 className="text-lg font-bold mb-4">Remove Address</h2>
+                            <p className="mb-6">Are you sure you want to delete this address?</p>
                             <div className="flex justify-end space-x-4">
                                 <button
                                     className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
@@ -191,4 +194,4 @@ const ViewLocation = () => {
     );
 };
 
-export default ViewLocation;
+export default ViewAddress;

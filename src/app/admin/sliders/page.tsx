@@ -11,9 +11,9 @@ import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
 interface Slider {
     id: number;
     image: string;
-    tk: string;
-    en: string;
-    ru: string;
+    title_tk: string;
+    title_en: string;
+    title_ru: string;
 }
 
 const Sliders = () => {
@@ -102,13 +102,13 @@ const Sliders = () => {
                                         />
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{ __html: slider.tk }} />
+                                        <div dangerouslySetInnerHTML={{ __html: slider.title_tk }} />
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{ __html: slider.en }} />
+                                        <div dangerouslySetInnerHTML={{ __html: slider.title_en }} />
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{ __html: slider.ru }} />
+                                        <div dangerouslySetInnerHTML={{ __html: slider.title_ru }} />
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link href={`/admin/sliders/view-slider/${slider.id}`} className="bg text-white py-2 px-8 rounded-md cursor-pointer flex w-32 justify-center items-center">

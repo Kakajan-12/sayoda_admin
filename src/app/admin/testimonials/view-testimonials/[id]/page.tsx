@@ -12,17 +12,16 @@ import {
     TrashIcon,
 } from '@heroicons/react/16/solid';
 
-type NewsData = {
+type TourData = {
     image?: string;
-    date?: string;
     [key: string]: string | undefined;
 };
 
-const ViewNews = () => {
+const ViewTestimonials = () => {
     const {id} = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState<NewsData | null>(null);
+    const [data, setData] = useState<TourData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -31,12 +30,17 @@ const ViewNews = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/testimonials/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setData(response.data);
+
+                if (Array.isArray(response.data) && response.data.length > 0) {
+                    setData(response.data[0]); // ✅ Возьми первый объект из массива
+                } else {
+                    setError('Данные не найдены');
+                }
             } catch (err) {
                 const axiosError = err as AxiosError;
                 console.error(axiosError);
@@ -51,16 +55,17 @@ const ViewNews = () => {
         if (id) fetchData();
     }, [id, router]);
 
+
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const token = localStorage.getItem('auth_token');
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/testimonials/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            router.push('/admin/news');
+            router.push('/admin/testimonials');
         } catch (err) {
             console.error('Ошибка при удалении:', err);
         } finally {
@@ -79,7 +84,7 @@ const ViewNews = () => {
                 <TokenTimer/>
                 <div className="mt-8">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold">View News</h2>
+                        <h2 className="text-2xl font-bold">View Testimonials</h2>
                         <Menu as="div" className="relative inline-block text-left">
                             <Menu.Button
                                 className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white hover:bg-gray-700">
@@ -101,7 +106,7 @@ const ViewNews = () => {
                                         <Menu.Item>
                                             {({active}) => (
                                                 <button
-                                                    onClick={() => router.push(`/admin/news/edit-news/${id}`)}
+                                                    onClick={() => router.push(`/admin/testimonials/edit-testimonials/${id}`)}
                                                     className={`${
                                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                                                     } group flex items-center w-full px-4 py-2 text-sm`}
@@ -136,74 +141,25 @@ const ViewNews = () => {
                             {data.image && (
                                 <Image
                                     src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace('\\', '/')}`}
-                                    alt="Blog"
+                                    alt="image"
                                     width={600}
                                     height={400}
                                     className="rounded"
                                 />
                             )}
-                            {data.date && (
-                                <div>
-                                    <strong>Date:</strong>
-                                    {new Date(data.date).toLocaleDateString("tm-TM")}
-                                </div>
-                            )}
                         </div>
 
                         <div className="flex-1 space-y-10 divide-y-1">
                             <div>
-                                <div className="font-bold text-lg mb-2">Turkmen</div>
-                                {data.tk && (
-                                    <div><strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.tk}}/>
+                                <div className="font-bold text-lg mb-2">Comment</div>
+                                {data.name && (
+                                    <div><strong>Name:</strong>
+                                        <div dangerouslySetInnerHTML={{__html: data.name}}/>
                                     </div>
                                 )}
-                                {data.text_tk && (
+                                {data.text && (
                                     <div><strong>Text:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.text_tk}}/>
-                                    </div>
-                                )}
-                                {data.cat_tk && (
-                                    <div><strong>Category:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.cat_tk}}/>
-                                    </div>
-                                )}
-
-                            </div>
-                            <div>
-                                <div className="font-bold text-lg mb-2">English</div>
-                                {data.en && (
-                                    <div><strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.en}}/>
-                                    </div>
-                                )}
-                                {data.text_en && (
-                                    <div><strong>Text:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.text_en}}/>
-                                    </div>
-                                )}
-                                {data.cat_en && (
-                                    <div><strong>Category:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.cat_en}}/>
-                                    </div>
-                                )}
-
-                            </div>
-                            <div>
-                                <div className="font-bold text-lg mb-2">Russian</div>
-                                {data.ru && (
-                                    <div><strong>Title:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.ru}}/>
-                                    </div>
-                                )}
-                                {data.text_ru && (
-                                    <div><strong>Text:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.text_ru}}/>
-                                    </div>
-                                )}
-                                {data.cat_ru && (
-                                    <div><strong>Category:</strong>
-                                        <div dangerouslySetInnerHTML={{__html: data.cat_ru}}/>
+                                        <div dangerouslySetInnerHTML={{__html: data.text}}/>
                                     </div>
                                 )}
                             </div>
@@ -215,8 +171,8 @@ const ViewNews = () => {
                 {showModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
                         <div className="bg-white p-6 rounded shadow-md w-96">
-                            <h2 className="text-lg font-bold mb-4">Remove news</h2>
-                            <p className="mb-6">Are you sure you want to delete this news?</p>
+                            <h2 className="text-lg font-bold mb-4">Remove testimonials</h2>
+                            <p className="mb-6">Are you sure you want to delete this testimonials?</p>
                             <div className="flex justify-end space-x-4">
                                 <button
                                     className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
@@ -241,4 +197,4 @@ const ViewNews = () => {
     );
 };
 
-export default ViewNews;
+export default ViewTestimonials;

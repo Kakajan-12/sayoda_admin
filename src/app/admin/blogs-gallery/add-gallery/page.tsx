@@ -15,7 +15,7 @@ const AddBlogGallery = () => {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-gallery`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`);
                 const data = await res.json();
                 setBlogs(data);
             } catch (err) {

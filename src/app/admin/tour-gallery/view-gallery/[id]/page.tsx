@@ -15,12 +15,12 @@ import {
 type GalleryItem = {
     id: number;
     image: string;
-    title_tk: string;
-    title_en: string;
-    title_ru: string;
+    tour_title_tk: string;
+    tour_title_en: string;
+    tour_title_ru: string;
 };
 
-const ViewBlogGallery = () => {
+const ViewTourGallery = () => {
     const { id } = useParams();
     const [data, setData] = useState<GalleryItem | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ const ViewBlogGallery = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-gallery/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-gallery/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -57,14 +57,14 @@ const ViewBlogGallery = () => {
         setIsDeleting(true);
         try {
             const token = localStorage.getItem('auth_token');
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-gallery/${id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-gallery/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             setIsDeleting(false);
             setShowModal(false);
-            router.push('/admin/blogs-gallery');
+            router.push('/admin/tour-gallery');
         } catch (err) {
             console.error("Ошибка при удалении:", err);
             setIsDeleting(false);
@@ -82,7 +82,7 @@ const ViewBlogGallery = () => {
                 <TokenTimer />
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
-                        <h2 className="text-2xl font-bold mb-4">View Blog Gallery</h2>
+                        <h2 className="text-2xl font-bold mb-4">View Tour Gallery</h2>
                         <Menu as="div" className="relative inline-block text-left">
                             <Menu.Button className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white hover:bg-gray-700">
                                 Options
@@ -103,7 +103,7 @@ const ViewBlogGallery = () => {
                                         <Menu.Item>
                                             {({ active }) => (
                                                 <button
-                                                    onClick={() => router.push(`/admin/blogs-gallery/edit-gallery/${id}`)}
+                                                    onClick={() => router.push(`/admin/tour-gallery/edit-gallery/${id}`)}
                                                     className={`${
                                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                                                     } group flex w-full items-center px-4 py-2 text-sm`}
@@ -149,15 +149,15 @@ const ViewBlogGallery = () => {
                         <div className="space-y-6 md:ml-6 mt-4 md:mt-0">
                             <div>
                                 <h3 className="font-bold text-lg mb-2">Turkmen</h3>
-                                <div dangerouslySetInnerHTML={{ __html: data.title_tk }} />
+                                <div dangerouslySetInnerHTML={{ __html: data.tour_title_tk }} />
                             </div>
                             <div>
                                 <h3 className="font-bold text-lg mb-2">English</h3>
-                                <div dangerouslySetInnerHTML={{ __html: data.title_en }} />
+                                <div dangerouslySetInnerHTML={{ __html: data.tour_title_en }} />
                             </div>
                             <div>
                                 <h3 className="font-bold text-lg mb-2">Russian</h3>
-                                <div dangerouslySetInnerHTML={{ __html: data.title_ru }} />
+                                <div dangerouslySetInnerHTML={{ __html: data.tour_title_ru }} />
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,7 @@ const ViewBlogGallery = () => {
                 {showModal && (
                     <div className="fixed inset-0 bg-opacity-40 flex items-center justify-center z-50">
                         <div className="bg-white p-6 rounded shadow-md w-96">
-                            <h2 className="text-lg font-bold mb-4">Remove Blog gallery</h2>
+                            <h2 className="text-lg font-bold mb-4">Remove Tour gallery</h2>
                             <p className="mb-6">Are you sure you want to delete this gallery?</p>
                             <div className="flex justify-end space-x-4">
                                 <button
@@ -193,4 +193,4 @@ const ViewBlogGallery = () => {
     );
 };
 
-export default ViewBlogGallery;
+export default ViewTourGallery;

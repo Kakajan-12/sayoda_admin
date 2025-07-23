@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState, Fragment } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import axios, { AxiosError } from 'axios'; // Import AxiosError here
+import axios, { AxiosError } from 'axios';
 import Image from 'next/image';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
@@ -15,9 +15,9 @@ import {
 interface Slider {
     id: number;
     image: string;
-    tk: string;
-    en: string;
-    ru: string;
+    title_tk: string;
+    title_en: string;
+    title_ru: string;
 }
 
 const ViewSlider = () => {
@@ -44,13 +44,12 @@ const ViewSlider = () => {
                     },
                 });
                 setSlider(response.data[0]);
-                setLoading(false); // Set loading to false after fetching data
+                setLoading(false);
             } catch (err) {
                 console.error("Ошибка при загрузке слайдера:", err);
                 setError('Ошибка при загрузке слайдера');
-                setLoading(false); // Set loading to false on error
+                setLoading(false);
 
-                // Check if error is an AxiosError and handle accordingly
                 if (err instanceof AxiosError && err.response?.status === 401) {
                     router.push('/');
                 }
@@ -155,22 +154,22 @@ const ViewSlider = () => {
                         )}
 
                         <div className="space-y-10 divide-y-1 ml-4">
-                            {slider?.tk && (
+                            {slider?.title_tk && (
                                 <div>
                                     <strong>Turkmen:</strong>
-                                    <div dangerouslySetInnerHTML={{__html: slider.tk}}/>
+                                    <div dangerouslySetInnerHTML={{__html: slider.title_tk}}/>
                                 </div>
                             )}
-                            {slider?.en && (
+                            {slider?.title_en && (
                                 <div>
                                     <strong>English:</strong>
-                                    <div dangerouslySetInnerHTML={{__html: slider.en}}/>
+                                    <div dangerouslySetInnerHTML={{__html: slider.title_en}}/>
                                 </div>
                             )}
-                            {slider?.ru && (
+                            {slider?.title_ru && (
                                 <div>
                                     <strong>Russian:</strong>
-                                    <div dangerouslySetInnerHTML={{__html: slider.ru}}/>
+                                    <div dangerouslySetInnerHTML={{__html: slider.title_ru}}/>
                                 </div>
                             )}
                         </div>

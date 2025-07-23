@@ -8,11 +8,13 @@ import Link from "next/link";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
-// Типизация элемента галереи
 type GalleryItem = {
     id: number;
     image: string;
     blog_id: number;
+    blog_title_tk?: string;
+    blog_title_en?: string;
+    blog_title_ru?: string;
 };
 
 const BlogsGallery = () => {
@@ -67,7 +69,7 @@ const BlogsGallery = () => {
                 <div className="mt-8">
                     <div className="w-full flex justify-between items-center">
                         <h2 className="text-2xl font-bold mb-4">Blogs Gallery</h2>
-                        <Link href="/admin/gallery/add-gallery"
+                        <Link href="/admin/blogs-gallery/add-gallery"
                               className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-blue-700">
                             <PlusCircleIcon className="w-6 h-6" color="#ffffff" />
                             <div className="ml-2">Add</div>
@@ -101,17 +103,18 @@ const BlogsGallery = () => {
                                             className="rounded"
                                         />
                                     </td>
-                                    {/*<td className="py-4 px-4 border-b border-gray-200">*/}
-                                    {/*    <div dangerouslySetInnerHTML={{ __html: data.title_tk }} />*/}
-                                    {/*</td>*/}
-                                    {/*<td className="py-4 px-4 border-b border-gray-200">*/}
-                                    {/*    <div dangerouslySetInnerHTML={{ __html: data.title_en }} />*/}
-                                    {/*</td>*/}
-                                    {/*<td className="py-4 px-4 border-b border-gray-200">*/}
-                                    {/*    <div dangerouslySetInnerHTML={{ __html: data.title_ru }} />*/}
-                                    {/*</td>*/}
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <Link href={`/admin/gallery/view-gallery/${data.id}`}
+                                        <div dangerouslySetInnerHTML={{__html: data.blog_title_tk || ''}}/>
+
+                                    </td>
+                                    <td className="py-4 px-4 border-b border-gray-200">
+                                        <div dangerouslySetInnerHTML={{__html: data.blog_title_en || ''}}/>
+                                    </td>
+                                    <td className="py-4 px-4 border-b border-gray-200">
+                                        <div dangerouslySetInnerHTML={{__html: data.blog_title_ru || ''}}/>
+                                    </td>
+                                    <td className="py-4 px-4 border-b border-gray-200">
+                                        <Link href={`/admin/blogs-gallery/view-gallery/${data.id}`}
                                               className="bg text-white py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-green-700 w-fit">
                                             <EyeIcon className="w-5 h-5" color="#ffffff" />
                                             <div className="ml-2">View</div>

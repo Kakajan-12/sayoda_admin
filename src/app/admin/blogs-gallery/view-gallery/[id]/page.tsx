@@ -15,9 +15,9 @@ import {
 type GalleryItem = {
     id: number;
     image: string;
-    title_tk: string;
-    title_en: string;
-    title_ru: string;
+    blog_title_tk: string;
+    blog_title_en: string;
+    blog_title_ru: string;
 };
 
 const ViewBlogGallery = () => {
@@ -64,7 +64,7 @@ const ViewBlogGallery = () => {
             });
             setIsDeleting(false);
             setShowModal(false);
-            router.push('/admin/blogs-gallery');
+            router.push('/admin/blog-gallery');
         } catch (err) {
             console.error("Ошибка при удалении:", err);
             setIsDeleting(false);
@@ -149,15 +149,15 @@ const ViewBlogGallery = () => {
                         <div className="space-y-6 md:ml-6 mt-4 md:mt-0">
                             <div>
                                 <h3 className="font-bold text-lg mb-2">Turkmen</h3>
-                                <div dangerouslySetInnerHTML={{ __html: data.title_tk }} />
+                                <div dangerouslySetInnerHTML={{ __html: data.blog_title_tk }} />
                             </div>
                             <div>
                                 <h3 className="font-bold text-lg mb-2">English</h3>
-                                <div dangerouslySetInnerHTML={{ __html: data.title_en }} />
+                                <div dangerouslySetInnerHTML={{ __html: data.blog_title_en }} />
                             </div>
                             <div>
                                 <h3 className="font-bold text-lg mb-2">Russian</h3>
-                                <div dangerouslySetInnerHTML={{ __html: data.title_ru }} />
+                                <div dangerouslySetInnerHTML={{ __html: data.blog_title_ru }} />
                             </div>
                         </div>
                     </div>

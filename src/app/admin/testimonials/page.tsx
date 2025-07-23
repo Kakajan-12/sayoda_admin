@@ -8,28 +8,20 @@ import Link from "next/link";
 import {EyeIcon, PlusCircleIcon} from "@heroicons/react/16/solid";
 import Image from "next/image";
 
-interface NewsItem {
+interface TestimonialsItem {
     id: number;
     image: string;
-    tk: string;
-    en: string;
-    ru: string;
-    text_tk: string;
-    text_en: string;
-    text_ru: string;
-    cat_tk: string;
-    cat_en: string;
-    cat_ru: string;
+    text: string;
 }
 
-const News = () => {
-    const [news, setNews] = useState<NewsItem[]>([]);
+const Testimonials = () => {
+    const [testimonials, setTestimonials] = useState<TestimonialsItem[]>([]);
 
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
-        const fetchNews = async () => {
+        const fetchTours = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
                 if (!token) {
@@ -37,13 +29,13 @@ const News = () => {
                     return;
                 }
 
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/news`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/testimonials`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                setNews(response.data);
+                setTestimonials(response.data);
             } catch (err) {
                 const axiosError = err as AxiosError;
                 console.error(axiosError);
@@ -55,7 +47,7 @@ const News = () => {
             }
         };
 
-        fetchNews();
+        fetchTours();
     }, [router]);
 
     if (error) {
@@ -69,8 +61,8 @@ const News = () => {
                 <TokenTimer/>
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
-                        <h2 className="text-2xl font-bold mb-4">News</h2>
-                        <Link href="/admin/news/add-news"
+                        <h2 className="text-2xl font-bold mb-4">Testimonials</h2>
+                        <Link href="/admin/testimonials/add-testimonials"
                               className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center"><PlusCircleIcon
                             className="size-6" color="#ffffff"/>
                             <div className="ml-2">Add</div>
@@ -80,40 +72,32 @@ const News = () => {
                         <thead>
                         <tr>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Image</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Turkmen</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">English</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Russian</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Testimonials</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">View</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {news.length === 0 ? (
+                        {testimonials.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="text-center py-4">No sliders available</td>
+                                <td colSpan={5} className="text-center py-4">No tours available</td>
                             </tr>
                         ) : (
-                            news.map(news => (
-                                <tr key={news.id}>
+                            testimonials.map(testimonial => (
+                                <tr key={testimonial.id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Image
-                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${news.image}`.replace(/\\/g, '/')}
-                                            alt={`News ${news.id}`}
+                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${testimonial.image}`.replace(/\\/g, '/')}
+                                            alt={`News ${testimonial.id}`}
                                             width={100}
                                             height={100}
                                         />
 
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: news.tk}}/>
+                                        <div dangerouslySetInnerHTML={{__html: testimonial.text}}/>
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: news.en}}/>
-                                    </td>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: news.ru}}/>
-                                    </td>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <Link href={`/admin/news/view-news/${news.id}`}
+                                        <Link href={`/admin/testimonials/view-testimonials/${testimonial.id}`}
                                               className="bg text-white py-2 px-8 rounded-md cursor-pointer flex w-32"><EyeIcon
                                             color="#ffffff"/>
                                             <div className="ml-2">View</div>
@@ -130,4 +114,4 @@ const News = () => {
     )
 }
 
-export default News;
+export default Testimonials;

@@ -33,19 +33,15 @@ const AddSlider = () => {
                 if (Array.isArray(data)) {
                     setTours(data);
                 } else {
-                    console.error('Неверный формат данных категорий:', data);
+                    console.error('Неверный формат данных:', data);
                 }
             } catch (err) {
-                console.error('Ошибка при загрузке категорий:', err);
+                console.error('Ошибка при загрузке:', err);
             }
         };
 
 
         fetchTours();
-    }, []);
-
-    useEffect(() => {
-        setIsClient(true);
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +64,7 @@ const AddSlider = () => {
         formData.append('tour_id', tour_id ?? '');
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/slider-create`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sliders`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -132,9 +128,9 @@ const AddSlider = () => {
                                 className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                             />
                         </div>
-                        <div className="w-full">
+                        <div className="w-full mb-4">
                             <label className="block text-gray-700 font-semibold mb-2">
-                                News Category:
+                                Select tour:
                             </label>
                             <select
                                 id="news_cat"
@@ -144,7 +140,7 @@ const AddSlider = () => {
                                 required
                                 className="border border-gray-300 rounded p-2 w-full"
                             >
-                                <option value="">Select a category</option>
+                                <option value="">Select tour</option>
                                 {tours.map((tour) => (
                                     <option key={tour.id} value={tour.id}>
                                         {tour.title_en} / {tour.title_tk} / {tour.title_ru}

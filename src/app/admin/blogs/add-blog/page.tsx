@@ -58,8 +58,8 @@ const AddBlog = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Service added successfully!', data);
-                setImage(null); // Reset the image state
+                console.log('data added successfully!', data);
+                setImage(null);
                 setTitleTk('');
                 setTitleEn('');
                 setTitleRu('');

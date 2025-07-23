@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -6,26 +6,22 @@ import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import Link from "next/link";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
-import Image from "next/image";
 
-interface Project {
+interface Address {
     id: number;
-    image: string;
-    tk: string;
-    en: string;
-    ru: string;
-    text_tk: string;
-    text_en: string;
-    text_ru: string;
+    address_tk: string;
+    address_en: string;
+    address_ru: string;
+    iframe: string;
 }
 
-const Projects = () => {
-    const [projects, setProjects] = useState<Project[]>([]); // Указываем тип состояния
-    const [error, setError] = useState<string | null>(null);
+const Address = () => {
+    const [addresses, setAddresses] = useState<Address[]>([]); // Type the state with Service[]
+    const [error, setError] = useState<string | null>(null); // Error state
     const router = useRouter();
 
     useEffect(() => {
-        const fetchProjects = async () => {
+        const fetchServices = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
                 if (!token) {
@@ -33,13 +29,13 @@ const Projects = () => {
                     return;
                 }
 
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                setProjects(response.data);
+                setAddresses(response.data); // Assuming the response data is an array of services
             } catch (err) {
                 const axiosError = err as AxiosError;
                 console.error(axiosError);
@@ -51,7 +47,7 @@ const Projects = () => {
             }
         };
 
-        fetchProjects();
+        fetchServices();
     }, [router]);
 
     if (error) {
@@ -60,58 +56,56 @@ const Projects = () => {
 
     return (
         <div className="flex bg-gray-200">
-            <Sidebar />
+            <Sidebar/>
             <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
+                <TokenTimer/>
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
-                        <h2 className="text-2xl font-bold mb-4">Projects</h2>
+                        <h2 className="text-2xl font-bold mb-4">Addresses</h2>
                         <Link
-                            href="/admin/projects/add-project"
+                            href="/admin/address/add-address"
                             className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center"
                         >
-                            <PlusCircleIcon className="size-6" color="#ffffff" />
+                            <PlusCircleIcon className="size-6" color="#ffffff"/>
                             <div className="ml-2">Add</div>
                         </Link>
                     </div>
-
                     <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                         <thead>
                         <tr>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Image</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Title</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Text</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">iframe</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Turkmen</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">English</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Russian</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">View</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {projects.length === 0 ? (
+                        {addresses.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="text-center py-4">No projects available</td>
+                                <td colSpan={5} className="text-center py-4">No address available</td>
                             </tr>
                         ) : (
-                            projects.map((project) => (
-                                <tr key={project.id}>
+                            addresses.map((address) => (
+                                <tr key={address.id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <Image
-                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${project.image}`}
-                                            alt={`Project ${project.id}`}
-                                            width={100}
-                                            height={100}
-                                        />
+                                        <div dangerouslySetInnerHTML={{__html: address.iframe}}/>
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{ __html: project.en }} />
+                                        <div dangerouslySetInnerHTML={{__html: address.address_tk}}/>
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{ __html: project.text_en }} />
+                                        <div dangerouslySetInnerHTML={{__html: address.address_en}}/>
+                                    </td>
+                                    <td className="py-4 px-4 border-b border-gray-200">
+                                        <div dangerouslySetInnerHTML={{__html: address.address_ru}}/>
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link
-                                            href={`/admin/projects/view-project/${project.id}`}
+                                            href={`/admin/address/view-address/${address.id}`}
                                             className="bg text-white py-2 px-8 rounded-md cursor-pointer flex w-32"
                                         >
-                                            <EyeIcon color="#ffffff" />
+                                            <EyeIcon color="#ffffff"/>
                                             <div className="ml-2">View</div>
                                         </Link>
                                     </td>
@@ -123,7 +117,8 @@ const Projects = () => {
                 </div>
             </div>
         </div>
+
     );
 };
 
-export default Projects;
+export default Address;

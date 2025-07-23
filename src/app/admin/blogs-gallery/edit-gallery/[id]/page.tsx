@@ -19,11 +19,10 @@ const EditGallery = () => {
     const [blogs, setBlogs] = useState<{ id: number, title_tk: string, title_en: string, title_ru: string }[]>([]);
     const [previewURL, setPreviewURL] = useState<string | null>(null);
 
-    // Загрузка проектов
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`);
                 if (!res.ok) throw new Error('Ошибка при загрузке проектов');
                 const data = await res.json();
                 setBlogs(data);
@@ -36,7 +35,6 @@ const EditGallery = () => {
         fetchBlogs();
     }, []);
 
-    // Загрузка данных галереи
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -65,7 +63,6 @@ const EditGallery = () => {
         if (id) fetchData();
     }, [id]);
 
-    // Обработка отправки формы
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
