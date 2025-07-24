@@ -5,7 +5,7 @@ import axios from "axios";
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import Link from "next/link";
-import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
+import {ChevronDownIcon, ChevronUpIcon, EyeIcon, PlusCircleIcon} from "@heroicons/react/16/solid";
 import Image from "next/image";
 
 type GalleryItem = {
@@ -17,28 +17,26 @@ type GalleryItem = {
     tour_title_ru?: string;
 };
 
+type GroupedGallery = {
+    tour_id: number;
+    tour_title_tk?: string;
+    tour_title_en?: string;
+    tour_title_ru?: string;
+    images: GalleryItem[];
+};
+
 const TourGallery = () => {
-    const [gallery, setGallery] = useState<GalleryItem[]>([]);
+    const [gallery, setGallery] = useState<GroupedGallery[]>([]);
+    const [expanded, setExpanded] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [hasMounted, setHasMounted] = useState(false);
     const router = useRouter();
 
-    // ✅ Отложенный рендеринг до момента маунта на клиенте
-    useEffect(() => {
-        setHasMounted(true);
-    }, []);
 
     useEffect(() => {
-        if (!hasMounted) return;
-
         const fetchGallery = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                if (!token) {
-                    router.push('/');
-                    return;
-                }
+                if (!token) return router.push('/');
 
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-gallery`, {
                     headers: {
@@ -46,32 +44,36 @@ const TourGallery = () => {
                     },
                 });
 
-                setGallery(response.data);
+                const grouped = response.data.reduce((acc: GroupedGallery[], item: GalleryItem) => {
+                    const existing = acc.find(g => g.tour_id === item.tour_id);
+                    if (existing) {
+                        existing.images.push(item);
+                    } else {
+                        acc.push({
+                            tour_id: item.tour_id,
+                            tour_title_tk: item.tour_title_tk,
+                            tour_title_en: item.tour_title_en,
+                            tour_title_ru: item.tour_title_ru,
+                            images: [item],
+                        });
+                    }
+                    return acc;
+                }, []);
+                setGallery(grouped);
             } catch (err) {
                 setError('Ошибка при получении данных');
                 if (axios.isAxiosError(err) && err.response?.status === 401) {
                     router.push('/');
                 }
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchGallery();
-    }, [hasMounted, router]);
+    }, [router]);
 
-    // ✅ Пропустить рендер до маунта, чтобы избежать гидрации
-    if (!hasMounted) {
-        return null;
-    }
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                Загрузка...
-            </div>
-        );
-    }
+    const toggleExpand = (id: number) => {
+        setExpanded(prev => (prev === id ? null : id));
+    };
 
     if (error) {
         return (
@@ -98,56 +100,55 @@ const TourGallery = () => {
                         </Link>
                     </div>
 
-                    <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead>
-                        <tr>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Image</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Turkmen</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">English</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Russian</th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">View</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {gallery.length === 0 ? (
-                            <tr>
-                                <td colSpan={5} className="text-center py-4">No images available</td>
-                            </tr>
-                        ) : (
-                            gallery.map((data) => (
-                                <tr key={data.id}>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <Image
-                                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image}`}
-                                            alt={`Gallery ${data.id}`}
-                                            width={100}
-                                            height={100}
-                                            className="rounded"
-                                        />
-                                    </td>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: data.tour_title_tk || ''}}/>
-                                    </td>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: data.tour_title_en || ''}}/>
-                                    </td>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <div dangerouslySetInnerHTML={{__html: data.tour_title_ru || ''}}/>
-                                    </td>
-                                    <td className="py-4 px-4 border-b border-gray-200">
-                                        <Link
-                                            href={`/admin/tour-gallery/view-gallery/${data.id}`}
-                                            className="bg text-white py-2 px-8 rounded-md cursor-pointer flex items-center hover:bg-green-700 w-fit"
-                                        >
-                                            <EyeIcon className="w-5 h-5" color="#ffffff" />
-                                            <div className="ml-2">View</div>
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                        </tbody>
-                    </table>
+                    {error && <div className="text-red-500">{error}</div>}
+
+                    <div className="bg-white rounded shadow divide-y">
+                        {gallery.map(group => (
+                            <div key={group.tour_id}>
+                                <button
+                                    onClick={() => toggleExpand(group.tour_id)}
+                                    className="w-full text-left p-4 hover:bg-gray-100 flex justify-between items-center"
+                                >
+                                    <div className="font-bold text-2xl" dangerouslySetInnerHTML={{ __html: group.tour_title_en || 'Untitled' }} />
+                                    {expanded === group.tour_id ? (
+                                        <ChevronUpIcon className="w-5 h-5" />
+                                    ) : (
+                                        <ChevronDownIcon className="w-5 h-5" />
+                                    )}
+                                </button>
+
+                                {expanded === group.tour_id && (
+                                    <div className="p-4 bg-gray-50 flex flex-row gap-4 flex-wrap">
+                                        {group.images.map(img => (
+                                            <div
+                                                key={img.id}
+                                                className="flex flex-col justify-between bg-white rounded shadow p-4 w-48 min-h-[250px]"
+                                            >
+                                                <Image
+                                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${img.image}`}
+                                                    alt={`Image ${img.id}`}
+                                                    width={200}
+                                                    height={200}
+                                                    className="rounded object-cover"
+                                                />
+
+                                                <div className="mt-auto">
+                                                    <Link
+                                                        href={`/admin/tour-gallery/view-gallery/${img.id}`}
+                                                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center justify-center"
+                                                    >
+                                                        <EyeIcon className="w-4 h-4 mr-2" />
+                                                        View
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
