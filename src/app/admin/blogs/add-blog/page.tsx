@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
-import { Editor } from '@tinymce/tinymce-react';
+import TipTapEditor from '@/Components/TipTapEditor';
 
 const AddBlog = () => {
     const [isClient, setIsClient] = useState(false);
@@ -77,14 +77,6 @@ const AddBlog = () => {
         }
     };
 
-    const editorConfig = {
-        height: 200,
-        menubar: false,
-        plugins: ['lists link image editimage table code'],
-        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image code',
-        content_css: '//www.tiny.cloud/css/codepen.min.css',
-    };
-
     return (
         <div className="flex bg-gray-200">
             <Sidebar />
@@ -139,20 +131,16 @@ const AddBlog = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={title_tk}
-                                                onEditorChange={(content) => setTitleTk(content)}
+                                            <TipTapEditor
+                                                content={title_tk}
+                                                onChange={(content) => setTitleTk(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_tk}
-                                                onEditorChange={(content) => setTextTk(content)}
+                                            <TipTapEditor
+                                                content={text_tk}
+                                                onChange={(content) => setTextTk(content)}
                                             />
                                         </div>
                                     </div>
@@ -161,20 +149,16 @@ const AddBlog = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={title_en}
-                                                onEditorChange={(content) => setTitleEn(content)}
+                                            <TipTapEditor
+                                                content={title_en}
+                                                onChange={(content) => setTitleEn(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_en}
-                                                onEditorChange={(content) => setTextEn(content)}
+                                            <TipTapEditor
+                                                content={text_en}
+                                                onChange={(content) => setTextEn(content)}
                                             />
                                         </div>
                                     </div>
@@ -183,20 +167,16 @@ const AddBlog = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={title_ru}
-                                                onEditorChange={(content) => setTitleRu(content)}
+                                            <TipTapEditor
+                                                content={title_ru}
+                                                onChange={(content) => setTitleRu(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_ru}
-                                                onEditorChange={(content) => setTextRu(content)}
+                                            <TipTapEditor
+                                                content={text_ru}
+                                                onChange={(content) => setTextRu(content)}
                                             />
                                         </div>
                                     </div>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Editor } from '@tinymce/tinymce-react';
+import TipTapEditor from '@/Components/TipTapEditor';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import { DocumentIcon } from "@heroicons/react/16/solid";
@@ -104,16 +104,9 @@ const EditAddress = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Address</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.address_tk}
-                                        onEditorChange={(content) => handleEditorChange('address_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.address_tk}
+                                        onChange={(content) => handleEditorChange('address_tk', content)}
                                     />
                                 </div>
                             </div>
@@ -122,16 +115,9 @@ const EditAddress = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Address:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.address_en}
-                                        onEditorChange={(content) => handleEditorChange('address_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.address_en}
+                                        onChange={(content) => handleEditorChange('address_en', content)}
                                     />
                                 </div>
                             </div>
@@ -140,16 +126,9 @@ const EditAddress = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Address:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.address_ru}
-                                        onEditorChange={(content) => handleEditorChange('address_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.address_ru}
+                                        onChange={(content) => handleEditorChange('address_ru', content)}
                                     />
                                 </div>
                             </div>

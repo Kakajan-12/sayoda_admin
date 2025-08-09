@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Editor } from '@tinymce/tinymce-react';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
+import TipTapEditor from "@/Components/TipTapEditor";
 
 interface BlogData {
     title_tk: string;
@@ -34,7 +34,6 @@ const EditBlog = () => {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [imagePath, setImagePath] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,7 +60,6 @@ const EditBlog = () => {
                         main_image: rawData.main_image,
                     });
 
-                    setImagePath(rawData.image);
                     setLoading(false);
                 } else {
                     throw new Error("Данные не найдены");
@@ -76,7 +74,6 @@ const EditBlog = () => {
         if (id) fetchData();
     }, [id]);
 
-    // Update the type of 'name' to match the keys of the 'data' object
     const handleEditorChange = (name: keyof BlogData, content: string) => {
         setData((prev) => ({ ...prev, [name]: content }));
     };
@@ -85,39 +82,31 @@ const EditBlog = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('auth_token');
+            if (!token) throw new Error("Токен не найден");
 
-            let imageToSend: string | null = imagePath || null;
+            const formData = new FormData();
 
-            // Если пользователь выбрал новое изображение — загружаем его
+
+            formData.append('title_tk', data.title_tk);
+            formData.append('text_tk', data.text_tk);
+            formData.append('title_en', data.title_en);
+            formData.append('text_en', data.text_en);
+            formData.append('title_ru', data.title_ru);
+            formData.append('text_ru', data.text_ru);
+
             if (imageFile) {
-                const formData = new FormData();
                 formData.append('image', imageFile);
-
-                const uploadResponse = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/sliders/upload`,
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    }
-                );
-
-                // Предполагается, что сервер возвращает имя файла в uploadResponse.data.filename
-                imageToSend = uploadResponse.data.filename;
+            } else {
+                formData.append('image', data.main_image);
             }
 
-            // Отправляем PUT-запрос
             await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`,
-                {
-                    ...data,
-                    image: imageToSend ?? data.main_image, // <= используем main_image, если imageToSend нет
-                },
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
             );
@@ -128,6 +117,7 @@ const EditBlog = () => {
             setError('Ошибка при сохранении');
         }
     };
+
 
 
 
@@ -178,30 +168,18 @@ const EditBlog = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.title_tk}
-                                        onEditorChange={(content) => handleEditorChange('title_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+
+                                    <TipTapEditor
+                                        content={data.title_tk}
+                                        onChange={(content) => handleEditorChange('title_tk', content)}
                                     />
+
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Text:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.text_tk}
-                                        onEditorChange={(content) => handleEditorChange('text_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.text_tk}
+                                        onChange={(content) => handleEditorChange('text_tk', content)}
                                     />
                                 </div>
                             </div>
@@ -210,30 +188,18 @@ const EditBlog = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.title_en}
-                                        onEditorChange={(content) => handleEditorChange('title_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.title_en}
+                                        onChange={(content) => handleEditorChange('title_en', content)}
+
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Text:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.text_en}
-                                        onEditorChange={(content) => handleEditorChange('text_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.text_en}
+                                        onChange={(content) => handleEditorChange('text_en', content)}
+
                                     />
                                 </div>
                             </div>
@@ -242,30 +208,18 @@ const EditBlog = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.title_ru}
-                                        onEditorChange={(content) => handleEditorChange('title_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.title_ru}
+                                        onChange={(content) => handleEditorChange('title_ru', content)}
+
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Text:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.text_ru}
-                                        onEditorChange={(content) => handleEditorChange('text_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.text_ru}
+                                        onChange={(content) => handleEditorChange('text_ru', content)}
+
                                     />
                                 </div>
                             </div>

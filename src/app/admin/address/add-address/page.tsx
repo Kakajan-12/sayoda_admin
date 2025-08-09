@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
-import { Editor } from '@tinymce/tinymce-react';
+import TipTapEditor  from '@/Components/TipTapEditor';
 
 const AddAddress = () => {
     const [isClient, setIsClient] = useState(false);
@@ -67,14 +67,6 @@ const AddAddress = () => {
         }
     };
 
-    const editorConfig = {
-        height: 200,
-        menubar: false,
-        plugins: ['lists link image editimage table code'],
-        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image code',
-        content_css: '//www.tiny.cloud/css/codepen.min.css',
-    };
-
     return (
         <div className="flex bg-gray-200">
             <Sidebar />
@@ -109,11 +101,9 @@ const AddAddress = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                     <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={address_tk}
-                                                onEditorChange={(content) => setAddressTk(content)}
+                                            <TipTapEditor
+                                                content={address_tk}
+                                                onChange={(content) => setAddressTk(content)}
                                             />
                                         </div>
                                     </div>
@@ -122,11 +112,9 @@ const AddAddress = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={address_en}
-                                                onEditorChange={(content) => setAddressEn(content)}
+                                            <TipTapEditor
+                                                content={address_en}
+                                                onChange={(content) => setAddressEn(content)}
                                             />
                                         </div>
                                     </div>
@@ -135,11 +123,9 @@ const AddAddress = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={address_ru}
-                                                onEditorChange={(content) => setAddressRu(content)}
+                                            <TipTapEditor
+                                                content={address_ru}
+                                                onChange={(content) => setAddressRu(content)}
                                             />
                                         </div>
                                     </div>

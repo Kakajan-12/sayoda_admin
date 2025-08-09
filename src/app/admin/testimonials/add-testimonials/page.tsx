@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
-import {Editor} from '@tinymce/tinymce-react';
+import TipTapEditor from '@/Components/TipTapEditor';
 
 const AddTestimonials = () => {
     const [isClient, setIsClient] = useState(false);
@@ -58,13 +58,6 @@ const AddTestimonials = () => {
         }
     };
 
-    const editorConfig = {
-        height: 200,
-        menubar: false,
-        plugins: ['lists link image editimage table code'],
-        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image code',
-        content_css: '//www.tiny.cloud/css/codepen.min.css',
-    };
 
     return (
         <div className="flex bg-gray-200">
@@ -106,20 +99,16 @@ const AddTestimonials = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Comment:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={comment}
-                                                onEditorChange={(content) => setComment(content)}
+                                            <TipTapEditor
+                                                content={comment}
+                                                onChange={(content) => setComment(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Name:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={name}
-                                                onEditorChange={(content) => setName(content)}
+                                            <TipTapEditor
+                                                content={name}
+                                                onChange={(content) => setName(content)}
                                             />
                                         </div>
                                     </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
-import { Editor } from '@tinymce/tinymce-react';
+import TipTapEditor from '@/Components/TipTapEditor';
 
 const AddExcludes = () => {
     const [isClient, setIsClient] = useState(false);
@@ -84,14 +84,6 @@ const AddExcludes = () => {
         }
     };
 
-    const editorConfig = {
-        height: 200,
-        menubar: false,
-        plugins: ['lists link image editimage table code'],
-        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image code',
-        content_css: '//www.tiny.cloud/css/codepen.min.css',
-    };
-
     return (
         <div className="flex bg-gray-200">
             <Sidebar />
@@ -137,11 +129,9 @@ const AddExcludes = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_tk}
-                                                onEditorChange={(content) => setTextTk(content)}
+                                            <TipTapEditor
+                                                content={text_tk}
+                                                onChange={(content) => setTextTk(content)}
                                             />
                                         </div>
                                     </div>
@@ -150,11 +140,9 @@ const AddExcludes = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_en}
-                                                onEditorChange={(content) => setTextEn(content)}
+                                            <TipTapEditor
+                                                content={text_en}
+                                                onChange={(content) => setTextEn(content)}
                                             />
                                         </div>
                                     </div>
@@ -163,11 +151,9 @@ const AddExcludes = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_ru}
-                                                onEditorChange={(content) => setTextRu(content)}
+                                            <TipTapEditor
+                                                content={text_ru}
+                                                onChange={(content) => setTextRu(content)}
                                             />
                                         </div>
                                     </div>

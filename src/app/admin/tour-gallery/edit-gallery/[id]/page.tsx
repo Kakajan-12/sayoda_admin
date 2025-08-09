@@ -11,11 +11,10 @@ const EditGallery = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState({ image: '', blog_id: '' });
+    const [data, setData] = useState({ image: '', tour_id: '' });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>('');
-    const [imagePath, setImagePath] = useState<string>('');
     const [tours, setTours] = useState<{ id: number, title_tk: string, title_en: string, title_ru: string }[]>([]);
     const [previewURL, setPreviewURL] = useState<string | null>(null);
 
@@ -49,7 +48,6 @@ const EditGallery = () => {
                 if (response.data && response.data.id) {
                     const rawData = response.data;
                     setData(rawData);
-                    setImagePath(rawData.image);
                     setLoading(false);
                 } else {
                     throw new Error('Данные не найдены');
@@ -68,32 +66,22 @@ const EditGallery = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('auth_token');
-            let imageToSend = imagePath;
+            if (!token) throw new Error("Токен не найден");
+
+            const formData = new FormData();
+            formData.append('tour_id', String(data.tour_id));
 
             if (imageFile) {
-                const formData = new FormData();
                 formData.append('image', imageFile);
-
-                const uploadResponse = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/sliders/upload`,
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    }
-                );
-
-                imageToSend = uploadResponse.data.filename;
             }
 
             await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/tour-gallery/${id}`,
-                { ...data, image: imageToSend },
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
             );
@@ -153,7 +141,7 @@ const EditGallery = () => {
                                 <select
                                     id="blog_id"
                                     name="blog_id"
-                                    value={String(data.blog_id)}
+                                    value={String(data.tour_id)}
                                     onChange={(e) => setData((prev) => ({ ...prev, blog_id: e.target.value }))}
                                     required
                                     className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"

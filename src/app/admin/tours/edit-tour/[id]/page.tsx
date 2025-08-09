@@ -1,37 +1,92 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, {useEffect, useState} from 'react';
+import {useParams, useRouter} from 'next/navigation';
 import axios from 'axios';
-import { Editor } from '@tinymce/tinymce-react';
+import TipTapEditor from '@/Components/TipTapEditor';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
-import { DocumentIcon } from "@heroicons/react/16/solid";
+import {DocumentIcon} from "@heroicons/react/16/solid";
 import Image from "next/image";
 
 const EditTour = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState({ title_tk: '', title_en:'', title_ru:'', text_tk: '', text_en: '', text_ru: '', image: '', destination_tk: '', destination_en: '', destination_ru:'', duration_tk:'', duration_en:'', duration_ru:'', lang_tk:'', lang_en:'', lang_ru:'', price:'', tour_type_id:'', map:'' });
+    type TourData = {
+        popular: number;
+        title_tk: string;
+        title_en: string;
+        title_ru: string;
+        text_tk: string;
+        text_en: string;
+        text_ru: string;
+        image: string;
+        destination_tk: string;
+        destination_en: string;
+        destination_ru: string;
+        duration_tk: string;
+        duration_en: string;
+        duration_ru: string;
+        lang_tk: string;
+        lang_en: string;
+        lang_ru: string;
+        price: number;
+        tour_type_id: number;
+        tour_cat_id: number;
+        map: string;
+    };
+
+    const [data, setData] = useState<TourData>({
+        popular: 0,
+        title_tk: '',
+        title_en: '',
+        title_ru: '',
+        text_tk: '',
+        text_en: '',
+        text_ru: '',
+        image: '',
+        destination_tk: '',
+        destination_en: '',
+        destination_ru: '',
+        duration_tk: '',
+        duration_en: '',
+        duration_ru: '',
+        lang_tk: '',
+        lang_en: '',
+        lang_ru: '',
+        price: 0,
+        tour_type_id: 0,
+        tour_cat_id: 0,
+        map: ''
+    });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [imagePath, setImagePath] = useState('');
     const [types, setTypes] = useState<{ id: number, type_tk: string, type_en: string, type_ru: string }[]>([]);
+    const [cat, setCat] = useState<{ id: number, cat_tk: string, cat_en: string, cat_ru: string }[]>([]);
 
     useEffect(() => {
-        const fetchTypes = async () => {
+        const fetchData = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`);
-                const data = await res.json();
-                setTypes(data);
+                const [typesRes, catRes] = await Promise.all([
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-category`)
+                ]);
+                const [typesData, catData] = await Promise.all([
+                    typesRes.json(),
+                    catRes.json()
+                ]);
+
+                setTypes(typesData);
+                setCat(catData);
             } catch (err) {
-                console.error('Ошибка при загрузке категорий:', err);
+                console.error('Ошибка при загрузке данных:', err);
             }
         };
 
-        fetchTypes();
+        fetchData();
     }, []);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,17 +101,16 @@ const EditTour = () => {
                 if (response.data && response.data.id) {
                     const rawData = response.data;
 
-                    // Форматируем дату для input[type="date"]
                     const formattedDate = rawData.date
                         ? new Date(rawData.date).toISOString().split('T')[0]
                         : '';
 
                     setData({
                         ...rawData,
+                        popular: Number(rawData.popular),
                         date: formattedDate,
                     });
 
-                    setImagePath(rawData.image);
                     setLoading(false);
                 } else {
                     throw new Error("Данные не найдены для этой новости");
@@ -72,39 +126,50 @@ const EditTour = () => {
     }, [id]);
 
     const handleEditorChange = (name: keyof typeof data, content: string) => {
-        setData((prev) => ({ ...prev, [name]: content }));
+        setData((prev) => ({...prev, [name]: content}));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('auth_token');
-            let imageToSend = imagePath;
 
-            // Если выбрано новое изображение
+            const formData = new FormData();
+            formData.append('popular', String(data.popular));
+            formData.append('title_tk', data.title_tk);
+            formData.append('title_en', data.title_en);
+            formData.append('title_ru', data.title_ru);
+            formData.append('text_tk', data.text_tk);
+            formData.append('text_en', data.text_en);
+            formData.append('text_ru', data.text_ru);
+            formData.append('destination_tk', data.destination_tk);
+            formData.append('destination_en', data.destination_en);
+            formData.append('destination_ru', data.destination_ru);
+            formData.append('duration_tk', data.duration_tk);
+            formData.append('duration_en', data.duration_en);
+            formData.append('duration_ru', data.duration_ru);
+            formData.append('lang_tk', data.lang_tk);
+            formData.append('lang_en', data.lang_en);
+            formData.append('lang_ru', data.lang_ru);
+            formData.append('price', String(data.price));
+            formData.append('tour_type_id', String(data.tour_type_id));
+            formData.append('tour_cat_id', String(data.tour_cat_id));
+            formData.append('map', data.map);
+
+
             if (imageFile) {
-                const formData = new FormData();
                 formData.append('image', imageFile);
-
-                const uploadResponse = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/sliders/upload`,
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    }
-                );
-
-                imageToSend = uploadResponse.data.filename;
+            } else {
+                formData.append('image', data.image);
             }
 
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/tours/${id}`,
-                { ...data, image: imageToSend },
+            await axios.put(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/tours/${id}`,
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
             );
@@ -121,9 +186,9 @@ const EditTour = () => {
 
     return (
         <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar />
+            <Sidebar/>
             <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
+                <TokenTimer/>
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">Edit Tour</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
@@ -163,8 +228,13 @@ const EditTour = () => {
                                 <select
                                     id="tour_type"
                                     name="tour_type_id"
-                                    value={String(data.tour_type_id)}
-                                    onChange={(e) => setData((prev) => ({...prev, tour_type_id: e.target.value}))}
+                                    value={data.tour_type_id} // если это число
+                                    onChange={(e) =>
+                                        setData((prev) => ({
+                                            ...prev,
+                                            tour_type_id: Number(e.target.value), // приводим к числу
+                                        }))
+                                    }
                                     required
                                     className="border border-gray-300 rounded p-2 w-full"
                                 >
@@ -176,16 +246,72 @@ const EditTour = () => {
                                     ))}
                                 </select>
                             </div>
+
+                            <div className="w-full">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Select Category:
+                                </label>
+                                <select
+                                    id="tour_cat"
+                                    name="tour_cat_id"
+                                    value={data.tour_cat_id} // число
+                                    onChange={(e) =>
+                                        setData((prev) => ({
+                                            ...prev,
+                                            tour_cat_id: Number(e.target.value), // приводим к числу
+                                        }))
+                                    }
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                >
+                                    <option value="">Select type</option>
+                                    {cat.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             <div className="mb-4 w-full">
                                 <label className="block text-gray-700 font-semibold mb-2">Price:</label>
                                 <input
                                     name="price"
                                     value={data.price}
-                                    onChange={(e) => setData((prev) => ({...prev, price: e.target.value}))}
-                                    type="text"
+                                    onChange={(e) =>
+                                        setData((prev) => ({
+                                            ...prev,
+                                            price: Number(e.target.value), // приведение к числу
+                                        }))
+                                    }
+                                    type="number" // лучше number, чтобы на фронте сразу был контроль
                                     required
                                     className="border border-gray-300 rounded p-2 w-full"
                                 />
+                            </div>
+
+                            <div className="mb-4 w-full">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Popular:
+                                </label>
+                                <select
+                                    id="popular"
+                                    name="popular"
+                                    value={String(data.popular)}
+                                    onChange={(e) =>
+                                        setData((prev) => ({
+                                            ...prev,
+                                            popular: Number(e.target.value),
+                                        }))
+                                    }
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                >
+                                    <option value="">Select</option>
+                                    <option value="1">True</option>
+                                    <option value="0">False</option>
+                                </select>
+
                             </div>
                         </div>
 
@@ -206,72 +332,37 @@ const EditTour = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.title_tk}
-                                        onEditorChange={(content) => handleEditorChange('title_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.title_tk}
+                                        onChange={(content) => handleEditorChange('title_tk', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Text:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.text_tk}
-                                        onEditorChange={(content) => handleEditorChange('text_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.text_tk}
+                                        onChange={(content) => handleEditorChange('text_tk', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Destination:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.destination_tk}
-                                        onEditorChange={(content) => handleEditorChange('destination_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.destination_tk}
+                                        onChange={(content) => handleEditorChange('destination_tk', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Duration:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.duration_tk}
-                                        onEditorChange={(content) => handleEditorChange('duration_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.duration_tk}
+                                        onChange={(content) => handleEditorChange('duration_tk', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Lang:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.lang_tk}
-                                        onEditorChange={(content) => handleEditorChange('lang_tk', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.lang_tk}
+                                        onChange={(content) => handleEditorChange('lang_tk', content)}
                                     />
                                 </div>
                             </div>
@@ -280,72 +371,37 @@ const EditTour = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.title_en}
-                                        onEditorChange={(content) => handleEditorChange('title_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.title_en}
+                                        onChange={(content) => handleEditorChange('title_en', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Text:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.text_en}
-                                        onEditorChange={(content) => handleEditorChange('text_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.text_en}
+                                        onChange={(content) => handleEditorChange('text_en', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Destination:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.destination_en}
-                                        onEditorChange={(content) => handleEditorChange('destination_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.destination_en}
+                                        onChange={(content) => handleEditorChange('destination_en', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Duration:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.duration_en}
-                                        onEditorChange={(content) => handleEditorChange('duration_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.duration_en}
+                                        onChange={(content) => handleEditorChange('duration_en', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Lang:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.lang_en}
-                                        onEditorChange={(content) => handleEditorChange('lang_en', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.lang_en}
+                                        onChange={(content) => handleEditorChange('lang_en', content)}
                                     />
                                 </div>
                             </div>
@@ -354,72 +410,37 @@ const EditTour = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Title:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.title_ru}
-                                        onEditorChange={(content) => handleEditorChange('title_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.title_ru}
+                                        onChange={(content) => handleEditorChange('title_ru', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Text:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.text_ru}
-                                        onEditorChange={(content) => handleEditorChange('text_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.text_ru}
+                                        onChange={(content) => handleEditorChange('text_ru', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Destination:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.destination_ru}
-                                        onEditorChange={(content) => handleEditorChange('destination_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.destination_ru}
+                                        onChange={(content) => handleEditorChange('destination_ru', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Duration:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.duration_ru}
-                                        onEditorChange={(content) => handleEditorChange('duration_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.duration_ru}
+                                        onChange={(content) => handleEditorChange('duration_ru', content)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Lang:</label>
-                                    <Editor
-                                        apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                        value={data.lang_ru}
-                                        onEditorChange={(content) => handleEditorChange('lang_ru', content)}
-                                        init={{
-                                            height: 200,
-                                            menubar: false,
-                                            plugins: 'link image code lists',
-                                            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-                                        }}
+                                    <TipTapEditor
+                                        content={data.lang_ru}
+                                        onChange={(content) => handleEditorChange('lang_ru', content)}
                                     />
                                 </div>
                             </div>

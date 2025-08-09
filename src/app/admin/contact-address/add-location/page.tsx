@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
-import {Editor} from "@tinymce/tinymce-react";
+import TipTapEditor from "@/Components/TipTapEditor";
 
 const ContactLocation = () => {
     const [isClient, setIsClient] = useState(false);
@@ -69,15 +69,6 @@ const ContactLocation = () => {
             console.error('Ошибка запроса', error);
         }
     };
-
-    const editorConfig = {
-        height: 200,
-        menubar: false,
-        plugins: ['lists link image editimage table code'],
-        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image code',
-        content_css: '//www.tiny.cloud/css/codepen.min.css',
-    };
-
     return (
         <div className="flex bg-gray-200">
             <Sidebar />
@@ -119,11 +110,9 @@ const ContactLocation = () => {
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={location_tk}
-                                                onEditorChange={(content) => setLocationTk(content)}
+                                            <TipTapEditor
+                                                content={location_tk}
+                                                onChange={(content) => setLocationTk(content)}
                                             />
                                         </div>
                                     </div>
@@ -142,11 +131,9 @@ const ContactLocation = () => {
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={location_en}
-                                                onEditorChange={(content) => setLocationEn(content)}
+                                            <TipTapEditor
+                                                content={location_en}
+                                                onChange={(content) => setLocationEn(content)}
                                             />
                                         </div>
                                     </div>
@@ -165,11 +152,9 @@ const ContactLocation = () => {
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={location_ru}
-                                                onEditorChange={(content) => setLocationRu(content)}
+                                            <TipTapEditor
+                                                content={location_ru}
+                                                onChange={(content) => setLocationRu(content)}
                                             />
                                         </div>
                                     </div>

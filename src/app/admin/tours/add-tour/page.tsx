@@ -1,14 +1,15 @@
 'use client';
 
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
-import {Editor} from '@tinymce/tinymce-react';
+import TipTapEditor from '@/Components/TipTapEditor';
 
 const AddTour = () => {
     const [isClient, setIsClient] = useState(false);
     const [image, setImage] = useState<File | null>(null);
+    const [popular, setPopular] = useState(false);
     const [title_tk, setTitleTk] = useState('');
     const [title_en, setTitleEn] = useState('');
     const [title_ru, setTitleRu] = useState('');
@@ -27,33 +28,37 @@ const AddTour = () => {
     const [price, setPrice] = useState('');
     const [map, setMap] = useState('');
     const [tour_type_id, setTourType] = useState('');
+    const [tour_cat_id, setTourCat] = useState('');
     const [types, setTypes] = useState<
         { id: number; type_tk: string; type_en: string; type_ru: string }[]
     >([]);
-
+    const [cat, setCat] = useState<
+        { id: number; cat_tk: string; cat_en: string; cat_ru: string }[]
+    >([]);
 
     const router = useRouter();
 
     useEffect(() => {
-        setIsClient(true);
-
-        const fetchTypes = async () => {
+        setIsClient(true)
+        const fetchData = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`);
-                const data = await res.json();
+                const [typesRes, catRes] = await Promise.all([
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-category`)
+                ]);
+                const [typesData, catData] = await Promise.all([
+                    typesRes.json(),
+                    catRes.json()
+                ]);
 
-                if (Array.isArray(data)) {
-                    setTypes(data);
-                } else {
-                    console.error('Неверный формат данных категорий:', data);
-                }
+                setTypes(typesData);
+                setCat(catData);
             } catch (err) {
-                console.error('Ошибка при загрузке категорий:', err);
+                console.error('Ошибка при загрузке данных:', err);
             }
         };
 
-
-        fetchTypes();
+        fetchData();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -67,6 +72,7 @@ const AddTour = () => {
 
         const formData = new FormData();
         if (image) formData.append('image', image);
+        formData.append('popular', popular ? '1' : '0');
         formData.append('title_tk', title_tk ?? '');
         formData.append('title_en', title_en ?? '');
         formData.append('title_ru', title_ru ?? '');
@@ -85,6 +91,7 @@ const AddTour = () => {
         formData.append('price', price ?? '');
         formData.append('map', map ?? '');
         formData.append('tour_type_id', tour_type_id ?? '');
+        formData.append('tour_cat_id', tour_cat_id ?? '');
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours`, {
@@ -99,6 +106,7 @@ const AddTour = () => {
                 const data = await response.json();
                 console.log('добавлен!', data);
                 setImage(null);
+                setPopular(Boolean)
                 setTitleTk('');
                 setTitleEn('');
                 setTitleRu('');
@@ -117,6 +125,7 @@ const AddTour = () => {
                 setPrice('')
                 setMap('');
                 setTourType('');
+                setTourCat('');
                 router.push('/admin/tours');
             } else {
                 const errorText = await response.text();
@@ -125,14 +134,6 @@ const AddTour = () => {
         } catch (error) {
             console.error('Ошибка запроса', error);
         }
-    };
-
-    const editorConfig = {
-        height: 200,
-        menubar: false,
-        plugins: ['lists link image editimage table code'],
-        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image code',
-        content_css: '//www.tiny.cloud/css/codepen.min.css',
     };
 
     return (
@@ -185,6 +186,26 @@ const AddTour = () => {
                                     ))}
                                 </select>
                             </div>
+                            <div className="w-full">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Select Category:
+                                </label>
+                                <select
+                                    id="tour_cat"
+                                    name="tour_cat_id"
+                                    value={tour_cat_id}
+                                    onChange={(e) => setTourCat(e.target.value)}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                >
+                                    <option value="">Select category</option>
+                                    {cat.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <div className="mb-4 w-full">
                                 <label
                                     className="block text-gray-700 font-semibold mb-2">Price:</label>
@@ -196,8 +217,23 @@ const AddTour = () => {
                                     className="border border-gray-300 rounded p-2 w-full"
                                 />
                             </div>
+                            <div className="mb-4 w-full">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Popular:
+                                </label>
+                                <select
+                                    id="popular"
+                                    name="popular"
+                                    value={popular ? '1' : '0'}
+                                    onChange={(e) => setPopular(e.target.value === '1')}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                >
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
                         </div>
-
                         <div className="mb-4 w-full">
                             <label
                                 className="block text-gray-700 font-semibold mb-2">Map:</label>
@@ -218,30 +254,24 @@ const AddTour = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={title_tk}
-                                                onEditorChange={(content) => setTitleTk(content)}
+                                            <TipTapEditor
+                                                content={title_tk}
+                                                onChange={(content) => setTitleTk(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_tk}
-                                                onEditorChange={(content) => setTextTk(content)}
+                                            <TipTapEditor
+                                                content={text_tk}
+                                                onChange={(content) => setTextTk(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label
                                                 className="block text-gray-700 font-semibold mb-2">Destinations:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={destination_tk}
-                                                onEditorChange={(content) => setDestinationTk(content)}
+                                            <TipTapEditor
+                                                content={destination_tk}
+                                                onChange={(content) => setDestinationTk(content)}
                                             />
                                         </div>
                                         <div className="flex w-full space-x-4">
@@ -249,7 +279,7 @@ const AddTour = () => {
                                                 <label
                                                     className="block text-gray-700 font-semibold mb-2">Duration:</label>
                                                 <input
-                                                    value={duration_tk}
+                                                    content={duration_tk}
                                                     onChange={(e) => setDurationTk(e.target.value)}
                                                     type="text"
                                                     required
@@ -275,30 +305,24 @@ const AddTour = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={title_en}
-                                                onEditorChange={(content) => setTitleEn(content)}
+                                            <TipTapEditor
+                                                content={title_en}
+                                                onChange={(content) => setTitleEn(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_en}
-                                                onEditorChange={(content) => setTextEn(content)}
+                                            <TipTapEditor
+                                                content={text_en}
+                                                onChange={(content) => setTextEn(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label
                                                 className="block text-gray-700 font-semibold mb-2">Destinations:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={destination_en}
-                                                onEditorChange={(content) => setDestinationEn(content)}
+                                            <TipTapEditor
+                                                content={destination_en}
+                                                onChange={(content) => setDestinationEn(content)}
                                             />
                                         </div>
                                         <div className="flex w-full space-x-4">
@@ -331,30 +355,24 @@ const AddTour = () => {
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={title_ru}
-                                                onEditorChange={(content) => setTitleRu(content)}
+                                            <TipTapEditor
+                                                content={title_ru}
+                                                onChange={(content) => setTitleRu(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Text:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={text_ru}
-                                                onEditorChange={(content) => setTextRu(content)}
+                                            <TipTapEditor
+                                                content={text_ru}
+                                                onChange={(content) => setTextRu(content)}
                                             />
                                         </div>
                                         <div className="mb-4">
                                             <label
                                                 className="block text-gray-700 font-semibold mb-2">Destinations:</label>
-                                            <Editor
-                                                apiKey="z9ht7p5r21591bc3n06i1yc7nmokdeorgawiso8vkpodbvp0"
-                                                init={editorConfig}
-                                                value={destination_ru}
-                                                onEditorChange={(content) => setDestinationRu(content)}
+                                            <TipTapEditor
+                                                content={destination_ru}
+                                                onChange={(content) => setDestinationRu(content)}
                                             />
                                         </div>
                                         <div className="flex w-full space-x-4">

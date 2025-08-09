@@ -15,7 +15,6 @@ const EditGallery = () => {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string>('');
-    const [imagePath, setImagePath] = useState<string>('');
     const [blogs, setBlogs] = useState<{ id: number, title_tk: string, title_en: string, title_ru: string }[]>([]);
     const [previewURL, setPreviewURL] = useState<string | null>(null);
 
@@ -48,7 +47,6 @@ const EditGallery = () => {
                 if (response.data && response.data.id) {
                     const rawData = response.data;
                     setData(rawData);
-                    setImagePath(rawData.image);
                     setLoading(false);
                 } else {
                     throw new Error('Данные не найдены');
@@ -65,34 +63,25 @@ const EditGallery = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         try {
             const token = localStorage.getItem('auth_token');
-            let imageToSend = imagePath;
+            if (!token) throw new Error("Токен не найден");
+
+            const formData = new FormData();
+            formData.append('blog_id', String(data.blog_id));
 
             if (imageFile) {
-                const formData = new FormData();
                 formData.append('image', imageFile);
-
-                const uploadResponse = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/sliders/upload`,
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    }
-                );
-
-                imageToSend = uploadResponse.data.filename;
             }
 
             await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/blog-gallery/${id}`,
-                { ...data, image: imageToSend },
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
             );
@@ -103,6 +92,7 @@ const EditGallery = () => {
             setError('Ошибка при сохранении');
         }
     };
+
 
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p>{error}</p>;

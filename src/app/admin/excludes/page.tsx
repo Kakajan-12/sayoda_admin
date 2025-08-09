@@ -120,7 +120,7 @@ const Excludes = () => {
                                                         <p className="text-sm text-gray-700" dangerouslySetInnerHTML={{ __html: item.text_ru }} />
                                                     </div>
                                                     <Link
-                                                        href={`/admin/itinerary/view-itinerary/${item.id}`}
+                                                        href={`/admin/excludes/view-excludes/${item.id}`}
                                                         className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center justify-center"
                                                     >
                                                         <EyeIcon className="w-4 h-4 mr-2" />

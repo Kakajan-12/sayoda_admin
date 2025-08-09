@@ -147,6 +147,24 @@ const ViewTour = () => {
                                     <div dangerouslySetInnerHTML={{__html: data.map}}/>
                                 </div>
                             )}
+
+                            <div>
+                                <strong>Popular:</strong>
+                                <p>{data.popular ? `Yes` : `No`}</p>
+                            </div>
+                            <div>
+                                <strong>Category TM:</strong>
+                                <p>{data.cat_tk}</p>
+                            </div>
+                            <div>
+                                <strong>Category EN:</strong>
+                                <p>{data.cat_en}</p>
+                            </div>
+                            <div>
+                                <strong>Category RU:</strong>
+                                <p>{data.cat_ru}</p>
+                            </div>
+
                         </div>
 
                         <div className="flex-1 space-y-10 divide-y-1">

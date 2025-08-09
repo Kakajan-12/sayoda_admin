@@ -11,6 +11,7 @@ import Image from "next/image";
 interface ToursItem {
     id: number;
     image: string;
+    popular: boolean;
     title_tk: string;
     title_en: string;
     title_ru: string;
@@ -92,6 +93,7 @@ const Tours = () => {
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Turkmen</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">English</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Russian</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Popular</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">View</th>
                         </tr>
                         </thead>
@@ -120,6 +122,9 @@ const Tours = () => {
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <div dangerouslySetInnerHTML={{__html: tour.title_ru}}/>
+                                    </td>
+                                    <td className="py-4 px-4 border-b border-gray-200">
+                                        <p>{Number(tour.popular) === 1 ? 'Yes' : 'No'}</p>
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link href={`/admin/tours/view-tour/${tour.id}`}

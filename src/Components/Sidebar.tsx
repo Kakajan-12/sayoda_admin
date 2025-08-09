@@ -9,6 +9,7 @@ import { LuMails, LuCalendarDays  } from "react-icons/lu";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
+import { TbCategoryFilled } from "react-icons/tb";
 
 const menuGroups = [
     {
@@ -42,6 +43,7 @@ const menuGroups = [
         links: [
             { href: "/admin/tours", label: "Tours", icon: MdTour },
             { href: "/admin/tour-types", label: "Types", icon: VscTypeHierarchySub },
+            { href: "/admin/tour-category", label: "Category", icon: TbCategoryFilled  },
             { href: "/admin/itinerary", label: "Itinerary", icon: LuCalendarDays },
             { href: "/admin/includes", label: "Includes", icon: IoMdCheckmarkCircleOutline },
             { href: "/admin/excludes", label: "Excludes", icon: IoIosCloseCircleOutline  },
