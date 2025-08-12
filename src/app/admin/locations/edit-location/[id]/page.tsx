@@ -43,13 +43,6 @@ const EditLocationAddress = () => {
         if (id) fetchData();
     }, [id]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setData((prev) => ({ ...prev, [name]: value }));
-    };
-
-
-
     const handleEditorChange = (name: keyof typeof data, content: string) => {
         setData((prev) => ({ ...prev, [name]: content }));
     };
