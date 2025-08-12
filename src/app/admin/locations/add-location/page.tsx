@@ -8,13 +8,9 @@ import TipTapEditor from "@/Components/TipTapEditor";
 
 const ContactLocation = () => {
     const [isClient, setIsClient] = useState(false);
-    const [tk, setTk] = useState('');
-    const [en, setEn] = useState('');
-    const [ru, setRu] = useState('');
     const [location_tk, setLocationTk] = useState('');
     const [location_en, setLocationEn] = useState('');
     const [location_ru, setLocationRu] = useState('');
-    const [iframe_code, setIframe] = useState('')
     const router = useRouter();
 
     useEffect(() => {
@@ -31,17 +27,13 @@ const ContactLocation = () => {
         }
 
         const payload = {
-            tk,
-            en,
-            ru,
             location_tk,
             location_en,
             location_ru,
-            iframe_code,
         };
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,14 +45,10 @@ const ContactLocation = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log(' добавлены!', data);
-                setTk('');
-                setEn('');
-                setRu('');
                 setLocationTk('');
                 setLocationEn('');
                 setLocationRu('');
-                setIframe('')
-                router.push('/admin/contact-address');
+                router.push('/admin/locations');
             } else {
                 const errorText = await response.text();
                 console.error('Ошибка при добавлении проекта:', errorText);
@@ -81,33 +69,12 @@ const ContactLocation = () => {
                     >
                         <h2 className="text-2xl font-bold mb-4">Add contact locations</h2>
 
-                        <div className="mb-5">
-                            <label className="block text-gray-700 font-semibold mb-2">Add location iframe code</label>
-                            <input
-                                type="text"
-                                value={iframe_code}
-                                onChange={(e) => setIframe(e.target.value)}
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-
-                        </div>
-
                         {isClient && (
                             <>
                                 <div className="tabs tabs-lift">
-                                <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
+                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
                                            defaultChecked/>
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
-                                        <div className="mb-4">
-                                            <label className="block text-gray-700 font-semibold mb-2">Location:</label>
-                                            <input
-                                                value={tk}
-                                                onChange={(e) => setTk(e.target.value)}
-                                                type="text"
-                                                required
-                                                className="border border-gray-300 rounded p-2 w-full"
-                                            />
-                                        </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
                                             <TipTapEditor
@@ -120,16 +87,6 @@ const ContactLocation = () => {
                                     <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
-                                            <label className="block text-gray-700 font-semibold mb-2">Location:</label>
-                                            <input
-                                                value={en}
-                                                onChange={(e) => setEn(e.target.value)}
-                                                type="text"
-                                                required
-                                                className="border border-gray-300 rounded p-2 w-full"
-                                            />
-                                        </div>
-                                        <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
                                             <TipTapEditor
                                                 content={location_en}
@@ -140,16 +97,6 @@ const ContactLocation = () => {
 
                                     <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian" />
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
-                                        <div className="mb-4">
-                                            <label className="block text-gray-700 font-semibold mb-2">Location:</label>
-                                            <input
-                                                value={ru}
-                                                onChange={(e) => setRu(e.target.value)}
-                                                type="text"
-                                                required
-                                                className="border border-gray-300 rounded p-2 w-full"
-                                            />
-                                        </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
                                             <TipTapEditor

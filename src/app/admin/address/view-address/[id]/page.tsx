@@ -1,22 +1,25 @@
 'use client';
 
-import React, { useEffect, useState, Fragment } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, {useEffect, useState, Fragment} from 'react';
+import {useParams, useRouter} from 'next/navigation';
 import axios, {AxiosError} from 'axios';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
+import {Menu, Transition} from '@headlessui/react';
+import {ChevronDownIcon, PencilIcon, TrashIcon} from '@heroicons/react/16/solid';
 
 interface ServiceData {
     address_tk: string;
     address_en: string;
     address_ru: string;
     iframe: string;
+    location_tk: string;
+    location_en: string;
+    location_ru: string;
 }
 
 const ViewAddress = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const [data, setData] = useState<ServiceData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
@@ -71,16 +74,17 @@ const ViewAddress = () => {
 
     return (
         <div className="flex bg-gray-200 h-screen">
-            <Sidebar />
+            <Sidebar/>
             <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
+                <TokenTimer/>
                 <div className="mt-8">
                     <div className="w-full flex justify-between">
                         <h2 className="text-2xl font-bold mb-4">View Address</h2>
                         <Menu as="div" className="relative inline-block text-left">
-                            <Menu.Button className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white shadow-inner hover:bg-gray-700 focus:outline-none cursor-pointer">
+                            <Menu.Button
+                                className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white shadow-inner hover:bg-gray-700 focus:outline-none cursor-pointer">
                                 Options
-                                <ChevronDownIcon className="w-4 h-4 fill-white/60" />
+                                <ChevronDownIcon className="w-4 h-4 fill-white/60"/>
                             </Menu.Button>
 
                             <Transition
@@ -92,27 +96,28 @@ const ViewAddress = () => {
                                 leaveFrom="transform opacity-100 scale-100"
                                 leaveTo="transform opacity-0 scale-95"
                             >
-                                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                                <Menu.Items
+                                    className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                                     <div className="py-1">
                                         <Menu.Item>
-                                            {({ active }) => (
+                                            {({active}) => (
                                                 <button
                                                     onClick={() => router.push(`/admin/address/edit-address/${id}`)}
                                                     className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
                                                 >
-                                                    <PencilIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                                    <PencilIcon className="w-4 h-4 mr-2 text-gray-400"/>
                                                     Edit
                                                 </button>
                                             )}
                                         </Menu.Item>
                                         <div className="border-t border-gray-100"></div>
                                         <Menu.Item>
-                                            {({ active }) => (
+                                            {({active}) => (
                                                 <button
                                                     onClick={() => setShowModal(true)}
                                                     className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
                                                 >
-                                                    <TrashIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                                    <TrashIcon className="w-4 h-4 mr-2 text-gray-400"/>
                                                     Delete
                                                 </button>
                                             )}
@@ -129,6 +134,24 @@ const ViewAddress = () => {
                                 <div>
                                     <strong>Map:</strong>
                                     <div dangerouslySetInnerHTML={{__html: data.iframe}}/>
+                                </div>
+                            )}
+                            {data.location_tk && (
+                                <div>
+                                    <strong>Location TK:</strong>
+                                    <div dangerouslySetInnerHTML={{__html: data.location_tk}}/>
+                                </div>
+                            )}
+                            {data.location_en && (
+                                <div>
+                                    <strong>Location EN:</strong>
+                                    <div dangerouslySetInnerHTML={{__html: data.location_en}}/>
+                                </div>
+                            )}
+                            {data.location_ru && (
+                                <div>
+                                    <strong>Location RU:</strong>
+                                    <div dangerouslySetInnerHTML={{__html: data.location_ru}}/>
                                 </div>
                             )}
                         </div>

@@ -10,6 +10,7 @@ import {PencilIcon, PlusCircleIcon, TrashIcon} from "@heroicons/react/16/solid";
 interface MailItem {
     id: number;
     mail: string;
+    location_en: string;
 }
 
 const Mails = () => {
@@ -94,6 +95,7 @@ const Mails = () => {
                         <thead>
                         <tr>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Mails</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Location</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Edit</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Delete</th>
                         </tr>
@@ -108,6 +110,9 @@ const Mails = () => {
                                 <tr key={mail.id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <div dangerouslySetInnerHTML={{__html: mail.mail}}/>
+                                    </td>
+                                    <td className="py-4 px-4 border-b border-gray-200">
+                                        <div dangerouslySetInnerHTML={{__html: mail.location_en}}/>
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link

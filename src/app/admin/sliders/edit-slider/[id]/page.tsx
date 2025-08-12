@@ -139,17 +139,17 @@ const EditSlider = () => {
                             </div>
                             <div className="w-full">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Select Types:
+                                    Select Tour:
                                 </label>
                                 <select
-                                    id="tour_type"
-                                    name="tour_type_id"
+                                    id="tour"
+                                    name="tour_id"
                                     value={String(slider.tour_id)}
                                     onChange={(e) => setSlider((prev) => ({...prev, tour_id: e.target.value}))}
                                     required
                                     className="border border-gray-300 rounded p-2 w-full"
                                 >
-                                    <option value="">Select type</option>
+                                    <option value="">Select tour</option>
                                     {tours.map((tour) => (
                                         <option key={tour.id} value={tour.id}>
                                             {tour.title_en} / {tour.title_tk} / {tour.title_ru}

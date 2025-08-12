@@ -13,13 +13,9 @@ import {
 
 type LocationData = {
     id: number;
-    tk: string;
-    en: string;
-    ru: string;
     location_tk: string;
     location_en: string;
     location_ru: string;
-    iframe_code: string;
 };
 
 const ViewLocation = () => {
@@ -34,7 +30,7 @@ const ViewLocation = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -59,7 +55,7 @@ const ViewLocation = () => {
         setIsDeleting(true);
         try {
             const token = localStorage.getItem('auth_token');
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address/${id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -105,7 +101,7 @@ const ViewLocation = () => {
                                         <Menu.Item>
                                             {({ active }) => (
                                                 <button
-                                                    onClick={() => router.push(`/admin/contact-address/edit-location/${id}`)}
+                                                    onClick={() => router.push(`/admin/locations/edit-location/${id}`)}
                                                     className={`${
                                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                                                     } group flex w-full items-center px-4 py-2 text-sm cursor-pointer`}
@@ -136,22 +132,9 @@ const ViewLocation = () => {
                     </div>
 
                     <div className="bg-white p-4 rounded-md border-gray-200 flex">
-                        <div>
-                            {data.iframe_code && (
-                                <div>
-                                    <strong>Map:</strong>
-                                    <div dangerouslySetInnerHTML={{__html: data.iframe_code}}/>
-                                </div>
-                            )}
-                        </div>
                         <div className="space-y-2 ml-4">
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Turkmen</div>
-                                {data.tk && (
-                                    <div>
-                                        <div dangerouslySetInnerHTML={{__html: data.tk}}/>
-                                    </div>
-                                )}
                                 {data.location_tk && (
                                     <div>
                                         <div dangerouslySetInnerHTML={{__html: data.location_tk}}/>
@@ -160,11 +143,6 @@ const ViewLocation = () => {
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">English</div>
-                                {data.en && (
-                                    <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.en }} />
-                                    </div>
-                                )}
                                 {data.location_en && (
                                     <div>
                                         <div dangerouslySetInnerHTML={{ __html: data.location_en }} />
@@ -173,11 +151,6 @@ const ViewLocation = () => {
                             </div>
                             <div className="mb-10">
                                 <div className="font-bold text-lg mb-4">Russian</div>
-                                {data.ru && (
-                                    <div>
-                                        <div dangerouslySetInnerHTML={{ __html: data.ru }} />
-                                    </div>
-                                )}
                                 {data.location_ru && (
                                     <div>
                                         <div dangerouslySetInnerHTML={{ __html: data.location_ru }} />

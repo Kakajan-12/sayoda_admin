@@ -11,9 +11,24 @@ const EditAddress = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState({ address_tk: '', address_en:'', address_ru:'', iframe: ''});
+    const [data, setData] = useState({ address_tk: '', address_en:'', address_ru:'', iframe: '', location_id:''});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [locations, setLocations] = useState<{ id: number, location_tk: string, location_en: string, location_ru: string }[]>([]);
+
+    useEffect(() => {
+        const fetchLocations = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location`);
+                const data = await res.json();
+                setLocations(data);
+            } catch (err) {
+                console.error('Ошибка при загрузке категорий:', err);
+            }
+        };
+
+        fetchLocations();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,6 +74,7 @@ const EditAddress = () => {
                     address_en: data.address_en,
                     address_ru: data.address_ru,
                     iframe: data.iframe,
+                    location_id: data.location_id,
                 },
                 {
                     headers: {
@@ -87,6 +103,26 @@ const EditAddress = () => {
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">Edit Address</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                        <div className="w-full">
+                            <label className="block text-gray-700 font-semibold mb-2">
+                                Select Location:
+                            </label>
+                            <select
+                                id="location"
+                                name="location_id"
+                                value={String(data.location_id)}
+                                onChange={(e) => setData((prev) => ({...prev, location_id: e.target.value}))}
+                                required
+                                className="border border-gray-300 rounded p-2 w-full"
+                            >
+                                <option value="">Select tour</option>
+                                {locations.map((location) => (
+                                    <option key={location.id} value={location.id}>
+                                        {location.location_en} / {location.location_tk} / {location.location_ru}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="mb-4 w-full">
                             <label
                                 className="block text-gray-700 font-semibold mb-2">Map:</label>

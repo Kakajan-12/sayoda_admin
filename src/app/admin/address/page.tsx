@@ -8,7 +8,7 @@ import Link from "next/link";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
 
 interface Address {
-    id: number;
+    address_id: number;
     address_tk: string;
     address_en: string;
     address_ru: string;
@@ -53,7 +53,6 @@ const Address = () => {
     if (error) {
         return <div>{error}</div>;
     }
-
     return (
         <div className="flex bg-gray-200">
             <Sidebar/>
@@ -87,7 +86,7 @@ const Address = () => {
                             </tr>
                         ) : (
                             addresses.map((address) => (
-                                <tr key={address.id}>
+                                <tr key={address.address_id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <div dangerouslySetInnerHTML={{__html: address.iframe}}/>
                                     </td>
@@ -102,7 +101,7 @@ const Address = () => {
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link
-                                            href={`/admin/address/view-address/${address.id}`}
+                                            href={`/admin/address/view-address/${address.address_id}`}
                                             className="bg text-white py-2 px-8 rounded-md cursor-pointer flex w-32"
                                         >
                                             <EyeIcon color="#ffffff"/>

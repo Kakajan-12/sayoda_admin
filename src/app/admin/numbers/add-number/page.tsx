@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
@@ -8,6 +8,27 @@ import TokenTimer from '@/Components/TokenTimer';
 const AddMail = () => {
     const [number, setNumber] = useState('');
     const router = useRouter();
+    const [location_id, setLocationId] = useState('');
+    const [locations, setLocations] = useState<{
+        id: number,
+        location_tk: string,
+        location_en: string,
+        location_ru: string
+    }[]>([]);
+
+    useEffect(() => {
+        const fetchLocations = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location`);
+                const data = await res.json();
+                setLocations(data);
+            } catch (err) {
+                console.error('Ошибка при загрузке:', err);
+            }
+        };
+
+        fetchLocations();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -17,7 +38,11 @@ const AddMail = () => {
             console.error('Нет токена. Пользователь не авторизован.');
             return;
         }
-
+        const locId = Number(location_id);
+        if (!locId) {
+            console.error('Location is required.');
+            return;
+        }
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-numbers`, {
                 method: 'POST',
@@ -25,13 +50,14 @@ const AddMail = () => {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ number }),
+                body: JSON.stringify({number,location_id: locId}),
             });
 
             if (response.ok) {
                 const data = await response.json();
                 console.log('добавлен!', data);
                 setNumber('');
+                setLocationId('')
                 router.push('/admin/numbers');
             } else {
                 const errorText = await response.text();
@@ -55,7 +81,26 @@ const AddMail = () => {
                     >
                         <h2 className="text-2xl font-bold mb-4 text-left">Add new number</h2>
 
-
+                        <div className="w-full">
+                            <label className="block text-gray-700 font-semibold mb-2">
+                                Location:
+                            </label>
+                            <select
+                                id="location_id"
+                                name="location_id"
+                                value={location_id}
+                                onChange={(e) => setLocationId(e.target.value)}
+                                required
+                                className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                            >
+                                <option value="">Select location</option>
+                                {locations.map((location) => (
+                                    <option key={location.id} value={location.id}>
+                                        {location.location_en} / {location.location_tk} / {location.location_ru}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="mb-4">
                             <label className="block text-gray-700 font-semibold mb-2">Phone number:</label>
                             <input

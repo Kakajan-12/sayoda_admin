@@ -12,11 +12,24 @@ const AddAddress = () => {
     const [address_tk, setAddressTk] = useState('');
     const [address_en, setAddressEn] = useState('');
     const [address_ru, setAddressRu] = useState('');
+    const [location_id, setLocationId] = useState('');
+    const [locations, setLocations] = useState<{ id: number, location_tk: string, location_en: string, location_ru: string }[]>([]);
 
     const router = useRouter();
 
     useEffect(() => {
         setIsClient(true);
+        const fetchLocations = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location`);
+                const data = await res.json();
+                setLocations(data);
+            } catch (err) {
+                console.error('Ошибка при загрузке:', err);
+            }
+        };
+
+        fetchLocations();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -28,11 +41,16 @@ const AddAddress = () => {
             return;
         }
 
-        const formData = new FormData();
-        formData.append('address_tk', address_tk);
-        formData.append('address_en', address_en);
-        formData.append('address_ru', address_ru);
-        formData.append('iframe', iframe);
+        const locId = Number(location_id);
+        if (!locId) {
+            console.error('Location is required.');
+            return;
+        }
+
+        if (!iframe.trim()) {
+            console.error('Map iframe is required.');
+            return;
+        }
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address`, {
@@ -46,17 +64,18 @@ const AddAddress = () => {
                     address_en,
                     address_ru,
                     iframe,
+                    location_id: locId
                 }),
             });
 
-
             if (response.ok) {
                 const data = await response.json();
-                console.log('data added successfully!', data);
+                console.log('Data added successfully!', data);
                 setAddressTk('');
                 setAddressEn('');
                 setAddressRu('');
                 setIframe('');
+                setLocationId('');
                 router.push('/admin/address');
             } else {
                 const errorText = await response.text();
@@ -66,6 +85,7 @@ const AddAddress = () => {
             console.error('Request error:', error);
         }
     };
+
 
     return (
         <div className="flex bg-gray-200">
@@ -78,7 +98,26 @@ const AddAddress = () => {
                         className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
                     >
                         <h2 className="text-2xl font-bold mb-4 text-left">Add New Address</h2>
-
+                        <div className="w-full">
+                            <label className="block text-gray-700 font-semibold mb-2">
+                                Location:
+                            </label>
+                            <select
+                                id="location_id"
+                                name="location_id"
+                                value={location_id}
+                                onChange={(e) => setLocationId(e.target.value)}
+                                required
+                                className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                            >
+                                <option value="">Select location</option>
+                                {locations.map((location) => (
+                                    <option key={location.id} value={location.id}>
+                                        {location.location_en} / {location.location_tk} / {location.location_ru}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="mb-4 flex space-x-4">
                             <div className="w-full">
                                 <label
@@ -99,7 +138,7 @@ const AddAddress = () => {
                                     <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
                                            defaultChecked/>
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
-                                    <div className="mb-4">
+                                        <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
                                             <TipTapEditor
                                                 content={address_tk}
@@ -108,7 +147,7 @@ const AddAddress = () => {
                                         </div>
                                     </div>
 
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English" />
+                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
@@ -119,7 +158,7 @@ const AddAddress = () => {
                                         </div>
                                     </div>
 
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian" />
+                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
                                     <div className="tab-content bg-base-100 border-base-300 p-6">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>

@@ -11,7 +11,7 @@ const EditLocationAddress = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState({ tk: '', en: '', ru: '', location_tk: '', location_en: '', location_ru: '', iframe_code: ''});
+    const [data, setData] = useState({ location_tk: '', location_en: '', location_ru: ''});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -19,7 +19,7 @@ const EditLocationAddress = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('auth_token');
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address/${id}`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -59,7 +59,7 @@ const EditLocationAddress = () => {
         try {
             const token = localStorage.getItem('auth_token');
 
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-address/${id}`,
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/contact-location/${id}`,
                 { ...data },
                 {
                     headers: {
@@ -68,7 +68,7 @@ const EditLocationAddress = () => {
                 }
             );
 
-            router.push(`/admin/contact-address/view-location/${id}`);
+            router.push(`/admin/locations/view-location/${id}`);
         } catch (err) {
             console.error(err);
             setError('Ошибка при сохранении');
@@ -86,33 +86,10 @@ const EditLocationAddress = () => {
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">Edit Contact Location</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-                        <div className="mb-5">
-                            <label className="block text-gray-700 font-semibold mb-2">Change location iframe code</label>
-                            <input
-                                name="iframe_code"
-                                type="text"
-                                value={data.iframe_code}
-                                onChange={handleChange}
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
 
-                        </div>
                         <div className="tabs tabs-lift">
                             <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Location</label>
-                                    <input
-                                        name="tk"
-                                        value={data.tk}
-                                        onChange={handleChange}
-                                        type="text"
-                                        required
-                                        className="border border-gray-300 rounded p-2 w-full"
-                                    />
-
-                                </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Address Location:</label>
                                     <TipTapEditor
@@ -125,17 +102,6 @@ const EditLocationAddress = () => {
                             <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Location:</label>
-                                    <input
-                                        name="en"
-                                        value={data.en}
-                                        onChange={handleChange}
-                                        type="text"
-                                        required
-                                        className="border border-gray-300 rounded p-2 w-full"
-                                    />
-                                </div>
-                                <div className="mb-4">
                                     <label className="block font-semibold mb-2">Address Location:</label>
                                     <TipTapEditor
                                         content={data.location_en}
@@ -146,17 +112,6 @@ const EditLocationAddress = () => {
 
                             <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Location:</label>
-                                    <input
-                                        name="ru"
-                                        value={data.ru}
-                                        onChange={handleChange}
-                                        type="text"
-                                        required
-                                        className="border border-gray-300 rounded p-2 w-full"
-                                    />
-                                </div>
                                 <div className="mb-4">
                                     <label className="block font-semibold mb-2">Address Location:</label>
                                     <TipTapEditor

@@ -10,6 +10,7 @@ import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
 import { TbCategoryFilled } from "react-icons/tb";
+import { FaLocationDot } from "react-icons/fa6";
 
 const menuGroups = [
     {
@@ -35,6 +36,7 @@ const menuGroups = [
             { href: "/admin/address", label: "Address", icon: IoLocationSharp },
             { href: "/admin/mails", label: "Mails", icon: LuMails },
             { href: "/admin/numbers", label: "Numbers", icon: FaPhoneSquareAlt },
+            { href: "/admin/locations", label: "Locations", icon: FaLocationDot  },
         ],
     },
     {

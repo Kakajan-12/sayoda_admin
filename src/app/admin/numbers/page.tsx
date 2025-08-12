@@ -10,6 +10,7 @@ import {PencilIcon, PlusCircleIcon, TrashIcon} from "@heroicons/react/16/solid";
 interface DataItem {
     id: number;
     number: string;
+    location_en: string;
 }
 
 const Numbers = () => {
@@ -94,6 +95,7 @@ const Numbers = () => {
                         <thead>
                         <tr>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Numbers</th>
+                            <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Location</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Edit</th>
                             <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Delete</th>
                         </tr>
@@ -108,6 +110,9 @@ const Numbers = () => {
                                 <tr key={number.id}>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <div dangerouslySetInnerHTML={{__html: number.number}}/>
+                                    </td>
+                                    <td className="py-4 px-4 border-b border-gray-200">
+                                        <div dangerouslySetInnerHTML={{__html: number.location_en}}/>
                                     </td>
                                     <td className="py-4 px-4 border-b border-gray-200">
                                         <Link
