@@ -16,7 +16,7 @@ interface ServiceData {
     text_tk?: string;
     text_en?: string;
     text_ru?: string;
-    main_image?: string;
+    image?: string;
 }
 
 const ViewBlog = () => {
@@ -129,9 +129,9 @@ const ViewBlog = () => {
 
                     <div className="bg-white p-4 rounded-md border-gray-200 flex">
                         <div>
-                            {data.main_image && (
+                            {data.image && (
                                 <Image
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${data.main_image.replace(/\\/g, '/')}`}
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace(/\\/g, '/')}`}
                                     alt="Blog image"
                                     width={500}
                                     height={400}

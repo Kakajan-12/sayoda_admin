@@ -29,9 +29,15 @@ const EditLink = () => {
 
                 if (!res.ok) throw new Error('Failed to fetch link');
                 const data = await res.json();
-                const item = data[0];
+                const item = Array.isArray(data) ? data[0] : data;
+                if (!item) {
+                    alert("Данные не найдены");
+                    return;
+                }
+
                 setIcon(item.icon);
                 setUrl(item.url);
+
                 setLoading(false);
             } catch (err) {
                 console.error(err);
