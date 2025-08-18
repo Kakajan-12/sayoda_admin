@@ -33,6 +33,7 @@ const EditTour = () => {
         price: number;
         tour_type_id: number;
         tour_cat_id: number;
+        location_id: number;
         map: string;
     };
 
@@ -57,6 +58,7 @@ const EditTour = () => {
         price: 0,
         tour_type_id: 0,
         tour_cat_id: 0,
+        location_id: 0,
         map: ''
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -64,21 +66,25 @@ const EditTour = () => {
     const [error, setError] = useState('');
     const [types, setTypes] = useState<{ id: number, type_tk: string, type_en: string, type_ru: string }[]>([]);
     const [cat, setCat] = useState<{ id: number, cat_tk: string, cat_en: string, cat_ru: string }[]>([]);
+    const [location, setLocation] = useState<{ id: number, location_tk: string, location_en: string, location_ru: string }[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [typesRes, catRes] = await Promise.all([
+                const [typesRes, catRes, locationRes] = await Promise.all([
                     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-category`)
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-category`),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-location`)
                 ]);
-                const [typesData, catData] = await Promise.all([
+                const [typesData, catData, locationData] = await Promise.all([
                     typesRes.json(),
-                    catRes.json()
+                    catRes.json(),
+                    locationRes.json()
                 ]);
 
                 setTypes(typesData);
                 setCat(catData);
+                setLocation(locationData);
             } catch (err) {
                 console.error('Ошибка при загрузке данных:', err);
             }
@@ -154,6 +160,7 @@ const EditTour = () => {
             formData.append('price', String(data.price));
             formData.append('tour_type_id', String(data.tour_type_id));
             formData.append('tour_cat_id', String(data.tour_cat_id));
+            formData.append('location_id', String(data.location_id));
             formData.append('map', data.map);
 
 
@@ -268,6 +275,32 @@ const EditTour = () => {
                                     {cat.map((cat) => (
                                         <option key={cat.id} value={cat.id}>
                                             {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="w-full">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Select Location:
+                                </label>
+                                <select
+                                    id="location_id"
+                                    name="location_id"
+                                    value={data.location_id} // число
+                                    onChange={(e) =>
+                                        setData((prev) => ({
+                                            ...prev,
+                                            location_id: Number(e.target.value), // приводим к числу
+                                        }))
+                                    }
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                >
+                                    <option value="">Select location</option>
+                                    {location.map((location) => (
+                                        <option key={location.id} value={location.id}>
+                                            {location.location_en} / {location.location_tk} / {location.location_ru}
                                         </option>
                                     ))}
                                 </select>

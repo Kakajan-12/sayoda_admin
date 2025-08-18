@@ -10,7 +10,7 @@ import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
 import { TbCategoryFilled } from "react-icons/tb";
-import { FaLocationDot } from "react-icons/fa6";
+import { FaLocationDot,FaMapLocationDot, FaPassport } from "react-icons/fa6";
 import { RiLinksLine } from "react-icons/ri";
 
 const menuGroups = [
@@ -45,13 +45,15 @@ const menuGroups = [
         title: "Tours",
         key: "tours",
         links: [
-            { href: "/admin/tours", label: "Tours", icon: MdTour },
-            { href: "/admin/tour-types", label: "Types", icon: VscTypeHierarchySub },
-            { href: "/admin/tour-category", label: "Category", icon: TbCategoryFilled  },
-            { href: "/admin/itinerary", label: "Itinerary", icon: LuCalendarDays },
-            { href: "/admin/includes", label: "Includes", icon: IoMdCheckmarkCircleOutline },
-            { href: "/admin/excludes", label: "Excludes", icon: IoIosCloseCircleOutline  },
-            { href: "/admin/tour-gallery", label: "Gallery", icon: GrGallery  },
+            { href: "/admin/tours", label: "Tours", icon: MdTour},
+            { href: "/admin/tour-types", label: "Types", icon: VscTypeHierarchySub},
+            { href: "/admin/tour-category", label: "Category", icon: TbCategoryFilled},
+            { href: "/admin/itinerary", label: "Itinerary", icon: LuCalendarDays},
+            { href: "/admin/includes", label: "Includes", icon: IoMdCheckmarkCircleOutline},
+            { href: "/admin/excludes", label: "Excludes", icon: IoIosCloseCircleOutline},
+            { href: "/admin/tour-gallery", label: "Gallery", icon: GrGallery},
+            { href: "/admin/tour-location", label: "Tours Location", icon: FaMapLocationDot},
+            { href: "/admin/visa", label: "Visa Requirements", icon: FaPassport},
         ],
     },
 ];

@@ -29,11 +29,15 @@ const AddTour = () => {
     const [map, setMap] = useState('');
     const [tour_type_id, setTourType] = useState('');
     const [tour_cat_id, setTourCat] = useState('');
+    const [location_id, setLocationTour] = useState('');
     const [types, setTypes] = useState<
         { id: number; type_tk: string; type_en: string; type_ru: string }[]
     >([]);
     const [cat, setCat] = useState<
         { id: number; cat_tk: string; cat_en: string; cat_ru: string }[]
+    >([]);
+    const [location, setLocation] = useState<
+        { id: number; location_tk: string; location_en: string; location_ru: string }[]
     >([]);
 
     const router = useRouter();
@@ -42,17 +46,20 @@ const AddTour = () => {
         setIsClient(true)
         const fetchData = async () => {
             try {
-                const [typesRes, catRes] = await Promise.all([
+                const [typesRes, catRes, locationRes] = await Promise.all([
                     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-category`)
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-category`),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-location`)
                 ]);
-                const [typesData, catData] = await Promise.all([
+                const [typesData, catData, locationData] = await Promise.all([
                     typesRes.json(),
-                    catRes.json()
+                    catRes.json(),
+                    locationRes.json()
                 ]);
 
                 setTypes(typesData);
                 setCat(catData);
+                setLocation(locationData)
             } catch (err) {
                 console.error('Ошибка при загрузке данных:', err);
             }
@@ -92,6 +99,7 @@ const AddTour = () => {
         formData.append('map', map ?? '');
         formData.append('tour_type_id', tour_type_id ?? '');
         formData.append('tour_cat_id', tour_cat_id ?? '');
+        formData.append('location_id', location_id ?? '');
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours`, {
@@ -126,6 +134,7 @@ const AddTour = () => {
                 setMap('');
                 setTourType('');
                 setTourCat('');
+                setLocationTour('');
                 router.push('/admin/tours');
             } else {
                 const errorText = await response.text();
@@ -202,6 +211,26 @@ const AddTour = () => {
                                     {cat.map((cat) => (
                                         <option key={cat.id} value={cat.id}>
                                             {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="w-full">
+                                <label className="block text-gray-700 font-semibold mb-2">
+                                    Select Location:
+                                </label>
+                                <select
+                                    id="location_id"
+                                    name="location_id"
+                                    value={location_id}
+                                    onChange={(e) => setLocationTour(e.target.value)}
+                                    required
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                >
+                                    <option value="">Select location</option>
+                                    {location.map((location) => (
+                                        <option key={location.id} value={location.id}>
+                                            {location.location_en} / {location.location_tk} / {location.location_ru}
                                         </option>
                                     ))}
                                 </select>
