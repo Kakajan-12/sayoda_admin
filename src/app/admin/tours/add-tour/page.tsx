@@ -286,7 +286,7 @@ const AddTour = () => {
                                 accept="image/*"
                                 onChange={(e) => {
                                     if (e.target.files && e.target.files[0]) {
-                                        setImage(e.target.files[0]);
+                                        setMap(e.target.files[0]);
                                     }
                                 }}
                                 required
