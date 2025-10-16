@@ -62,6 +62,7 @@ const EditTour = () => {
         map: ''
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [mapFile, setMapFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [types, setTypes] = useState<{ id: number, type_tk: string, type_en: string, type_ru: string }[]>([]);
@@ -161,13 +162,14 @@ const EditTour = () => {
             formData.append('tour_type_id', String(data.tour_type_id));
             formData.append('tour_cat_id', String(data.tour_cat_id));
             formData.append('location_id', String(data.location_id));
-            formData.append('map', data.map);
 
 
-            if (imageFile) {
+            if (imageFile && mapFile) {
                 formData.append('image', imageFile);
+                formData.append('map', mapFile);
             } else {
                 formData.append('image', data.image);
+                formData.append('map', data.map);
             }
 
             await axios.put(
@@ -348,16 +350,31 @@ const EditTour = () => {
                             </div>
                         </div>
 
-                        <div className="mb-4 w-full">
-                            <label
-                                className="block text-gray-700 font-semibold mb-2">Map:</label>
-                            <textarea value={data.map}
-                                      onChange={(e) => setData((prev) => ({...prev, map: e.target.value}))}
-                                      rows={10}
-                                      required
-                                      className="border border-gray-300 rounded p-2 w-full">
+                        {/*<div className="mb-4 w-full">*/}
+                        {/*    <label*/}
+                        {/*        className="block text-gray-700 font-semibold mb-2">Map:</label>*/}
+                        {/*    <textarea value={data.map}*/}
+                        {/*              onChange={(e) => setData((prev) => ({...prev, map: e.target.value}))}*/}
+                        {/*              rows={10}*/}
+                        {/*              required*/}
+                        {/*              className="border border-gray-300 rounded p-2 w-full">*/}
 
-                            </textarea>
+                        {/*    </textarea>*/}
+                        {/*</div>*/}
+
+                        <div className="mb-4">
+                            <label htmlFor="image" className="block font-semibold mb-2">Map:</label>
+                            <input
+                                type="file"
+                                id="map"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files[0]) {
+                                        setMapFile(e.target.files[0]);
+                                    }
+                                }}
+                                className="border border-gray-300 rounded p-2 w-full"
+                            />
                         </div>
 
                         <div className="tabs tabs-lift">

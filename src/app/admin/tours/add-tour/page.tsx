@@ -26,7 +26,7 @@ const AddTour = () => {
     const [lang_en, setLangEn] = useState('');
     const [lang_ru, setLangRu] = useState('');
     const [price, setPrice] = useState('');
-    const [map, setMap] = useState('');
+    const [map, setMap] = useState<File | null>(null);
     const [tour_type_id, setTourType] = useState('');
     const [tour_cat_id, setTourCat] = useState('');
     const [location_id, setLocationTour] = useState('');
@@ -79,6 +79,7 @@ const AddTour = () => {
 
         const formData = new FormData();
         if (image) formData.append('image', image);
+        if (map) formData.append('map', map);
         formData.append('popular', popular ? '1' : '0');
         formData.append('title_tk', title_tk ?? '');
         formData.append('title_en', title_en ?? '');
@@ -96,7 +97,7 @@ const AddTour = () => {
         formData.append('lang_en', lang_en ?? '');
         formData.append('lang_ru', lang_ru ?? '');
         formData.append('price', price ?? '');
-        formData.append('map', map ?? '');
+        // formData.append('map', map ?? '');
         formData.append('tour_type_id', tour_type_id ?? '');
         formData.append('tour_cat_id', tour_cat_id ?? '');
         formData.append('location_id', location_id ?? '');
@@ -131,7 +132,7 @@ const AddTour = () => {
                 setLangEn('');
                 setLangRu('');
                 setPrice('')
-                setMap('');
+                setMap(null);
                 setTourType('');
                 setTourCat('');
                 setLocationTour('');
@@ -263,16 +264,34 @@ const AddTour = () => {
                                 </select>
                             </div>
                         </div>
-                        <div className="mb-4 w-full">
-                            <label
-                                className="block text-gray-700 font-semibold mb-2">Map:</label>
-                            <textarea value={map}
-                                      onChange={(e) => setMap(e.target.value)}
-                                      rows={10}
-                                      required
-                                      className="border border-gray-300 rounded p-2 w-full">
+                        {/*<div className="mb-4 w-full">*/}
+                        {/*    <label*/}
+                        {/*        className="block text-gray-700 font-semibold mb-2">Map:</label>*/}
+                        {/*    <textarea value={map}*/}
+                        {/*              onChange={(e) => setMap(e.target.value)}*/}
+                        {/*              rows={10}*/}
+                        {/*              required*/}
+                        {/*              className="border border-gray-300 rounded p-2 w-full">*/}
 
-                            </textarea>
+                        {/*    </textarea>*/}
+                        {/*</div>*/}
+
+                        <div className="w-full">
+                            <label htmlFor="image" className="block text-gray-700 font-semibold mb-2">
+                                Map:
+                            </label>
+                            <input
+                                type="file"
+                                id="map"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files[0]) {
+                                        setImage(e.target.files[0]);
+                                    }
+                                }}
+                                required
+                                className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                            />
                         </div>
 
                         {isClient && (

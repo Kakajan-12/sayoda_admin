@@ -135,17 +135,26 @@ const ViewTour = () => {
                             {data.image && (
                                 <Image
                                     src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace('\\', '/')}`}
-                                    alt="Blog"
+                                    alt="Tour"
                                     width={600}
                                     height={400}
                                     className="rounded"
                                 />
                             )}
+                            {/*{data.map && (*/}
+                            {/*    <div>*/}
+                            {/*        <strong>Map:</strong>*/}
+                            {/*        <div dangerouslySetInnerHTML={{__html: data.map}}/>*/}
+                            {/*    </div>*/}
+                            {/*)}*/}
                             {data.map && (
-                                <div>
-                                    <strong>Map:</strong>
-                                    <div dangerouslySetInnerHTML={{__html: data.map}}/>
-                                </div>
+                                <Image
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${data.map.replace('\\', '/')}`}
+                                    alt="Map"
+                                    width={600}
+                                    height={400}
+                                    className="rounded"
+                                />
                             )}
                             <div className="space-y-6">
                                 <div>
