@@ -164,13 +164,13 @@ const EditTour = () => {
             formData.append('location_id', String(data.location_id));
 
 
-            if (imageFile && mapFile) {
+            if (imageFile) {
                 formData.append('image', imageFile);
-                formData.append('map', mapFile);
-            } else {
-                formData.append('image', data.image);
-                formData.append('map', data.map);
             }
+            if (mapFile) {
+                formData.append('map', mapFile);
+            }
+
 
             await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/tours/${id}`,
