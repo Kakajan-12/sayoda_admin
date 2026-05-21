@@ -16,6 +16,7 @@ const AddBlog = () => {
     const [text_en, setTextEn] = useState('');
     const [text_ru, setTextRu] = useState('');
     const [date, setDate] = useState('');
+    const [activeTab, setActiveTab] = useState<'tk' | 'en' | 'ru'>('tk');
 
     const router = useRouter();
 
@@ -125,10 +126,28 @@ const AddBlog = () => {
 
                         {isClient && (
                             <>
-                                <div className="tabs tabs-lift">
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
-                                           defaultChecked/>
-                                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                                <div className="flex border-b border-gray-300">
+                                    {([
+                                        { key: 'tk', label: 'Turkmen' },
+                                        { key: 'en', label: 'English' },
+                                        { key: 'ru', label: 'Russian' },
+                                    ] as const).map((tab) => (
+                                        <button
+                                            key={tab.key}
+                                            type="button"
+                                            onClick={() => setActiveTab(tab.key)}
+                                            className={`px-6 py-2 font-semibold border-b-2 -mb-px transition-colors ${
+                                                activeTab === tab.key
+                                                    ? 'border-blue-600 text-blue-600 bg-white'
+                                                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                                            }`}
+                                        >
+                                            {tab.label}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="border border-gray-300 rounded-b-lg p-6 mb-4">
+                                    <div className={activeTab === 'tk' ? 'block' : 'hidden'}>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
                                             <TipTapEditor
@@ -144,9 +163,7 @@ const AddBlog = () => {
                                             />
                                         </div>
                                     </div>
-
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English" />
-                                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                                    <div className={activeTab === 'en' ? 'block' : 'hidden'}>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
                                             <TipTapEditor
@@ -162,9 +179,7 @@ const AddBlog = () => {
                                             />
                                         </div>
                                     </div>
-
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian" />
-                                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                                    <div className={activeTab === 'ru' ? 'block' : 'hidden'}>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Title:</label>
                                             <TipTapEditor
