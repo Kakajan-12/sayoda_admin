@@ -5,7 +5,7 @@ import { VscFeedback,VscTypeHierarchySub } from "react-icons/vsc";
 import { PiReadCvLogo } from "react-icons/pi";
 import { GrGallery } from "react-icons/gr";
 import { IoLocationSharp } from "react-icons/io5";
-import { LuMails, LuCalendarDays, LuInbox  } from "react-icons/lu";
+import { LuMails, LuCalendarDays, LuInbox, LuSettings  } from "react-icons/lu";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
@@ -17,10 +17,11 @@ const menuGroups = [
     {
         // Заявки идут первым пунктом: это единственный раздел, который нужно
         // открывать каждый день, остальные — редактирование контента.
-        title: "Requests",
+        title: "Requests & Settings",
         key: "requests",
         links: [
             { href: "/admin/requests", label: "Requests", icon: LuInbox },
+            { href: "/admin/settings", label: "Settings", icon: LuSettings },
         ],
     },
     {
