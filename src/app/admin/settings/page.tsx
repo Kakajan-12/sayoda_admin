@@ -16,6 +16,7 @@ import TokenTimer from "@/Components/TokenTimer";
 interface Settings {
     ga4_id: string;
     whatsapp: string;
+    tawk_id: string;
     company_legal_name: string;
     license_number: string;
     founded_year: string;
@@ -24,6 +25,7 @@ interface Settings {
 const EMPTY: Settings = {
     ga4_id: '',
     whatsapp: '',
+    tawk_id: '',
     company_legal_name: '',
     license_number: '',
     founded_year: '',
@@ -41,6 +43,12 @@ const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint: s
         label: 'WhatsApp',
         placeholder: '99361169097',
         hint: 'Номер в международном формате. Если пусто, кнопка использует основной телефон компании.',
+    },
+    {
+        key: 'tawk_id',
+        label: 'Чат Tawk.to',
+        placeholder: '68b1c2d3e4f5a6b7c8d9e0f1/1abc2de3f',
+        hint: 'Часть адреса из кода вставки Tawk.to после https://embed.tawk.to/ — в виде propertyId/widgetId. Пусто — чат на сайте не показывается.',
     },
     {
         key: 'company_legal_name',
