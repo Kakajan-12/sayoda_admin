@@ -31,6 +31,30 @@ const EMPTY: Settings = {
     founded_year: '',
 };
 
+/**
+ * Предупреждение о значении, которое сохранится, но на сайте работать не будет.
+ *
+ * Такие поля подставляются в сторонние скрипты, и при неверном формате сайт
+ * просто ничего не выводит — молча. Именно так и вышло с чатом: вместо кода
+ * виджета был вставлен API-ключ, и найти причину можно было только в коде.
+ * Поэтому предупреждаем прямо в форме, но сохранять не мешаем.
+ */
+const warn = (key: keyof Settings, value: string): string | null => {
+    const v = (value || '').trim();
+    if (!v) return null;
+
+    if (key === 'tawk_id' && !/[A-Za-z0-9]{6,}\/[A-Za-z0-9]{3,}/.test(v)) {
+        return 'Не похоже на код виджета: в нём должна быть косая черта между двумя идентификаторами. Похоже, вставлен API-ключ — возьмите код из Administration → Channels → Chat Widget.';
+    }
+    if (key === 'ga4_id' && !/^G-[A-Z0-9]+$/i.test(v)) {
+        return 'Идентификатор GA4 начинается с «G-». Счётчик с другим значением не подключится.';
+    }
+    if (key === 'whatsapp' && v.replace(/\D/g, '').length < 8) {
+        return 'Слишком короткий номер — кнопка WhatsApp его не примет.';
+    }
+    return null;
+};
+
 const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint: string }[] = [
     {
         key: 'ga4_id',
@@ -48,7 +72,7 @@ const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint: s
         key: 'tawk_id',
         label: 'Чат Tawk.to',
         placeholder: '68b1c2d3e4f5a6b7c8d9e0f1/1abc2de3f',
-        hint: 'Часть адреса из кода вставки Tawk.to после https://embed.tawk.to/ — в виде propertyId/widgetId. Пусто — чат на сайте не показывается.',
+        hint: 'Tawk.to → Administration → Channels → Chat Widget. Можно вставить ссылку целиком или пару propertyId/widgetId. Не подходит API-ключ из Property Settings — в нём нет косой черты. Пусто — чат не показывается.',
     },
     {
         key: 'company_legal_name',
@@ -163,6 +187,11 @@ const Settings = () => {
                                     className="w-full border border-gray-300 rounded-md px-4 py-2"
                                 />
                                 <p className="text-xs text-gray-500 mt-1">{field.hint}</p>
+                                {warn(field.key, settings[field.key]) && (
+                                    <p className="text-xs text-amber-700 mt-1">
+                                        {warn(field.key, settings[field.key])}
+                                    </p>
+                                )}
                             </div>
                         ))}
 
