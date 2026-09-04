@@ -5,7 +5,7 @@ import { VscFeedback,VscTypeHierarchySub } from "react-icons/vsc";
 import { PiReadCvLogo } from "react-icons/pi";
 import { GrGallery } from "react-icons/gr";
 import { IoLocationSharp } from "react-icons/io5";
-import { LuMails, LuCalendarDays, LuInbox, LuSettings  } from "react-icons/lu";
+import { LuMails, LuCalendarDays, LuInbox, LuSettings, LuImage  } from "react-icons/lu";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
@@ -28,6 +28,8 @@ const menuGroups = [
         title: "Content Management",
         key: "content",
         links: [
+            // Первый экран главной: заголовок, подзаголовок, кнопка и фон
+            { href: "/admin/banner", label: "Main Banner", icon: LuImage },
             { href: "/admin/sliders", label: "Sliders", icon: TfiLayoutSlider },
             { href: "/admin/testimonials", label: "Testimonials", icon: VscFeedback },
         ],
