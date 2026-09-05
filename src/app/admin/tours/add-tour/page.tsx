@@ -1,6 +1,7 @@
 'use client';
 
 import React, {useState, useEffect} from 'react';
+import SlugField from '@/Components/SlugField';
 import {useRouter} from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
@@ -10,6 +11,7 @@ const AddTour = () => {
     const [isClient, setIsClient] = useState(false);
     const [image, setImage] = useState<File | null>(null);
     const [popular, setPopular] = useState(false);
+    const [slug, setSlug] = useState('');
     const [title_tk, setTitleTk] = useState('');
     const [title_en, setTitleEn] = useState('');
     const [title_ru, setTitleRu] = useState('');
@@ -81,6 +83,7 @@ const AddTour = () => {
         if (image) formData.append('image', image);
         if (map) formData.append('map', map);
         formData.append('popular', popular ? '1' : '0');
+        formData.append('slug', slug);
         formData.append('title_tk', title_tk ?? '');
         formData.append('title_en', title_en ?? '');
         formData.append('title_ru', title_ru ?? '');
@@ -263,6 +266,9 @@ const AddTour = () => {
                                     <option value="0">No</option>
                                 </select>
                             </div>
+                        </div>
+                        <div className="mb-4">
+                            <SlugField value={slug} onChange={setSlug} section="tours" />
                         </div>
                         {/*<div className="mb-4 w-full">*/}
                         {/*    <label*/}

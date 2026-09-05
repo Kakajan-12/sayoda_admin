@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import SlugField from '@/Components/SlugField';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import Sidebar from "@/Components/Sidebar";
@@ -9,6 +10,7 @@ import Image from "next/image";
 import TipTapEditor from "@/Components/TipTapEditor";
 
 interface BlogData {
+    slug: string;
     title_tk: string;
     text_tk: string;
     title_en: string;
@@ -23,6 +25,7 @@ const EditBlog = () => {
     const router = useRouter();
 
     const [data, setData] = useState<BlogData>({
+        slug: '',
         title_tk: '',
         text_tk: '',
         title_en: '',
@@ -51,6 +54,7 @@ const EditBlog = () => {
                     const rawData = response.data[0]; // Получаем первый элемент массива
 
                     setData({
+                        slug: rawData.slug,
                         title_tk: rawData.title_tk,
                         text_tk: rawData.text_tk,
                         title_en: rawData.title_en,
@@ -87,6 +91,8 @@ const EditBlog = () => {
             const formData = new FormData();
 
 
+            // См. комментарий в форме тура: слаг отправляем прежний явно.
+            formData.append('slug', data.slug ?? '');
             formData.append('title_tk', data.title_tk);
             formData.append('text_tk', data.text_tk);
             formData.append('title_en', data.title_en);
@@ -132,6 +138,7 @@ const EditBlog = () => {
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">Edit Blogs</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                        <SlugField value={data.slug} onChange={() => {}} section="blog" locked />
                         {data.main_image && (
                             <div className="mb-4">
                                 <label className="block font-semibold mb-2">Current image:</label>

@@ -1,5 +1,6 @@
 'use client';
 import React, {useEffect, useState} from 'react';
+import SlugField from '@/Components/SlugField';
 import {useParams, useRouter} from 'next/navigation';
 import axios from 'axios';
 import TipTapEditor from '@/Components/TipTapEditor';
@@ -14,6 +15,7 @@ const EditTour = () => {
 
     type TourData = {
         popular: number;
+        slug: string;
         title_tk: string;
         title_en: string;
         title_ru: string;
@@ -39,6 +41,7 @@ const EditTour = () => {
 
     const [data, setData] = useState<TourData>({
         popular: 0,
+        slug: '',
         title_tk: '',
         title_en: '',
         title_ru: '',
@@ -142,6 +145,10 @@ const EditTour = () => {
             const token = localStorage.getItem('auth_token');
 
             const formData = new FormData();
+            // Слаг отправляем прежний: поле в форме закрыто, но без него
+            // бэкенд принял бы пустое значение за просьбу оставить как есть —
+            // отправляем явно, чтобы поведение не зависело от умолчаний.
+            formData.append('slug', data.slug ?? '');
             formData.append('popular', String(data.popular));
             formData.append('title_tk', data.title_tk);
             formData.append('title_en', data.title_en);
@@ -201,6 +208,7 @@ const EditTour = () => {
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">Edit Tour</h1>
                     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                        <SlugField value={data.slug} onChange={() => {}} section="tours" locked />
                         {data.image && (
                             <div className="mb-4">
                                 <label className="block font-semibold mb-2">Current image:</label>

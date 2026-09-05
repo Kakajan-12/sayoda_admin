@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import SlugField from '@/Components/SlugField';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
@@ -16,6 +17,7 @@ const AddBlog = () => {
     const [text_en, setTextEn] = useState('');
     const [text_ru, setTextRu] = useState('');
     const [date, setDate] = useState('');
+    const [slug, setSlug] = useState('');
 
     const router = useRouter();
 
@@ -46,6 +48,7 @@ const AddBlog = () => {
         formData.append('text_en', text_en);
         formData.append('text_ru', text_ru);
         formData.append('date', date);
+        formData.append('slug', slug);
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`, {
@@ -107,6 +110,7 @@ const AddBlog = () => {
                                     className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                                 />
                             </div>
+                            <SlugField value={slug} onChange={setSlug} section="blog" />
                             <div>
                                 <label className="block text-gray-700 font-semibold mb-2">
                                     Date:
