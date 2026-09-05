@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import TipTapEditor from "@/Components/TipTapEditor";
+import DestinationSelect from "@/Components/DestinationSelect";
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import { DocumentIcon } from "@heroicons/react/16/solid";
@@ -12,7 +13,7 @@ const EditSlider = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [slider, setSlider] = useState({ title_tk: '', text_tk: '', title_en: '', text_en: '', title_ru: '', text_ru: '', image: '', tour_id: '' });
+    const [slider, setSlider] = useState({ title_tk: '', text_tk: '', title_en: '', text_en: '', title_ru: '', text_ru: '', image: '', tour_id: '', destination_id: '' });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
@@ -41,7 +42,13 @@ const EditSlider = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setSlider(response.data);
+                // Связь со страной может быть пустой — null в select даёт
+                // строку "null" и выбранным оказывается несуществующий пункт.
+                setSlider({
+                    ...response.data,
+                    tour_id: response.data.tour_id ?? '',
+                    destination_id: response.data.destination_id ?? '',
+                });
                 setLoading(false);
             } catch (err) {
                 console.error(err);
@@ -72,6 +79,7 @@ const EditSlider = () => {
             formData.append('text_en', String(slider.text_en));
             formData.append('text_ru', String(slider.text_ru));
             formData.append('tour_id', slider.tour_id ? String(slider.tour_id) : '');
+            formData.append('destination_id', slider.destination_id ? String(slider.destination_id) : '');
 
             if (imageFile) {
 
@@ -159,6 +167,12 @@ const EditSlider = () => {
                             </div>
                         </div>
 
+                        <DestinationSelect
+                            value={String(slider.destination_id ?? '')}
+                            onChange={(v) => setSlider((prev) => ({ ...prev, destination_id: v }))}
+                            label="Ведёт на страну:"
+                            hint="Выбрана страна — карточка ведёт на её страницу, а не на тур."
+                        />
 
                         <div className="tabs tabs-lift">
                             <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>

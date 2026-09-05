@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
+import DestinationSelect from '@/Components/DestinationSelect';
 
 const AddTourLocation = () => {
     const [location_tk, setLocationTk] = useState('');
     const [location_en, setLocationEn] = useState('');
     const [location_ru, setLocationRu] = useState('');
+    const [destination_id, setDestinationId] = useState('');
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -24,6 +26,8 @@ const AddTourLocation = () => {
             location_tk,
             location_en,
             location_ru,
+            // Пусто — связь не ставим, страница страны отберёт туры по названию
+            destination_id: destination_id || null,
         };
 
         try {
@@ -94,6 +98,15 @@ const AddTourLocation = () => {
                                 type="text"
                                 required
                                 className="border border-gray-300 rounded p-2 w-full"
+                            />
+                        </div>
+
+                        <div className="mb-4">
+                            <DestinationSelect
+                                value={destination_id}
+                                onChange={setDestinationId}
+                                label="Относится к стране:"
+                                hint="Туры этой локации попадут на вкладку «Туры» выбранной страны."
                             />
                         </div>
 

@@ -5,12 +5,13 @@ import axios from 'axios';
 import Sidebar from "@/Components/Sidebar";
 import TokenTimer from "@/Components/TokenTimer";
 import { DocumentIcon } from "@heroicons/react/16/solid";
+import DestinationSelect from "@/Components/DestinationSelect";
 
 const EditTourLocation = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [data, setData] = useState({ location_tk: '', location_en: '', location_ru: '' });
+    const [data, setData] = useState({ location_tk: '', location_en: '', location_ru: '', destination_id: '' });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -24,7 +25,8 @@ const EditTourLocation = () => {
                     },
                 });
 
-                setData(response.data[0]);
+                // null в select превращается в строку "null" — приводим к пустой
+                setData({ ...response.data[0], destination_id: response.data[0]?.destination_id ?? '' });
                 setLoading(false);
             } catch (err) {
                 console.error('Ошибка при загрузке данных:', err);
@@ -45,7 +47,8 @@ const EditTourLocation = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('auth_token');
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-location/${id}`, data, {
+            const payload = { ...data, destination_id: data.destination_id || null };
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-location/${id}`, payload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -99,6 +102,15 @@ const EditTourLocation = () => {
                                 type="text"
                                 required
                                 className="border border-gray-300 rounded p-2 w-full"
+                            />
+                        </div>
+
+                        <div className="mb-4">
+                            <DestinationSelect
+                                value={String(data.destination_id ?? '')}
+                                onChange={(v) => setData((prev) => ({ ...prev, destination_id: v }))}
+                                label="Относится к стране:"
+                                hint="Туры этой локации попадут на вкладку «Туры» выбранной страны."
                             />
                         </div>
 

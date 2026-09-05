@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Sidebar from '@/Components/Sidebar';
 import TokenTimer from '@/Components/TokenTimer';
 import TipTapEditor from '@/Components/TipTapEditor';
+import DestinationSelect from '@/Components/DestinationSelect';
 
 const AddSlider = () => {
     const [isClient, setIsClient] = useState(false);
@@ -16,6 +17,7 @@ const AddSlider = () => {
     const [text_en, setTextEn] = useState('');
     const [text_ru, setTextRu] = useState('');
     const [tour_id, setTourId] = useState('');
+    const [destination_id, setDestinationId] = useState('');
     const [tours, setTours] = useState<
         { id: number; title_tk: string; title_en: string; title_ru: string }[]
     >([]);
@@ -62,6 +64,7 @@ const AddSlider = () => {
         formData.append('text_en', text_en ?? '');
         formData.append('text_ru', text_ru ?? '');
         formData.append('tour_id', tour_id ?? '');
+        formData.append('destination_id', destination_id ?? '');
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sliders`, {
@@ -140,6 +143,14 @@ const AddSlider = () => {
                                 ))}
                             </select>
 
+                        </div>
+                        <div className="w-full mb-4">
+                            <DestinationSelect
+                                value={destination_id}
+                                onChange={setDestinationId}
+                                label="Ведёт на страну:"
+                                hint="Выбрана страна — карточка ведёт на её страницу, а не на тур."
+                            />
                         </div>
                         {isClient && (
                             <>

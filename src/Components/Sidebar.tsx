@@ -10,7 +10,7 @@ import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
 import { TbCategoryFilled } from "react-icons/tb";
-import { FaLocationDot,FaMapLocationDot, FaPassport } from "react-icons/fa6";
+import { FaLocationDot,FaMapLocationDot, FaPassport, FaEarthAsia } from "react-icons/fa6";
 import { RiLinksLine } from "react-icons/ri";
 
 const menuGroups = [
@@ -31,6 +31,8 @@ const menuGroups = [
             // Первый экран главной: заголовок, подзаголовок, кнопка и фон
             { href: "/admin/banner", label: "Main Banner", icon: LuImage },
             { href: "/admin/sliders", label: "Sliders", icon: TfiLayoutSlider },
+            // Страницы стран: описание, разделы и виза
+            { href: "/admin/destinations", label: "Destinations", icon: FaEarthAsia },
             { href: "/admin/testimonials", label: "Testimonials", icon: VscFeedback },
         ],
     },
