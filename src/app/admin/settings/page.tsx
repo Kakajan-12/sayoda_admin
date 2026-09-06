@@ -38,58 +38,76 @@ const EMPTY: Settings = {
  * виджета был вставлен API-ключ, и найти причину можно было только в коде.
  * Поэтому предупреждаем прямо в форме, но сохранять не мешаем.
  */
-const warn = (key: keyof Settings, value: string): string | null => {
+/** Тип ключа словаря, чтобы не тянуть импорт ради одной аннотации. */
+type DictKeyRef = Parameters<ReturnType<typeof useT>>[0];
+
+const warn = (
+    key: keyof Settings,
+    value: string,
+    t: ReturnType<typeof useT>,
+): string | null => {
     const v = (value || '').trim();
     if (!v) return null;
 
     if (key === 'tawk_id' && !/[A-Za-z0-9]{6,}\/[A-Za-z0-9]{3,}/.test(v)) {
-        return 'Не похоже на код виджета: в нём должна быть косая черта между двумя идентификаторами. Похоже, вставлен API-ключ — возьмите код из Administration → Channels → Chat Widget.';
+        return t('set.err.tawk');
     }
     if (key === 'ga4_id' && !/^G-[A-Z0-9]+$/i.test(v)) {
-        return 'Идентификатор GA4 начинается с «G-». Счётчик с другим значением не подключится.';
+        return t('set.err.ga4');
     }
     if (key === 'whatsapp' && v.replace(/\D/g, '').length < 8) {
-        return 'Слишком короткий номер — кнопка WhatsApp его не примет.';
+        return t('set.err.phone');
     }
     return null;
 };
 
-const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint: string }[] = [
+/**
+ * Список хранит ключи словаря, а не готовые строки: он объявлен на уровне
+ * модуля, где переводчика ещё нет, а подписи должны меняться вместе с языком
+ * интерфейса. `label` остаётся строкой там, где это имя собственное.
+ */
+const FIELDS: {
+    key: keyof Settings;
+    label?: string;
+    labelKey?: DictKeyRef;
+    placeholder: string;
+    hintKey: DictKeyRef;
+}[] = [
     {
         key: 'ga4_id',
         label: 'GA4 Measurement ID',
         placeholder: 'G-XXXXXXXXXX',
-        hint: 'Пока не задан, счётчик на сайте не подключается и заявки нельзя посчитать.',
+        hintKey: 'set.ga4.hint',
     },
     {
         key: 'whatsapp',
         label: 'WhatsApp',
         placeholder: '99361169097',
-        hint: 'Номер в международном формате. Если пусто, кнопка использует основной телефон компании.',
+        hintKey: 'set.whatsapp.hint',
     },
     {
         key: 'tawk_id',
-        label: 'Чат Tawk.to',
+        labelKey: 'set.tawk.label',
         placeholder: '68b1c2d3e4f5a6b7c8d9e0f1/1abc2de3f',
-        hint: 'Tawk.to → Administration → Channels → Chat Widget. Можно вставить ссылку целиком или пару propertyId/widgetId. Не подходит API-ключ из Property Settings — в нём нет косой черты. Пусто — чат не показывается.',
+        hintKey: 'set.tawk.hint',
     },
     {
         key: 'company_legal_name',
-        label: 'Юридическое название',
+        labelKey: 'set.legal.label',
         placeholder: 'Hojalyk jemgyýeti «...»',
-        hint: 'Выводится в футере и в разметке TravelAgency. Пустое значение не выводится.',
+        hintKey: 'set.legal.hint',
     },
     {
         key: 'license_number',
-        label: 'Номер лицензии туроператора',
+        labelKey: 'set.license.label',
         placeholder: '№ ...',
-        hint: 'Сигнал доверия: турист переводит крупную сумму незнакомой компании.',
+        hintKey: 'set.license.hint',
     },
     {
         key: 'founded_year',
-        label: 'Год основания',
+        labelKey: 'set.founded.label',
         placeholder: '2019',
-        hint: 'Идёт в foundingDate в schema.org.',
+        hintKey: 'set.founded.hint',
     },
 ];
 
@@ -129,7 +147,7 @@ const Settings = () => {
                 router.push("/");
                 return;
             }
-            setError("Ошибка при получении настроек");
+            setError(t('set.err.load'));
         }
     }, [router]);
 
@@ -153,7 +171,7 @@ const Settings = () => {
             setSaved(true);
         } catch (err) {
             console.error(err);
-            setError("Не удалось сохранить настройки");
+            setError(t('set.err.save'));
         } finally {
             setSaving(false);
         }
@@ -164,14 +182,14 @@ const Settings = () => {
         <div className="mt-8 max-w-3xl">
             <h2 className="mb-2 text-xl font-bold text-ink">{t('nav.settings')}</h2>
             <p className="text-sm text-gray-600 mb-6">
-                Значения подхватываются сайтом автоматически. Пустые поля нигде не выводятся.
+                {t('set.intro')}
             </p>
 
             <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 space-y-6">
                 {FIELDS.map((field) => (
                     <div key={field.key}>
-                        <label className="block font-semibold mb-1" htmlFor={field.key}>
-                            {field.label}
+                        <label className="mb-1 block text-sm font-medium text-inkMuted" htmlFor={field.key}>
+                            {field.labelKey ? t(field.labelKey) : field.label}
                         </label>
                         <input
                             id={field.key}
@@ -181,12 +199,12 @@ const Settings = () => {
                             onChange={(e) =>
                                 setSettings((prev) => ({ ...prev, [field.key]: e.target.value }))
                             }
-                            className="w-full border border-gray-300 rounded-md px-4 py-2"
+                            className="w-full rounded-md border border-sand px-4 py-2 outline-none transition focus:border-tileLight"
                         />
-                        <p className="text-xs text-gray-500 mt-1">{field.hint}</p>
-                        {warn(field.key, settings[field.key]) && (
+                        <p className="mt-1 text-xs text-inkMuted">{t(field.hintKey)}</p>
+                        {warn(field.key, settings[field.key], t) && (
                             <p className="text-xs text-amber-700 mt-1">
-                                {warn(field.key, settings[field.key])}
+                                {warn(field.key, settings[field.key], t)}
                             </p>
                         )}
                     </div>
@@ -198,9 +216,9 @@ const Settings = () => {
                         disabled={saving}
                         className="bg text-white py-2 px-8 rounded-md cursor-pointer disabled:opacity-60"
                     >
-                        {saving ? 'Saving…' : 'Save'}
+                        {saving ? t('common.saving') : t('common.save')}
                     </button>
-                    {saved && <span className="text-green-600 text-sm">Сохранено</span>}
+                    {saved && <span className="text-green-600 text-sm">{t('common.saved')}</span>}
                     {error && <span className="text-red-600 text-sm">{error}</span>}
                 </div>
             </form>

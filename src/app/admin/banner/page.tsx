@@ -71,7 +71,7 @@ const Banner = () => {
         } catch (err) {
             const e = err as AxiosError;
             if (axios.isAxiosError(e) && e.response?.status === 401) { router.push('/'); return; }
-            setError('Ошибка при загрузке баннера');
+            setError(t('ban.err.load'));
         }
     }, [router]);
 
@@ -104,7 +104,7 @@ const Banner = () => {
             await load();
         } catch (err) {
             console.error(err);
-            setError('Не удалось сохранить баннер');
+            setError(t('ban.err.save'));
         } finally {
             setSaving(false);
         }
@@ -119,7 +119,7 @@ const Banner = () => {
             setFile(null); setPreview(null);
             await load();
         } catch {
-            setError('Не удалось вернуть картинку по умолчанию');
+            setError(t('ban.err.reset'));
         }
     };
 
@@ -130,14 +130,11 @@ const Banner = () => {
         <>
         <div className="mt-8 max-w-4xl">
             <h2 className="mb-2 text-xl font-bold text-ink">{t('nav.banner')}</h2>
-            <p className="text-sm text-gray-600 mb-6">
-                Первый экран главной страницы. Изменения появятся на сайте в течение минуты.
-                Пустое поле — сайт покажет текст по умолчанию.
-            </p>
+            <p className="mb-6 text-sm text-inkMuted">{t('ban.intro')}</p>
 
             <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 space-y-8">
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-inkMuted">Фоновая картинка</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('ban.background')}</label>
                     <div className="flex items-start gap-6">
                         <div className="w-72 h-40 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                             {currentImage ? (
@@ -151,7 +148,7 @@ const Banner = () => {
                                 />
                             ) : (
                                 <span className="text-sm text-gray-500 text-center px-4">
-                                    Своя картинка не загружена — используется картинка из вёрстки
+                                    {t('ban.noImage')}
                                 </span>
                             )}
                         </div>
@@ -162,17 +159,14 @@ const Banner = () => {
                                 onChange={onFile}
                                 className="text-sm"
                             />
-                            <p className="text-xs text-gray-500 max-w-sm">
-                                JPG, PNG или WebP, до 10 МБ. Лучше горизонтальная,
-                                от 1920px по ширине: она растягивается на весь экран.
-                            </p>
+                            <p className="max-w-sm text-xs text-inkMuted">{t('ban.imageHint')}</p>
                             {banner.image && (
                                 <button
                                     type="button"
                                     onClick={resetImage}
                                     className="text-sm text-red-600 underline w-fit"
                                 >
-                                    Вернуть картинку по умолчанию
+                                    {t('ban.reset')}
                                 </button>
                             )}
                         </div>
@@ -184,7 +178,7 @@ const Banner = () => {
                         <h3 className="font-semibold mb-3">{lang.label}</h3>
                         <div className="space-y-3">
                             <div>
-                                <label className="block text-sm mb-1">Заголовок</label>
+                                <label className="block text-sm mb-1">{t('ban.heading')}</label>
                                 <input
                                     type="text"
                                     value={banner[`title_${lang.code}`]}
@@ -193,7 +187,7 @@ const Banner = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm mb-1">Подзаголовок</label>
+                                <label className="block text-sm mb-1">{t('ban.subtitle')}</label>
                                 <textarea
                                     rows={2}
                                     value={banner[`subtitle_${lang.code}`]}
@@ -202,7 +196,7 @@ const Banner = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm mb-1">Надпись на кнопке</label>
+                                <label className="block text-sm mb-1">{t('ban.buttonText')}</label>
                                 <input
                                     type="text"
                                     value={banner[`button_text_${lang.code}`]}
@@ -215,7 +209,7 @@ const Banner = () => {
                 ))}
 
                 <div className="border-t border-gray-200 pt-6">
-                    <label className="block font-semibold mb-1">Куда ведёт кнопка</label>
+                    <label className="block font-semibold mb-1">{t('ban.buttonLink')}</label>
                     <input
                         type="text"
                         value={banner.button_link}
@@ -223,9 +217,7 @@ const Banner = () => {
                         placeholder="/tours"
                         className="w-full border border-gray-300 rounded-md px-4 py-2"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                        Путь внутри сайта без языка: /tours, /contacts. Язык подставится сам.
-                    </p>
+                    <p className="mt-1 text-xs text-inkMuted">{t('ban.buttonHint')}</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -234,9 +226,9 @@ const Banner = () => {
                         disabled={saving}
                         className="bg text-white py-2 px-8 rounded-md cursor-pointer disabled:opacity-60"
                     >
-                        {saving ? 'Сохраняем…' : 'Сохранить'}
+                        {saving ? t('common.saving') : t('common.save')}
                     </button>
-                    {saved && <span className="text-green-600 text-sm">Сохранено</span>}
+                    {saved && <span className="text-green-600 text-sm">{t('common.saved')}</span>}
                     {error && <span className="text-red-600 text-sm">{error}</span>}
                 </div>
             </form>

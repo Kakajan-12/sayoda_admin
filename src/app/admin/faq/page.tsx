@@ -66,7 +66,7 @@ const Faq = () => {
             setError(null);
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 401) { router.push('/'); return; }
-            setError('Ошибка при загрузке вопросов');
+            setError(t('faq.err.load'));
         } finally {
             setLoading(false);
         }
@@ -79,7 +79,7 @@ const Faq = () => {
 
     const save = async (item: FaqItem) => {
         if (!item.question_ru && !item.question_en && !item.question_tk) {
-            setMessage({ id: item.id, text: 'Заполните вопрос хотя бы на одном языке', ok: false });
+            setMessage({ id: item.id, text: t('faq.needQuestion'), ok: false });
             return;
         }
         setBusyId(item.id); setMessage(null);
@@ -94,33 +94,33 @@ const Faq = () => {
                 // Подменяем временный id на настоящий, иначе повторное
                 // сохранение создало бы второй такой же вопрос.
                 patch(item.id, { id: res.data.id, isNew: false });
-                setMessage({ id: res.data.id, text: 'Вопрос добавлен', ok: true });
+                setMessage({ id: res.data.id, text: t('faq.added'), ok: true });
             } else {
                 await axios.put(`${API}/api/faq/${item.id}`, payload, authHeader());
-                setMessage({ id: item.id, text: 'Сохранено', ok: true });
+                setMessage({ id: item.id, text: t('common.saved'), ok: true });
             }
         } catch {
-            setMessage({ id: item.id, text: 'Не удалось сохранить', ok: false });
+            setMessage({ id: item.id, text: t('faq.err.save'), ok: false });
         } finally {
             setBusyId(null);
         }
     };
 
     const remove = async (item: FaqItem) => {
-        const name = item.question_ru || item.question_en || 'вопрос';
-        if (!item.isNew && !window.confirm(`Удалить «${name}»?`)) return;
+        const name = item.question_ru || item.question_en || t('faq.question');
+        if (!item.isNew && !window.confirm(t('common.confirmDelete', { name }))) return;
         if (!item.isNew) {
             try {
                 await axios.delete(`${API}/api/faq/${item.id}`, authHeader());
             } catch {
-                setMessage({ id: item.id, text: 'Не удалось удалить', ok: false });
+                setMessage({ id: item.id, text: t('faq.err.delete'), ok: false });
                 return;
             }
         }
         setItems((prev) => prev.filter((it) => it.id !== item.id));
     };
 
-    if (loading) return <p className="p-10">Загрузка…</p>;
+    if (loading) return <p className="p-10">{t('common.loading')}</p>;
 
     return (
         <>
@@ -128,14 +128,10 @@ const Faq = () => {
             <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
                 <div>
                     <h2 className="text-xl font-bold text-ink">{t('nav.faq')}</h2>
-                    <p className="text-sm text-gray-600 mt-1">
-                        Блок в конце главной страницы. Эти же вопросы поисковик
-                        может показать прямо в выдаче, поэтому пишите ответы
-                        обычным текстом, без ссылок и списков.
-                    </p>
+                    <p className="mt-1 text-sm text-inkMuted">{t('faq.intro')}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">Язык:</span>
+                    <span className="text-sm text-inkMuted">{t('faq.langLabel')}</span>
                     {LANGS.map((l) => (
                         <button
                             key={l.code}
@@ -156,7 +152,7 @@ const Faq = () => {
             <div className="space-y-4">
                 {items.length === 0 && (
                     <p className="bg-white rounded-md p-6 text-gray-600">
-                        Пока ни одного вопроса. Блок на сайте не выводится, пока он пуст.
+                        {t('faq.empty')}
                     </p>
                 )}
 
@@ -168,7 +164,7 @@ const Faq = () => {
                     >
                         <summary className="cursor-pointer px-4 py-3 font-semibold flex justify-between items-center gap-4">
                             <span>
-                                {item[`question_${lang}`] || 'Новый вопрос'}
+                                {item[`question_${lang}`] || t('faq.newItem')}
                             </span>
                             <span className="text-sm font-normal text-gray-500 shrink-0">
                                 № {item.sort_order}
@@ -177,7 +173,7 @@ const Faq = () => {
 
                         <div className="p-4 border-t border-gray-200 space-y-4">
                             <div className="w-40">
-                                <label className="block text-sm font-semibold mb-1">Порядок</label>
+                                <label className="block text-sm font-semibold mb-1">{t('common.order')}</label>
                                 <input
                                     type="number"
                                     value={item.sort_order}
@@ -185,11 +181,11 @@ const Faq = () => {
                                         patch(item.id, { sort_order: Number(e.target.value) || 0 })}
                                     className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">Меньше — выше в списке.</p>
+                                <p className="text-xs text-gray-500 mt-1">{t('faq.orderHint')}</p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold mb-1">Вопрос</label>
+                                <label className="block text-sm font-semibold mb-1">{t('faq.question')}</label>
                                 <input
                                     type="text"
                                     value={item[`question_${lang}`] ?? ''}
@@ -200,7 +196,7 @@ const Faq = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold mb-1">Ответ</label>
+                                <label className="block text-sm font-semibold mb-1">{t('faq.answer')}</label>
                                 <textarea
                                     rows={4}
                                     value={item[`answer_${lang}`] ?? ''}
@@ -217,7 +213,7 @@ const Faq = () => {
                                     disabled={busyId === item.id}
                                     className="bg text-white px-4 py-2 rounded disabled:opacity-60"
                                 >
-                                    {busyId === item.id ? 'Сохраняем…' : 'Сохранить'}
+                                    {busyId === item.id ? t('common.saving') : t('common.save')}
                                 </button>
                                 <button
                                     type="button"
@@ -243,7 +239,7 @@ const Faq = () => {
                     setItems((prev) => [...prev, emptyItem(prev.length)])}
                 className="mt-4 border border-gray-400 px-4 py-2 rounded"
             >
-                Добавить вопрос
+                {t('faq.addItem')}
             </button>
         </div>
         </>
