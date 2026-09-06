@@ -71,10 +71,16 @@ interface Props {
     columns: Column[];
     /** Поля, по которым ищет строка поиска. Пусто — поиска нет. */
     searchFields?: string[];
+    /**
+     * Имя поля с идентификатором. У адресов это `address_id`, а не `id`,
+     * и без этого все строки получали одинаковый ключ.
+     */
+    idField?: string;
 }
 
 const ResourceList: React.FC<Props> = ({
     titleKey, endpoint, addHref, editHref, deleteEndpoint, rowLabel, columns, searchFields,
+    idField = 'id',
 }) => {
     const { locale, t } = useAdminLocale();
     const router = useRouter();
@@ -126,9 +132,9 @@ const ResourceList: React.FC<Props> = ({
 
     const remove = async (row: Row) => {
         if (!deleteEndpoint) return;
-        const name = rowLabel ? rowLabel(row) : String(row.id);
+        const name = rowLabel ? rowLabel(row) : String(row[idField]);
         if (!window.confirm(t('common.confirmDelete', { name }))) return;
-        setBusyId(row.id);
+        setBusyId(row[idField] as Row['id']);
         try {
             const token = readToken();
             await axios.delete(`${API}${deleteEndpoint(row)}`, {
@@ -225,7 +231,7 @@ const ResourceList: React.FC<Props> = ({
                             </tr>
                         ) : (
                             filtered.map((row) => (
-                                <tr key={String(row.id)} className="border-b border-sand last:border-0 hover:bg-sandLight/50">
+                                <tr key={String(row[idField])} className="border-b border-sand last:border-0 hover:bg-sandLight/50">
                                     {columns.map((c) => (
                                         <td key={c.field} className={`px-4 py-3 align-middle ${c.className ?? ''}`}>
                                             {c.render ? (
@@ -296,13 +302,13 @@ const ResourceList: React.FC<Props> = ({
                                                     <button
                                                         type="button"
                                                         onClick={() => remove(row)}
-                                                        disabled={busyId === row.id}
+                                                        disabled={busyId === row[idField]}
                                                         title={t('common.delete')}
                                                         className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-brick transition-colors hover:bg-brick/10 disabled:opacity-50"
                                                     >
                                                         <LuTrash2 className="size-4" />
                                                         <span className="hidden lg:inline">
-                                                            {busyId === row.id ? t('list.deleting') : t('common.delete')}
+                                                            {busyId === row[idField] ? t('list.deleting') : t('common.delete')}
                                                         </span>
                                                     </button>
                                                 )}
