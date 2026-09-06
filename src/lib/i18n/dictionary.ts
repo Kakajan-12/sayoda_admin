@@ -133,6 +133,20 @@ export const dictionary = {
     'nav.socialLinks': { ru: 'Соцсети', en: 'Social links' },
     'nav.locations': { ru: 'Точки на карте', en: 'Map locations' },
 
+    // ─── заявки ───
+    'req.date': { ru: 'Дата', en: 'Date' },
+    'req.type': { ru: 'Откуда', en: 'Source' },
+    'req.name': { ru: 'Имя', en: 'Name' },
+    'req.contacts': { ru: 'Контакты', en: 'Contacts' },
+    'req.subject': { ru: 'Тур или тема', en: 'Tour or subject' },
+    'req.status': { ru: 'Статус', en: 'Status' },
+    'req.allStatuses': { ru: 'Все статусы', en: 'All statuses' },
+    'req.empty': { ru: 'Заявок пока нет', en: 'No requests yet' },
+    'req.status.new': { ru: 'Новая', en: 'New' },
+    'req.status.in_progress': { ru: 'В работе', en: 'In progress' },
+    'req.status.done': { ru: 'Обработана', en: 'Done' },
+    'req.status.spam': { ru: 'Спам', en: 'Spam' },
+
     // ─── дашборд ───
     'dash.title': { ru: 'Обзор', en: 'Overview' },
     'dash.hint': {

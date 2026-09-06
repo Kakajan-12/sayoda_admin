@@ -69,7 +69,7 @@ const Destinations = () => {
         <div className="mt-8">
             <div className="w-full flex justify-between items-center mb-4">
                 <div>
-                    <h2 className="text-2xl font-bold">Направления</h2>
+                    <h2 className="text-xl font-bold text-ink">{t('nav.destinations')}</h2>
                     <p className="text-sm text-gray-600 mt-1">
                         Страницы стран: описание, разделы и информация о визе.
                     </p>

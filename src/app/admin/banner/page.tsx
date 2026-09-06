@@ -129,7 +129,7 @@ const Banner = () => {
     return (
         <>
         <div className="mt-8 max-w-4xl">
-            <h2 className="text-2xl font-bold mb-2">Главный баннер</h2>
+            <h2 className="mb-2 text-xl font-bold text-ink">{t('nav.banner')}</h2>
             <p className="text-sm text-gray-600 mb-6">
                 Первый экран главной страницы. Изменения появятся на сайте в течение минуты.
                 Пустое поле — сайт покажет текст по умолчанию.

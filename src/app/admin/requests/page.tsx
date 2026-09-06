@@ -1,4 +1,6 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
+import type { DictKey } from "@/lib/i18n/dictionary";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -35,14 +37,19 @@ interface RequestItem {
 
 const STATUSES = ['new', 'in_progress', 'done', 'spam'] as const;
 
+/**
+ * Цвет статуса. Кирпичный у новой заявки не случайно: это единственный
+ * статус, который требует действия сегодня, и он же акцентный на сайте.
+ */
 const STATUS_STYLES: Record<string, string> = {
-    new: 'bg-blue-100 text-blue-800',
-    in_progress: 'bg-yellow-100 text-yellow-800',
-    done: 'bg-green-100 text-green-800',
-    spam: 'bg-gray-200 text-gray-600',
+    new: 'bg-brick/10 text-brick',
+    in_progress: 'bg-tileTint text-tile',
+    done: 'bg-sand text-inkMuted',
+    spam: 'bg-sandLight text-inkMuted',
 };
 
 const Requests = () => {
+    const t = useT();
     const [requests, setRequests] = useState<RequestItem[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>('');
     const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -107,45 +114,46 @@ const Requests = () => {
 
     return (
         <>
-        <div className="mt-8">
+        <div className="mx-auto max-w-7xl">
             <div className="w-full flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Requests</h2>
+                <h2 className="text-xl font-bold text-ink">{t('nav.requests')}</h2>
                 <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="border rounded-md px-4 py-2 bg-white"
+                    className="rounded-md border border-sand bg-white px-4 py-2 text-sm outline-none transition focus:border-tileLight"
                 >
-                    <option value="">All statuses</option>
+                    <option value="">{t('req.allStatuses')}</option>
                     {STATUSES.map((s) => (
-                        <option key={s} value={s}>{s}</option>
+                        <option key={s} value={s}>{t(`req.status.${s}` as DictKey)}</option>
                     ))}
                 </select>
             </div>
 
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+            <div className="overflow-x-auto rounded-lg border border-sand bg-white">
+            <table className="min-w-full text-sm">
                 <thead>
-                <tr>
-                    <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Date</th>
-                    <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Type</th>
-                    <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Name</th>
-                    <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Contacts</th>
-                    <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Tour / Subject</th>
-                    <th className="py-2 px-4 border-b-2 border-gray-200 text-left text-gray-600">Status</th>
+                <tr className="border-b border-sand bg-sandLight/60">
+                    <th className="px-4 py-3 text-left font-semibold text-inkMuted">{t('req.date')}</th>
+                    <th className="px-4 py-3 text-left font-semibold text-inkMuted">{t('req.type')}</th>
+                    <th className="px-4 py-3 text-left font-semibold text-inkMuted">{t('req.name')}</th>
+                    <th className="px-4 py-3 text-left font-semibold text-inkMuted">{t('req.contacts')}</th>
+                    <th className="px-4 py-3 text-left font-semibold text-inkMuted">{t('req.subject')}</th>
+                    <th className="px-4 py-3 text-left font-semibold text-inkMuted">{t('req.status')}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {requests.length === 0 ? (
                     <tr>
-                        <td colSpan={6} className="text-center py-4">No requests yet</td>
+                        <td colSpan={6} className="text-center py-4">{t('req.empty')}</td>
                     </tr>
                 ) : (
                     requests.map((r) => (
                         <React.Fragment key={r.id}>
                             <tr
                                 onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                                className="cursor-pointer hover:bg-gray-50"
+                                className="cursor-pointer border-b border-sand hover:bg-sandLight/60"
                             >
-                                <td className="py-3 px-4 border-b border-gray-200 whitespace-nowrap">
+                                <td className="px-4 py-3 whitespace-nowrap">
                                     {new Date(r.created_at).toLocaleString()}
                                     {/* Письмо не ушло — заявку легко пропустить, помечаем явно */}
                                     {!r.mail_sent && (
@@ -154,14 +162,14 @@ const Requests = () => {
                                         </span>
                                     )}
                                 </td>
-                                <td className="py-3 px-4 border-b border-gray-200">{r.type}</td>
-                                <td className="py-3 px-4 border-b border-gray-200">{fullName(r)}</td>
-                                <td className="py-3 px-4 border-b border-gray-200">
-                                    {r.email && <div><a href={`mailto:${r.email}`} className="text-blue-600">{r.email}</a></div>}
-                                    {r.phone && <div><a href={`tel:${r.phone}`} className="text-blue-600">{r.phone}</a></div>}
+                                <td className="px-4 py-3">{r.type}</td>
+                                <td className="px-4 py-3">{fullName(r)}</td>
+                                <td className="px-4 py-3">
+                                    {r.email && <div><a href={`mailto:${r.email}`} className="text-tile hover:underline">{r.email}</a></div>}
+                                    {r.phone && <div><a href={`tel:${r.phone}`} className="text-tile hover:underline">{r.phone}</a></div>}
                                 </td>
-                                <td className="py-3 px-4 border-b border-gray-200">{r.tour || r.subject || '—'}</td>
-                                <td className="py-3 px-4 border-b border-gray-200">
+                                <td className="px-4 py-3">{r.tour || r.subject || '—'}</td>
+                                <td className="px-4 py-3">
                                     <select
                                         value={r.status}
                                         onClick={(e) => e.stopPropagation()}
@@ -169,7 +177,7 @@ const Requests = () => {
                                         className={`rounded-md px-2 py-1 text-sm ${STATUS_STYLES[r.status] || ''}`}
                                     >
                                         {STATUSES.map((s) => (
-                                            <option key={s} value={s}>{s}</option>
+                                            <option key={s} value={s}>{t(`req.status.${s}` as DictKey)}</option>
                                         ))}
                                     </select>
                                 </td>
@@ -198,6 +206,7 @@ const Requests = () => {
                 )}
                 </tbody>
             </table>
+            </div>
         </div>
         </>
     );

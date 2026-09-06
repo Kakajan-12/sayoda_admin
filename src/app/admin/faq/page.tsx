@@ -127,7 +127,7 @@ const Faq = () => {
         <div className="mt-8 max-w-5xl">
             <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
                 <div>
-                    <h2 className="text-2xl font-bold">Частые вопросы</h2>
+                    <h2 className="text-xl font-bold text-ink">{t('nav.faq')}</h2>
                     <p className="text-sm text-gray-600 mt-1">
                         Блок в конце главной страницы. Эти же вопросы поисковик
                         может показать прямо в выдаче, поэтому пишите ответы
