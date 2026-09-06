@@ -2,8 +2,6 @@
 
 import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/Components/Sidebar';
-import TokenTimer from '@/Components/TokenTimer';
 import TipTapEditor from "@/Components/TipTapEditor";
 
 const ContactLocation = () => {
@@ -58,67 +56,63 @@ const ContactLocation = () => {
         }
     };
     return (
-        <div className="flex bg-gray-200">
-            <Sidebar />
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
-                <div className="mt-8">
-                    <form
-                        onSubmit={handleSubmit}
-                        className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
-                    >
-                        <h2 className="text-2xl font-bold mb-4">Add contact locations</h2>
+        <>
+        <div className="mt-8">
+            <form
+                onSubmit={handleSubmit}
+                className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
+            >
+                <h2 className="text-2xl font-bold mb-4">Add contact locations</h2>
 
-                        {isClient && (
-                            <>
-                                <div className="tabs tabs-lift">
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
-                                           defaultChecked/>
-                                    <div className="tab-content bg-base-100 border-base-300 p-6">
-                                        <div className="mb-4">
-                                            <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
-                                            <TipTapEditor
-                                                content={location_tk}
-                                                onChange={(content) => setLocationTk(content)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
-                                    <div className="tab-content bg-base-100 border-base-300 p-6">
-                                        <div className="mb-4">
-                                            <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
-                                            <TipTapEditor
-                                                content={location_en}
-                                                onChange={(content) => setLocationEn(content)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian" />
-                                    <div className="tab-content bg-base-100 border-base-300 p-6">
-                                        <div className="mb-4">
-                                            <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
-                                            <TipTapEditor
-                                                content={location_ru}
-                                                onChange={(content) => setLocationRu(content)}
-                                            />
-                                        </div>
-                                    </div>
+                {isClient && (
+                    <>
+                        <div className="tabs tabs-lift">
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
+                                   defaultChecked/>
+                            <div className="tab-content bg-base-100 border-base-300 p-6">
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
+                                    <TipTapEditor
+                                        content={location_tk}
+                                        onChange={(content) => setLocationTk(content)}
+                                    />
                                 </div>
-                            </>
-                        )}
+                            </div>
 
-                        <button
-                            type="submit"
-                            className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                            Add location
-                        </button>
-                    </form>
-                </div>
-            </div>
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                            <div className="tab-content bg-base-100 border-base-300 p-6">
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
+                                    <TipTapEditor
+                                        content={location_en}
+                                        onChange={(content) => setLocationEn(content)}
+                                    />
+                                </div>
+                            </div>
+
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian" />
+                            <div className="tab-content bg-base-100 border-base-300 p-6">
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
+                                    <TipTapEditor
+                                        content={location_ru}
+                                        onChange={(content) => setLocationRu(content)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                <button
+                    type="submit"
+                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Add location
+                </button>
+            </form>
         </div>
+        </>
     );
 };
 

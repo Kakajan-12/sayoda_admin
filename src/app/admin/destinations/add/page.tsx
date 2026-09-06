@@ -2,8 +2,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/Components/DestinationFields";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
@@ -44,43 +42,39 @@ const AddDestination = () => {
     };
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar/>
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer/>
-                <div className="mt-8">
-                    <h1 className="text-2xl font-bold mb-4">Новая страна</h1>
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-                        <div>
-                            <label className="block font-semibold mb-2">Картинка обложки</label>
-                            <input
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={(e) => setHeroFile(e.target.files?.[0] || null)}
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                            <p className="text-xs text-gray-500 mt-1">
-                                Горизонтальная, от 1600px по ширине.
-                            </p>
-                        </div>
-
-                        <DestinationFields value={form} onChange={patch}/>
-
-                        <div className="flex items-center gap-4">
-                            <button
-                                type="submit"
-                                disabled={saving}
-                                className="bg text-white px-4 py-2 rounded flex items-center disabled:opacity-60"
-                            >
-                                <DocumentIcon className="w-5 h-5 mr-2"/>
-                                {saving ? 'Сохраняем…' : 'Создать и перейти к разделам'}
-                            </button>
-                            {error && <span className="text-red-600 text-sm">{error}</span>}
-                        </div>
-                    </form>
+        <>
+        <div className="mt-8">
+            <h1 className="text-2xl font-bold mb-4">Новая страна</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                <div>
+                    <label className="block font-semibold mb-2">Картинка обложки</label>
+                    <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => setHeroFile(e.target.files?.[0] || null)}
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                        Горизонтальная, от 1600px по ширине.
+                    </p>
                 </div>
-            </div>
+
+                <DestinationFields value={form} onChange={patch}/>
+
+                <div className="flex items-center gap-4">
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="bg text-white px-4 py-2 rounded flex items-center disabled:opacity-60"
+                    >
+                        <DocumentIcon className="w-5 h-5 mr-2"/>
+                        {saving ? 'Сохраняем…' : 'Создать и перейти к разделам'}
+                    </button>
+                    {error && <span className="text-red-600 text-sm">{error}</span>}
+                </div>
+            </form>
         </div>
+        </>
     );
 };
 

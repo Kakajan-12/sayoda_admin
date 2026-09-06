@@ -2,8 +2,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 
 /**
  * Настройки сайта.
@@ -160,56 +158,52 @@ const Settings = () => {
     };
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar/>
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer/>
-                <div className="mt-8 max-w-3xl">
-                    <h2 className="text-2xl font-bold mb-2">Settings</h2>
-                    <p className="text-sm text-gray-600 mb-6">
-                        Значения подхватываются сайтом автоматически. Пустые поля нигде не выводятся.
-                    </p>
+        <>
+        <div className="mt-8 max-w-3xl">
+            <h2 className="text-2xl font-bold mb-2">Settings</h2>
+            <p className="text-sm text-gray-600 mb-6">
+                Значения подхватываются сайтом автоматически. Пустые поля нигде не выводятся.
+            </p>
 
-                    <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 space-y-6">
-                        {FIELDS.map((field) => (
-                            <div key={field.key}>
-                                <label className="block font-semibold mb-1" htmlFor={field.key}>
-                                    {field.label}
-                                </label>
-                                <input
-                                    id={field.key}
-                                    type="text"
-                                    value={settings[field.key]}
-                                    placeholder={field.placeholder}
-                                    onChange={(e) =>
-                                        setSettings((prev) => ({ ...prev, [field.key]: e.target.value }))
-                                    }
-                                    className="w-full border border-gray-300 rounded-md px-4 py-2"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">{field.hint}</p>
-                                {warn(field.key, settings[field.key]) && (
-                                    <p className="text-xs text-amber-700 mt-1">
-                                        {warn(field.key, settings[field.key])}
-                                    </p>
-                                )}
-                            </div>
-                        ))}
+            <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 space-y-6">
+                {FIELDS.map((field) => (
+                    <div key={field.key}>
+                        <label className="block font-semibold mb-1" htmlFor={field.key}>
+                            {field.label}
+                        </label>
+                        <input
+                            id={field.key}
+                            type="text"
+                            value={settings[field.key]}
+                            placeholder={field.placeholder}
+                            onChange={(e) =>
+                                setSettings((prev) => ({ ...prev, [field.key]: e.target.value }))
+                            }
+                            className="w-full border border-gray-300 rounded-md px-4 py-2"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">{field.hint}</p>
+                        {warn(field.key, settings[field.key]) && (
+                            <p className="text-xs text-amber-700 mt-1">
+                                {warn(field.key, settings[field.key])}
+                            </p>
+                        )}
+                    </div>
+                ))}
 
-                        <div className="flex items-center gap-4">
-                            <button
-                                type="submit"
-                                disabled={saving}
-                                className="bg text-white py-2 px-8 rounded-md cursor-pointer disabled:opacity-60"
-                            >
-                                {saving ? 'Saving…' : 'Save'}
-                            </button>
-                            {saved && <span className="text-green-600 text-sm">Сохранено</span>}
-                            {error && <span className="text-red-600 text-sm">{error}</span>}
-                        </div>
-                    </form>
+                <div className="flex items-center gap-4">
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="bg text-white py-2 px-8 rounded-md cursor-pointer disabled:opacity-60"
+                    >
+                        {saving ? 'Saving…' : 'Save'}
+                    </button>
+                    {saved && <span className="text-green-600 text-sm">Сохранено</span>}
+                    {error && <span className="text-red-600 text-sm">{error}</span>}
                 </div>
-            </div>
+            </form>
         </div>
+        </>
     );
 };
 

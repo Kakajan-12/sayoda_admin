@@ -1,10 +1,10 @@
 import Login from "@/app/login/page";
 
-
+/**
+ * Корневой адрес — это вход. Обёртка убрана: раньше форма стояла внутри
+ * тёмно-синего блока во весь экран, а сама тоже растягивалась на весь
+ * экран — получалось два наложенных фона.
+ */
 export default function Home() {
-  return (
-    <div className="flex justify-between items-center h-screen bg">
-      <Login/>
-    </div>
-  );
+  return <Login />;
 }

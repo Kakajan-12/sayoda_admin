@@ -2,8 +2,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 import { TrashIcon } from "@heroicons/react/16/solid";
 
 /**
@@ -123,134 +121,130 @@ const Faq = () => {
     if (loading) return <p className="p-10">Загрузка…</p>;
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar/>
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer/>
-                <div className="mt-8 max-w-5xl">
-                    <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
-                        <div>
-                            <h2 className="text-2xl font-bold">Частые вопросы</h2>
-                            <p className="text-sm text-gray-600 mt-1">
-                                Блок в конце главной страницы. Эти же вопросы поисковик
-                                может показать прямо в выдаче, поэтому пишите ответы
-                                обычным текстом, без ссылок и списков.
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">Язык:</span>
-                            {LANGS.map((l) => (
-                                <button
-                                    key={l.code}
-                                    type="button"
-                                    onClick={() => setLang(l.code)}
-                                    className={`px-3 py-1 rounded text-sm ${
-                                        lang === l.code ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'
-                                    }`}
-                                >
-                                    {l.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {error && <p className="text-red-600 mb-4">{error}</p>}
-
-                    <div className="space-y-4">
-                        {items.length === 0 && (
-                            <p className="bg-white rounded-md p-6 text-gray-600">
-                                Пока ни одного вопроса. Блок на сайте не выводится, пока он пуст.
-                            </p>
-                        )}
-
-                        {items.map((item) => (
-                            <details
-                                key={item.id}
-                                open={item.isNew}
-                                className="bg-white border border-gray-200 rounded-md"
-                            >
-                                <summary className="cursor-pointer px-4 py-3 font-semibold flex justify-between items-center gap-4">
-                                    <span>
-                                        {item[`question_${lang}`] || 'Новый вопрос'}
-                                    </span>
-                                    <span className="text-sm font-normal text-gray-500 shrink-0">
-                                        № {item.sort_order}
-                                    </span>
-                                </summary>
-
-                                <div className="p-4 border-t border-gray-200 space-y-4">
-                                    <div className="w-40">
-                                        <label className="block text-sm font-semibold mb-1">Порядок</label>
-                                        <input
-                                            type="number"
-                                            value={item.sort_order}
-                                            onChange={(e) =>
-                                                patch(item.id, { sort_order: Number(e.target.value) || 0 })}
-                                            className="border border-gray-300 rounded p-2 w-full"
-                                        />
-                                        <p className="text-xs text-gray-500 mt-1">Меньше — выше в списке.</p>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-semibold mb-1">Вопрос</label>
-                                        <input
-                                            type="text"
-                                            value={item[`question_${lang}`] ?? ''}
-                                            onChange={(e) =>
-                                                patch(item.id, { [`question_${lang}`]: e.target.value })}
-                                            className="border border-gray-300 rounded p-2 w-full"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-semibold mb-1">Ответ</label>
-                                        <textarea
-                                            rows={4}
-                                            value={item[`answer_${lang}`] ?? ''}
-                                            onChange={(e) =>
-                                                patch(item.id, { [`answer_${lang}`]: e.target.value })}
-                                            className="border border-gray-300 rounded p-2 w-full resize-y"
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center gap-4 border-t border-gray-200 pt-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => save(item)}
-                                            disabled={busyId === item.id}
-                                            className="bg text-white px-4 py-2 rounded disabled:opacity-60"
-                                        >
-                                            {busyId === item.id ? 'Сохраняем…' : 'Сохранить'}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => remove(item)}
-                                            className="text-red-600 flex items-center gap-1"
-                                        >
-                                            <TrashIcon className="size-4"/> Удалить
-                                        </button>
-                                        {message?.id === item.id && (
-                                            <span className={`text-sm ${message.ok ? 'text-green-600' : 'text-red-600'}`}>
-                                                {message.text}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </details>
-                        ))}
-                    </div>
-
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setItems((prev) => [...prev, emptyItem(prev.length)])}
-                        className="mt-4 border border-gray-400 px-4 py-2 rounded"
-                    >
-                        Добавить вопрос
-                    </button>
+        <>
+        <div className="mt-8 max-w-5xl">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
+                <div>
+                    <h2 className="text-2xl font-bold">Частые вопросы</h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                        Блок в конце главной страницы. Эти же вопросы поисковик
+                        может показать прямо в выдаче, поэтому пишите ответы
+                        обычным текстом, без ссылок и списков.
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Язык:</span>
+                    {LANGS.map((l) => (
+                        <button
+                            key={l.code}
+                            type="button"
+                            onClick={() => setLang(l.code)}
+                            className={`px-3 py-1 rounded text-sm ${
+                                lang === l.code ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'
+                            }`}
+                        >
+                            {l.label}
+                        </button>
+                    ))}
                 </div>
             </div>
+
+            {error && <p className="text-red-600 mb-4">{error}</p>}
+
+            <div className="space-y-4">
+                {items.length === 0 && (
+                    <p className="bg-white rounded-md p-6 text-gray-600">
+                        Пока ни одного вопроса. Блок на сайте не выводится, пока он пуст.
+                    </p>
+                )}
+
+                {items.map((item) => (
+                    <details
+                        key={item.id}
+                        open={item.isNew}
+                        className="bg-white border border-gray-200 rounded-md"
+                    >
+                        <summary className="cursor-pointer px-4 py-3 font-semibold flex justify-between items-center gap-4">
+                            <span>
+                                {item[`question_${lang}`] || 'Новый вопрос'}
+                            </span>
+                            <span className="text-sm font-normal text-gray-500 shrink-0">
+                                № {item.sort_order}
+                            </span>
+                        </summary>
+
+                        <div className="p-4 border-t border-gray-200 space-y-4">
+                            <div className="w-40">
+                                <label className="block text-sm font-semibold mb-1">Порядок</label>
+                                <input
+                                    type="number"
+                                    value={item.sort_order}
+                                    onChange={(e) =>
+                                        patch(item.id, { sort_order: Number(e.target.value) || 0 })}
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Меньше — выше в списке.</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold mb-1">Вопрос</label>
+                                <input
+                                    type="text"
+                                    value={item[`question_${lang}`] ?? ''}
+                                    onChange={(e) =>
+                                        patch(item.id, { [`question_${lang}`]: e.target.value })}
+                                    className="border border-gray-300 rounded p-2 w-full"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold mb-1">Ответ</label>
+                                <textarea
+                                    rows={4}
+                                    value={item[`answer_${lang}`] ?? ''}
+                                    onChange={(e) =>
+                                        patch(item.id, { [`answer_${lang}`]: e.target.value })}
+                                    className="border border-gray-300 rounded p-2 w-full resize-y"
+                                />
+                            </div>
+
+                            <div className="flex items-center gap-4 border-t border-gray-200 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => save(item)}
+                                    disabled={busyId === item.id}
+                                    className="bg text-white px-4 py-2 rounded disabled:opacity-60"
+                                >
+                                    {busyId === item.id ? 'Сохраняем…' : 'Сохранить'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => remove(item)}
+                                    className="text-red-600 flex items-center gap-1"
+                                >
+                                    <TrashIcon className="size-4"/> Удалить
+                                </button>
+                                {message?.id === item.id && (
+                                    <span className={`text-sm ${message.ok ? 'text-green-600' : 'text-red-600'}`}>
+                                        {message.text}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </details>
+                ))}
+            </div>
+
+            <button
+                type="button"
+                onClick={() =>
+                    setItems((prev) => [...prev, emptyItem(prev.length)])}
+                className="mt-4 border border-gray-400 px-4 py-2 rounded"
+            >
+                Добавить вопрос
+            </button>
         </div>
+        </>
     );
 };
 

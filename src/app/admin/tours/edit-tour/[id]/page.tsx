@@ -4,8 +4,6 @@ import SlugField from '@/Components/SlugField';
 import {useParams, useRouter} from 'next/navigation';
 import axios from 'axios';
 import TipTapEditor from '@/Components/TipTapEditor';
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 import {DocumentIcon} from "@heroicons/react/16/solid";
 import Image from "next/image";
 
@@ -201,320 +199,316 @@ const EditTour = () => {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar/>
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer/>
-                <div className="mt-8">
-                    <h1 className="text-2xl font-bold mb-4">Edit Tour</h1>
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-                        <SlugField value={data.slug} onChange={() => {}} section="tours" locked />
-                        {data.image && (
-                            <div className="mb-4">
-                                <label className="block font-semibold mb-2">Current image:</label>
-                                <Image
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace('\\', '/')}`}
-                                    alt="News"
-                                    width={200}
-                                    height={200}
-                                    className="w-64 rounded"
-                                />
-                            </div>
-                        )}
-                        <div className="mb-4 flex space-x-4">
-                            <div className="w-full">
-                                <div className="mb-4">
-                                    <label htmlFor="image" className="block font-semibold mb-2">New image:</label>
-                                    <input
-                                        type="file"
-                                        id="image"
-                                        accept="image/*"
-                                        onChange={(e) => {
-                                            if (e.target.files && e.target.files[0]) {
-                                                setImageFile(e.target.files[0]);
-                                            }
-                                        }}
-                                        className="border border-gray-300 rounded p-2 w-full"
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-full">
-                                <label className="block text-gray-700 font-semibold mb-2">
-                                    Select Types:
-                                </label>
-                                <select
-                                    id="tour_type"
-                                    name="tour_type_id"
-                                    value={data.tour_type_id} // если это число
-                                    onChange={(e) =>
-                                        setData((prev) => ({
-                                            ...prev,
-                                            tour_type_id: Number(e.target.value), // приводим к числу
-                                        }))
-                                    }
-                                    required
-                                    className="border border-gray-300 rounded p-2 w-full"
-                                >
-                                    <option value="">Select type</option>
-                                    {types.map((type) => (
-                                        <option key={type.id} value={type.id}>
-                                            {type.type_en} / {type.type_tk} / {type.type_ru}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="w-full">
-                                <label className="block text-gray-700 font-semibold mb-2">
-                                    Select Category:
-                                </label>
-                                <select
-                                    id="tour_cat"
-                                    name="tour_cat_id"
-                                    value={data.tour_cat_id} // число
-                                    onChange={(e) =>
-                                        setData((prev) => ({
-                                            ...prev,
-                                            tour_cat_id: Number(e.target.value), // приводим к числу
-                                        }))
-                                    }
-                                    required
-                                    className="border border-gray-300 rounded p-2 w-full"
-                                >
-                                    <option value="">Select type</option>
-                                    {cat.map((cat) => (
-                                        <option key={cat.id} value={cat.id}>
-                                            {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="w-full">
-                                <label className="block text-gray-700 font-semibold mb-2">
-                                    Select Location:
-                                </label>
-                                <select
-                                    id="location_id"
-                                    name="location_id"
-                                    value={data.location_id} // число
-                                    onChange={(e) =>
-                                        setData((prev) => ({
-                                            ...prev,
-                                            location_id: Number(e.target.value), // приводим к числу
-                                        }))
-                                    }
-                                    required
-                                    className="border border-gray-300 rounded p-2 w-full"
-                                >
-                                    <option value="">Select location</option>
-                                    {location.map((location) => (
-                                        <option key={location.id} value={location.id}>
-                                            {location.location_en} / {location.location_tk} / {location.location_ru}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="mb-4 w-full">
-                                <label className="block text-gray-700 font-semibold mb-2">Price:</label>
-                                <input
-                                    name="price"
-                                    value={data.price}
-                                    onChange={(e) =>
-                                        setData((prev) => ({
-                                            ...prev,
-                                            price: Number(e.target.value), // приведение к числу
-                                        }))
-                                    }
-                                    type="number" // лучше number, чтобы на фронте сразу был контроль
-                                    required
-                                    className="border border-gray-300 rounded p-2 w-full"
-                                />
-                            </div>
-
-                            <div className="mb-4 w-full">
-                                <label className="block text-gray-700 font-semibold mb-2">
-                                    Popular:
-                                </label>
-                                <select
-                                    id="popular"
-                                    name="popular"
-                                    value={String(data.popular)}
-                                    onChange={(e) =>
-                                        setData((prev) => ({
-                                            ...prev,
-                                            popular: Number(e.target.value),
-                                        }))
-                                    }
-                                    required
-                                    className="border border-gray-300 rounded p-2 w-full"
-                                >
-                                    <option value="">Select</option>
-                                    <option value="1">True</option>
-                                    <option value="0">False</option>
-                                </select>
-
-                            </div>
-                        </div>
-
-                        {/*<div className="mb-4 w-full">*/}
-                        {/*    <label*/}
-                        {/*        className="block text-gray-700 font-semibold mb-2">Map:</label>*/}
-                        {/*    <textarea value={data.map}*/}
-                        {/*              onChange={(e) => setData((prev) => ({...prev, map: e.target.value}))}*/}
-                        {/*              rows={10}*/}
-                        {/*              required*/}
-                        {/*              className="border border-gray-300 rounded p-2 w-full">*/}
-
-                        {/*    </textarea>*/}
-                        {/*</div>*/}
-
+        <>
+        <div className="mt-8">
+            <h1 className="text-2xl font-bold mb-4">Edit Tour</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                <SlugField value={data.slug} onChange={() => {}} section="tours" locked />
+                {data.image && (
+                    <div className="mb-4">
+                        <label className="block font-semibold mb-2">Current image:</label>
+                        <Image
+                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace('\\', '/')}`}
+                            alt="News"
+                            width={200}
+                            height={200}
+                            className="w-64 rounded"
+                        />
+                    </div>
+                )}
+                <div className="mb-4 flex space-x-4">
+                    <div className="w-full">
                         <div className="mb-4">
-                            <label htmlFor="image" className="block font-semibold mb-2">Map:</label>
+                            <label htmlFor="image" className="block font-semibold mb-2">New image:</label>
                             <input
                                 type="file"
-                                id="map"
+                                id="image"
                                 accept="image/*"
                                 onChange={(e) => {
                                     if (e.target.files && e.target.files[0]) {
-                                        setMapFile(e.target.files[0]);
+                                        setImageFile(e.target.files[0]);
                                     }
                                 }}
                                 className="border border-gray-300 rounded p-2 w-full"
                             />
                         </div>
-
-                        <div className="tabs tabs-lift">
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Title</label>
-                                    <TipTapEditor
-                                        content={data.title_tk}
-                                        onChange={(content) => handleEditorChange('title_tk', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Text:</label>
-                                    <TipTapEditor
-                                        content={data.text_tk}
-                                        onChange={(content) => handleEditorChange('text_tk', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Destination:</label>
-                                    <TipTapEditor
-                                        content={data.destination_tk}
-                                        onChange={(content) => handleEditorChange('destination_tk', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Duration:</label>
-                                    <TipTapEditor
-                                        content={data.duration_tk}
-                                        onChange={(content) => handleEditorChange('duration_tk', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Lang:</label>
-                                    <TipTapEditor
-                                        content={data.lang_tk}
-                                        onChange={(content) => handleEditorChange('lang_tk', content)}
-                                    />
-                                </div>
-                            </div>
-
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Title:</label>
-                                    <TipTapEditor
-                                        content={data.title_en}
-                                        onChange={(content) => handleEditorChange('title_en', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Text:</label>
-                                    <TipTapEditor
-                                        content={data.text_en}
-                                        onChange={(content) => handleEditorChange('text_en', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Destination:</label>
-                                    <TipTapEditor
-                                        content={data.destination_en}
-                                        onChange={(content) => handleEditorChange('destination_en', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Duration:</label>
-                                    <TipTapEditor
-                                        content={data.duration_en}
-                                        onChange={(content) => handleEditorChange('duration_en', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Lang:</label>
-                                    <TipTapEditor
-                                        content={data.lang_en}
-                                        onChange={(content) => handleEditorChange('lang_en', content)}
-                                    />
-                                </div>
-                            </div>
-
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Title:</label>
-                                    <TipTapEditor
-                                        content={data.title_ru}
-                                        onChange={(content) => handleEditorChange('title_ru', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Text:</label>
-                                    <TipTapEditor
-                                        content={data.text_ru}
-                                        onChange={(content) => handleEditorChange('text_ru', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Destination:</label>
-                                    <TipTapEditor
-                                        content={data.destination_ru}
-                                        onChange={(content) => handleEditorChange('destination_ru', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Duration:</label>
-                                    <TipTapEditor
-                                        content={data.duration_ru}
-                                        onChange={(content) => handleEditorChange('duration_ru', content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Lang:</label>
-                                    <TipTapEditor
-                                        content={data.lang_ru}
-                                        onChange={(content) => handleEditorChange('lang_ru', content)}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                    </div>
+                    <div className="w-full">
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Select Types:
+                        </label>
+                        <select
+                            id="tour_type"
+                            name="tour_type_id"
+                            value={data.tour_type_id} // если это число
+                            onChange={(e) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    tour_type_id: Number(e.target.value), // приводим к числу
+                                }))
+                            }
+                            required
+                            className="border border-gray-300 rounded p-2 w-full"
                         >
-                            <DocumentIcon className="size-5 mr-2"/>
-                            Save
-                        </button>
-                    </form>
+                            <option value="">Select type</option>
+                            {types.map((type) => (
+                                <option key={type.id} value={type.id}>
+                                    {type.type_en} / {type.type_tk} / {type.type_ru}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="w-full">
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Select Category:
+                        </label>
+                        <select
+                            id="tour_cat"
+                            name="tour_cat_id"
+                            value={data.tour_cat_id} // число
+                            onChange={(e) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    tour_cat_id: Number(e.target.value), // приводим к числу
+                                }))
+                            }
+                            required
+                            className="border border-gray-300 rounded p-2 w-full"
+                        >
+                            <option value="">Select type</option>
+                            {cat.map((cat) => (
+                                <option key={cat.id} value={cat.id}>
+                                    {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="w-full">
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Select Location:
+                        </label>
+                        <select
+                            id="location_id"
+                            name="location_id"
+                            value={data.location_id} // число
+                            onChange={(e) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    location_id: Number(e.target.value), // приводим к числу
+                                }))
+                            }
+                            required
+                            className="border border-gray-300 rounded p-2 w-full"
+                        >
+                            <option value="">Select location</option>
+                            {location.map((location) => (
+                                <option key={location.id} value={location.id}>
+                                    {location.location_en} / {location.location_tk} / {location.location_ru}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="mb-4 w-full">
+                        <label className="block text-gray-700 font-semibold mb-2">Price:</label>
+                        <input
+                            name="price"
+                            value={data.price}
+                            onChange={(e) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    price: Number(e.target.value), // приведение к числу
+                                }))
+                            }
+                            type="number" // лучше number, чтобы на фронте сразу был контроль
+                            required
+                            className="border border-gray-300 rounded p-2 w-full"
+                        />
+                    </div>
+
+                    <div className="mb-4 w-full">
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Popular:
+                        </label>
+                        <select
+                            id="popular"
+                            name="popular"
+                            value={String(data.popular)}
+                            onChange={(e) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    popular: Number(e.target.value),
+                                }))
+                            }
+                            required
+                            className="border border-gray-300 rounded p-2 w-full"
+                        >
+                            <option value="">Select</option>
+                            <option value="1">True</option>
+                            <option value="0">False</option>
+                        </select>
+
+                    </div>
                 </div>
-            </div>
+
+                {/*<div className="mb-4 w-full">*/}
+                {/*    <label*/}
+                {/*        className="block text-gray-700 font-semibold mb-2">Map:</label>*/}
+                {/*    <textarea value={data.map}*/}
+                {/*              onChange={(e) => setData((prev) => ({...prev, map: e.target.value}))}*/}
+                {/*              rows={10}*/}
+                {/*              required*/}
+                {/*              className="border border-gray-300 rounded p-2 w-full">*/}
+
+                {/*    </textarea>*/}
+                {/*</div>*/}
+
+                <div className="mb-4">
+                    <label htmlFor="image" className="block font-semibold mb-2">Map:</label>
+                    <input
+                        type="file"
+                        id="map"
+                        accept="image/*"
+                        onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                                setMapFile(e.target.files[0]);
+                            }
+                        }}
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
+                </div>
+
+                <div className="tabs tabs-lift">
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
+                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Title</label>
+                            <TipTapEditor
+                                content={data.title_tk}
+                                onChange={(content) => handleEditorChange('title_tk', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Text:</label>
+                            <TipTapEditor
+                                content={data.text_tk}
+                                onChange={(content) => handleEditorChange('text_tk', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Destination:</label>
+                            <TipTapEditor
+                                content={data.destination_tk}
+                                onChange={(content) => handleEditorChange('destination_tk', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Duration:</label>
+                            <TipTapEditor
+                                content={data.duration_tk}
+                                onChange={(content) => handleEditorChange('duration_tk', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Lang:</label>
+                            <TipTapEditor
+                                content={data.lang_tk}
+                                onChange={(content) => handleEditorChange('lang_tk', content)}
+                            />
+                        </div>
+                    </div>
+
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Title:</label>
+                            <TipTapEditor
+                                content={data.title_en}
+                                onChange={(content) => handleEditorChange('title_en', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Text:</label>
+                            <TipTapEditor
+                                content={data.text_en}
+                                onChange={(content) => handleEditorChange('text_en', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Destination:</label>
+                            <TipTapEditor
+                                content={data.destination_en}
+                                onChange={(content) => handleEditorChange('destination_en', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Duration:</label>
+                            <TipTapEditor
+                                content={data.duration_en}
+                                onChange={(content) => handleEditorChange('duration_en', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Lang:</label>
+                            <TipTapEditor
+                                content={data.lang_en}
+                                onChange={(content) => handleEditorChange('lang_en', content)}
+                            />
+                        </div>
+                    </div>
+
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
+                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Title:</label>
+                            <TipTapEditor
+                                content={data.title_ru}
+                                onChange={(content) => handleEditorChange('title_ru', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Text:</label>
+                            <TipTapEditor
+                                content={data.text_ru}
+                                onChange={(content) => handleEditorChange('text_ru', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Destination:</label>
+                            <TipTapEditor
+                                content={data.destination_ru}
+                                onChange={(content) => handleEditorChange('destination_ru', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Duration:</label>
+                            <TipTapEditor
+                                content={data.duration_ru}
+                                onChange={(content) => handleEditorChange('duration_ru', content)}
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Lang:</label>
+                            <TipTapEditor
+                                content={data.lang_ru}
+                                onChange={(content) => handleEditorChange('lang_ru', content)}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                >
+                    <DocumentIcon className="size-5 mr-2"/>
+                    Save
+                </button>
+            </form>
         </div>
+        </>
     );
 };
 

@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/Components/Sidebar';
-import TokenTimer from '@/Components/TokenTimer';
 
 const AddTourType = () => {
     const [type_tk, setTypeTk] = useState('');
@@ -53,60 +51,56 @@ const AddTourType = () => {
     };
 
     return (
-        <div className="flex bg-gray-200">
-            <Sidebar />
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
-                <div className="mt-8">
-                    <form
-                        onSubmit={handleSubmit}
-                        className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
-                    >
-                        <h2 className="text-2xl font-bold mb-4">Add tour type</h2>
+        <>
+        <div className="mt-8">
+            <form
+                onSubmit={handleSubmit}
+                className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
+            >
+                <h2 className="text-2xl font-bold mb-4">Add tour type</h2>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">Turkmen:</label>
-                            <input
-                                value={type_tk}
-                                onChange={(e) => setTypeTk(e.target.value)}
-                                type="text"
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">English:</label>
-                            <input
-                                value={type_en}
-                                onChange={(e) => setTypeEn(e.target.value)}
-                                type="text"
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">Russian:</label>
-                            <input
-                                value={type_ru}
-                                onChange={(e) => setTypeRu(e.target.value)}
-                                type="text"
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                            Add type
-                        </button>
-                    </form>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold mb-2">Turkmen:</label>
+                    <input
+                        value={type_tk}
+                        onChange={(e) => setTypeTk(e.target.value)}
+                        type="text"
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
                 </div>
-            </div>
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold mb-2">English:</label>
+                    <input
+                        value={type_en}
+                        onChange={(e) => setTypeEn(e.target.value)}
+                        type="text"
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold mb-2">Russian:</label>
+                    <input
+                        value={type_ru}
+                        onChange={(e) => setTypeRu(e.target.value)}
+                        type="text"
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Add type
+                </button>
+            </form>
         </div>
+        </>
     );
 };
 

@@ -3,8 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 
 /**
  * Главный баннер на первом экране сайта.
@@ -127,125 +125,121 @@ const Banner = () => {
         || (banner.image ? `${API}/${banner.image.replace(/\\/g, '/')}` : null);
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar/>
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer/>
-                <div className="mt-8 max-w-4xl">
-                    <h2 className="text-2xl font-bold mb-2">Главный баннер</h2>
-                    <p className="text-sm text-gray-600 mb-6">
-                        Первый экран главной страницы. Изменения появятся на сайте в течение минуты.
-                        Пустое поле — сайт покажет текст по умолчанию.
-                    </p>
+        <>
+        <div className="mt-8 max-w-4xl">
+            <h2 className="text-2xl font-bold mb-2">Главный баннер</h2>
+            <p className="text-sm text-gray-600 mb-6">
+                Первый экран главной страницы. Изменения появятся на сайте в течение минуты.
+                Пустое поле — сайт покажет текст по умолчанию.
+            </p>
 
-                    <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 space-y-8">
-                        <div>
-                            <label className="block font-semibold mb-2">Фоновая картинка</label>
-                            <div className="flex items-start gap-6">
-                                <div className="w-72 h-40 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center shrink-0">
-                                    {currentImage ? (
-                                        <Image
-                                            src={currentImage}
-                                            alt="Баннер"
-                                            width={288}
-                                            height={160}
-                                            className="w-full h-full object-cover"
-                                            unoptimized
-                                        />
-                                    ) : (
-                                        <span className="text-sm text-gray-500 text-center px-4">
-                                            Своя картинка не загружена — используется картинка из вёрстки
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <input
-                                        type="file"
-                                        accept="image/jpeg,image/png,image/webp"
-                                        onChange={onFile}
-                                        className="text-sm"
-                                    />
-                                    <p className="text-xs text-gray-500 max-w-sm">
-                                        JPG, PNG или WebP, до 10 МБ. Лучше горизонтальная,
-                                        от 1920px по ширине: она растягивается на весь экран.
-                                    </p>
-                                    {banner.image && (
-                                        <button
-                                            type="button"
-                                            onClick={resetImage}
-                                            className="text-sm text-red-600 underline w-fit"
-                                        >
-                                            Вернуть картинку по умолчанию
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
+            <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 space-y-8">
+                <div>
+                    <label className="block font-semibold mb-2">Фоновая картинка</label>
+                    <div className="flex items-start gap-6">
+                        <div className="w-72 h-40 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center shrink-0">
+                            {currentImage ? (
+                                <Image
+                                    src={currentImage}
+                                    alt="Баннер"
+                                    width={288}
+                                    height={160}
+                                    className="w-full h-full object-cover"
+                                    unoptimized
+                                />
+                            ) : (
+                                <span className="text-sm text-gray-500 text-center px-4">
+                                    Своя картинка не загружена — используется картинка из вёрстки
+                                </span>
+                            )}
                         </div>
-
-                        {LANGS.map((lang) => (
-                            <div key={lang.code} className="border-t border-gray-200 pt-6">
-                                <h3 className="font-semibold mb-3">{lang.label}</h3>
-                                <div className="space-y-3">
-                                    <div>
-                                        <label className="block text-sm mb-1">Заголовок</label>
-                                        <input
-                                            type="text"
-                                            value={banner[`title_${lang.code}`]}
-                                            onChange={(e) => set(`title_${lang.code}`, e.target.value)}
-                                            className="w-full border border-gray-300 rounded-md px-4 py-2"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm mb-1">Подзаголовок</label>
-                                        <textarea
-                                            rows={2}
-                                            value={banner[`subtitle_${lang.code}`]}
-                                            onChange={(e) => set(`subtitle_${lang.code}`, e.target.value)}
-                                            className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm mb-1">Надпись на кнопке</label>
-                                        <input
-                                            type="text"
-                                            value={banner[`button_text_${lang.code}`]}
-                                            onChange={(e) => set(`button_text_${lang.code}`, e.target.value)}
-                                            className="w-full border border-gray-300 rounded-md px-4 py-2"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-
-                        <div className="border-t border-gray-200 pt-6">
-                            <label className="block font-semibold mb-1">Куда ведёт кнопка</label>
+                        <div className="flex flex-col gap-2">
                             <input
-                                type="text"
-                                value={banner.button_link}
-                                onChange={(e) => set('button_link', e.target.value)}
-                                placeholder="/tours"
-                                className="w-full border border-gray-300 rounded-md px-4 py-2"
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                onChange={onFile}
+                                className="text-sm"
                             />
-                            <p className="text-xs text-gray-500 mt-1">
-                                Путь внутри сайта без языка: /tours, /contacts. Язык подставится сам.
+                            <p className="text-xs text-gray-500 max-w-sm">
+                                JPG, PNG или WebP, до 10 МБ. Лучше горизонтальная,
+                                от 1920px по ширине: она растягивается на весь экран.
                             </p>
+                            {banner.image && (
+                                <button
+                                    type="button"
+                                    onClick={resetImage}
+                                    className="text-sm text-red-600 underline w-fit"
+                                >
+                                    Вернуть картинку по умолчанию
+                                </button>
+                            )}
                         </div>
-
-                        <div className="flex items-center gap-4">
-                            <button
-                                type="submit"
-                                disabled={saving}
-                                className="bg text-white py-2 px-8 rounded-md cursor-pointer disabled:opacity-60"
-                            >
-                                {saving ? 'Сохраняем…' : 'Сохранить'}
-                            </button>
-                            {saved && <span className="text-green-600 text-sm">Сохранено</span>}
-                            {error && <span className="text-red-600 text-sm">{error}</span>}
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                {LANGS.map((lang) => (
+                    <div key={lang.code} className="border-t border-gray-200 pt-6">
+                        <h3 className="font-semibold mb-3">{lang.label}</h3>
+                        <div className="space-y-3">
+                            <div>
+                                <label className="block text-sm mb-1">Заголовок</label>
+                                <input
+                                    type="text"
+                                    value={banner[`title_${lang.code}`]}
+                                    onChange={(e) => set(`title_${lang.code}`, e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm mb-1">Подзаголовок</label>
+                                <textarea
+                                    rows={2}
+                                    value={banner[`subtitle_${lang.code}`]}
+                                    onChange={(e) => set(`subtitle_${lang.code}`, e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm mb-1">Надпись на кнопке</label>
+                                <input
+                                    type="text"
+                                    value={banner[`button_text_${lang.code}`]}
+                                    onChange={(e) => set(`button_text_${lang.code}`, e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+
+                <div className="border-t border-gray-200 pt-6">
+                    <label className="block font-semibold mb-1">Куда ведёт кнопка</label>
+                    <input
+                        type="text"
+                        value={banner.button_link}
+                        onChange={(e) => set('button_link', e.target.value)}
+                        placeholder="/tours"
+                        className="w-full border border-gray-300 rounded-md px-4 py-2"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                        Путь внутри сайта без языка: /tours, /contacts. Язык подставится сам.
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="bg text-white py-2 px-8 rounded-md cursor-pointer disabled:opacity-60"
+                    >
+                        {saving ? 'Сохраняем…' : 'Сохранить'}
+                    </button>
+                    {saved && <span className="text-green-600 text-sm">Сохранено</span>}
+                    {error && <span className="text-red-600 text-sm">{error}</span>}
+                </div>
+            </form>
         </div>
+        </>
     );
 };
 

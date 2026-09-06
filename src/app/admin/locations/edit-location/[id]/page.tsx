@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import TipTapEditor from '@/Components/TipTapEditor';
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const EditLocationAddress = () => {
@@ -72,60 +70,56 @@ const EditLocationAddress = () => {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar />
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
-                <div className="mt-8">
-                    <h1 className="text-2xl font-bold mb-4">Edit Contact Location</h1>
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+        <>
+        <div className="mt-8">
+            <h1 className="text-2xl font-bold mb-4">Edit Contact Location</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
 
-                        <div className="tabs tabs-lift">
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Address Location:</label>
-                                    <TipTapEditor
-                                        content={data.location_tk}
-                                        onChange={(content) => handleEditorChange('location_tk', content)}
-                                    />
-                                </div>
-                            </div>
-
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Address Location:</label>
-                                    <TipTapEditor
-                                        content={data.location_en}
-                                        onChange={(content) => handleEditorChange('location_en', content)}
-                                    />
-                                </div>
-                            </div>
-
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="block font-semibold mb-2">Address Location:</label>
-                                    <TipTapEditor
-                                        content={data.location_ru}
-                                        onChange={(content) => handleEditorChange('location_ru', content)}
-                                    />
-                                </div>
-                            </div>
+                <div className="tabs tabs-lift">
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
+                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Address Location:</label>
+                            <TipTapEditor
+                                content={data.location_tk}
+                                onChange={(content) => handleEditorChange('location_tk', content)}
+                            />
                         </div>
+                    </div>
 
-                        <button
-                            type="submit"
-                            className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
-                        >
-                            <DocumentIcon className="size-5 mr-2"/>
-                            Save
-                        </button>
-                    </form>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Address Location:</label>
+                            <TipTapEditor
+                                content={data.location_en}
+                                onChange={(content) => handleEditorChange('location_en', content)}
+                            />
+                        </div>
+                    </div>
+
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
+                    <div className="tab-content bg-base-100 border-base-300 p-6">
+                        <div className="mb-4">
+                            <label className="block font-semibold mb-2">Address Location:</label>
+                            <TipTapEditor
+                                content={data.location_ru}
+                                onChange={(content) => handleEditorChange('location_ru', content)}
+                            />
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <button
+                    type="submit"
+                    className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                >
+                    <DocumentIcon className="size-5 mr-2"/>
+                    Save
+                </button>
+            </form>
         </div>
+        </>
     );
 };
 

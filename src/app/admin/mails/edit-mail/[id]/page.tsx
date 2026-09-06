@@ -2,8 +2,6 @@
 import React, {FormEvent, useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const EditMail = () => {
@@ -79,56 +77,52 @@ const EditMail = () => {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar />
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
-                <div className="mt-8">
-                    <h1 className="text-2xl font-bold mb-4">Edit mail</h1>
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-                        <div className="w-full">
-                            <label className="block text-gray-700 font-semibold mb-2">
-                                Select Location:
-                            </label>
-                            <select
-                                id="location"
-                                name="location_id"
-                                value={String(data.location_id)}
-                                onChange={(e) => setData((prev) => ({...prev, location_id: e.target.value}))}
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            >
-                                <option value="">Select tour</option>
-                                {locations.map((location) => (
-                                    <option key={location.id} value={location.id}>
-                                        {location.location_en} / {location.location_tk} / {location.location_ru}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">Mail:</label>
-                            <input
-                                name="mail"
-                                value={data.mail}
-                                onChange={handleChange}
-                                type="text"
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
-                        >
-                            <DocumentIcon className="size-5 mr-2"/>
-                            Save
-                        </button>
-                    </form>
+        <>
+        <div className="mt-8">
+            <h1 className="text-2xl font-bold mb-4">Edit mail</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                <div className="w-full">
+                    <label className="block text-gray-700 font-semibold mb-2">
+                        Select Location:
+                    </label>
+                    <select
+                        id="location"
+                        name="location_id"
+                        value={String(data.location_id)}
+                        onChange={(e) => setData((prev) => ({...prev, location_id: e.target.value}))}
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    >
+                        <option value="">Select tour</option>
+                        {locations.map((location) => (
+                            <option key={location.id} value={location.id}>
+                                {location.location_en} / {location.location_tk} / {location.location_ru}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-            </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold mb-2">Mail:</label>
+                    <input
+                        name="mail"
+                        value={data.mail}
+                        onChange={handleChange}
+                        type="text"
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                >
+                    <DocumentIcon className="size-5 mr-2"/>
+                    Save
+                </button>
+            </form>
         </div>
+        </>
     );
 };
 

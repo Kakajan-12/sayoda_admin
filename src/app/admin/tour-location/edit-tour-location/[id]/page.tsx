@@ -2,8 +2,6 @@
 import React, {FormEvent, useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import Sidebar from "@/Components/Sidebar";
-import TokenTimer from "@/Components/TokenTimer";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 import DestinationSelect from "@/Components/DestinationSelect";
 
@@ -64,67 +62,63 @@ const EditTourLocation = () => {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="flex bg-gray-200 min-h-screen">
-            <Sidebar />
-            <div className="flex-1 p-10 ml-62">
-                <TokenTimer />
-                <div className="mt-8">
-                    <h1 className="text-2xl font-bold mb-4">Edit Tour Location</h1>
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">Turkmen:</label>
-                            <input
-                                name="location_tk"
-                                value={data.location_tk}
-                                onChange={handleChange}
-                                type="text"
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">English:</label>
-                            <input
-                                name="location_en"
-                                value={data.location_en}
-                                onChange={handleChange}
-                                type="text"
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">Russian:</label>
-                            <input
-                                name="location_ru"
-                                value={data.location_ru}
-                                onChange={handleChange}
-                                type="text"
-                                required
-                                className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-
-                        <div className="mb-4">
-                            <DestinationSelect
-                                value={String(data.destination_id ?? '')}
-                                onChange={(v) => setData((prev) => ({ ...prev, destination_id: v }))}
-                                label="Относится к стране:"
-                                hint="Туры этой локации попадут на вкладку «Туры» выбранной страны."
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
-                        >
-                            <DocumentIcon className="size-5 mr-2" />
-                            Save
-                        </button>
-                    </form>
+        <>
+        <div className="mt-8">
+            <h1 className="text-2xl font-bold mb-4">Edit Tour Location</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold mb-2">Turkmen:</label>
+                    <input
+                        name="location_tk"
+                        value={data.location_tk}
+                        onChange={handleChange}
+                        type="text"
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
                 </div>
-            </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold mb-2">English:</label>
+                    <input
+                        name="location_en"
+                        value={data.location_en}
+                        onChange={handleChange}
+                        type="text"
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-semibold mb-2">Russian:</label>
+                    <input
+                        name="location_ru"
+                        value={data.location_ru}
+                        onChange={handleChange}
+                        type="text"
+                        required
+                        className="border border-gray-300 rounded p-2 w-full"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <DestinationSelect
+                        value={String(data.destination_id ?? '')}
+                        onChange={(v) => setData((prev) => ({ ...prev, destination_id: v }))}
+                        label="Относится к стране:"
+                        hint="Туры этой локации попадут на вкладку «Туры» выбранной страны."
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                >
+                    <DocumentIcon className="size-5 mr-2" />
+                    Save
+                </button>
+            </form>
         </div>
+        </>
     );
 };
 

@@ -10,6 +10,29 @@
   --foreground: #171717;
 }
 
+
+/*
+ * Палитра «Изразец» — та же, что на сайте.
+ *
+ * Админка была тёмно-синей и выглядела чужим продуктом рядом с сайтом.
+ * Имена совпадают с фронтендом намеренно: правку цвета достаточно будет
+ * сделать в двух местах одинаково, а не выяснять соответствия.
+ */
+@theme {
+  --color-tile: #0F5257;
+  --color-tileDark: #0A3A3E;
+  --color-tileMid: #1B7A7E;
+  --color-tileLight: #2E9B9B;
+  --color-tileTint: #E3F0EF;
+  --color-brick: #B4441F;
+  --color-brickDark: #8E3517;
+  --color-sand: #EDE3D2;
+  --color-sandLight: #F7F1E7;
+  --color-paper: #FBFAF7;
+  --color-ink: #15201F;
+  --color-inkMuted: #5D6B6A;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -23,12 +46,24 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.color{
-  color:#002A5F
+.color {
+  /* Использовался тёмно-синий #002A5F. Теперь бирюза бренда — класс висит
+     на 77 страницах, поэтому меняем его, а не каждую страницу. */
+  color: #0F5257;
 }
 
-.bg{
-  background-color: #002A5F;
+.bg {
+  background-color: #0F5257;
+  transition: background-color 0.2s ease;
+}
+
+.bg:hover:not(:disabled) {
+  background-color: #0A3A3E;
+}
+
+/* Фон рабочей области: холодный серый заменён на тёплую бумагу палитры */
+body {
+  background: #FBFAF7;
 }
 
 /* TipTap editor default styles – для отображения контента */

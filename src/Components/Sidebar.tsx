@@ -1,142 +1,85 @@
-import React, { useState, useEffect } from "react";
+'use client'
+import React from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TfiLayoutSlider } from "react-icons/tfi";
-import { VscFeedback,VscTypeHierarchySub } from "react-icons/vsc";
-import { PiReadCvLogo } from "react-icons/pi";
-import { GrGallery } from "react-icons/gr";
-import { IoLocationSharp } from "react-icons/io5";
-import { LuMails, LuCalendarDays, LuInbox, LuSettings, LuImage  } from "react-icons/lu";
-import { FaPhoneSquareAlt } from "react-icons/fa";
-import { MdTour } from "react-icons/md";
-import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icons/io";
-import { TbCategoryFilled } from "react-icons/tb";
-import { FaLocationDot,FaMapLocationDot, FaPassport, FaEarthAsia } from "react-icons/fa6";
-import { RiLinksLine } from "react-icons/ri";
-import { RiQuestionAnswerLine } from "react-icons/ri";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { isActiveHref, navGroups } from "@/lib/navigation";
+import { useT } from "@/lib/i18n/LocaleProvider";
 
-const menuGroups = [
-    {
-        // Заявки идут первым пунктом: это единственный раздел, который нужно
-        // открывать каждый день, остальные — редактирование контента.
-        title: "Requests & Settings",
-        key: "requests",
-        links: [
-            { href: "/admin/requests", label: "Requests", icon: LuInbox },
-            { href: "/admin/settings", label: "Settings", icon: LuSettings },
-        ],
-    },
-    {
-        title: "Content Management",
-        key: "content",
-        links: [
-            // Первый экран главной: заголовок, подзаголовок, кнопка и фон
-            { href: "/admin/banner", label: "Main Banner", icon: LuImage },
-            { href: "/admin/sliders", label: "Sliders", icon: TfiLayoutSlider },
-            // Страницы стран: описание, разделы и виза
-            { href: "/admin/destinations", label: "Destinations", icon: FaEarthAsia },
-            // Вопросы в конце главной: их правит заказчик по мере обращений
-            { href: "/admin/faq", label: "FAQ", icon: RiQuestionAnswerLine },
-            { href: "/admin/testimonials", label: "Testimonials", icon: VscFeedback },
-        ],
-    },
-    {
-        title: "Blogs",
-        key: "blogs",
-        links: [
-            { href: "/admin/blogs", label: "Blogs", icon: PiReadCvLogo},
-            { href: "/admin/blogs-gallery", label: "Blogs Gallery", icon: GrGallery },
-        ],
-    },
-    {
-        title: "Contacts",
-        key: "contacts",
-        links: [
-            { href: "/admin/address", label: "Address", icon: IoLocationSharp },
-            { href: "/admin/mails", label: "Mails", icon: LuMails },
-            { href: "/admin/numbers", label: "Numbers", icon: FaPhoneSquareAlt },
-            { href: "/admin/social-links", label: "Social Links", icon: RiLinksLine  },
-            { href: "/admin/locations", label: "Locations", icon: FaLocationDot  },
-        ],
-    },
-    {
-        title: "Tours",
-        key: "tours",
-        links: [
-            { href: "/admin/tours", label: "Tours", icon: MdTour},
-            { href: "/admin/tour-types", label: "Types", icon: VscTypeHierarchySub},
-            { href: "/admin/tour-category", label: "Category", icon: TbCategoryFilled},
-            { href: "/admin/itinerary", label: "Itinerary", icon: LuCalendarDays},
-            { href: "/admin/includes", label: "Includes", icon: IoMdCheckmarkCircleOutline},
-            { href: "/admin/excludes", label: "Excludes", icon: IoIosCloseCircleOutline},
-            { href: "/admin/tour-gallery", label: "Gallery", icon: GrGallery},
-            { href: "/admin/tour-location", label: "Tours Location", icon: FaMapLocationDot},
-            { href: "/admin/visa", label: "Visa Requirements", icon: FaPassport},
-        ],
-    },
-];
-
+/**
+ * Меню админки.
+ *
+ * Было три проблемы. Группы схлопывались, и чтобы найти раздел, приходилось
+ * открывать их по очереди — при 24 разделах это перебор вслепую. Переходы шли
+ * обычными <a>, то есть каждый клик перезагружал всё приложение целиком.
+ * И подписи были английскими, хотя часть разделов уже переехала на русский.
+ *
+ * Теперь всё открыто сразу: список длинный, но прокрутка дешевле, чем
+ * угадывание, в какой группе лежит нужное. Переходы — через Link, без
+ * перезагрузки.
+ */
 const Sidebar = () => {
     const pathname = usePathname();
-    const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({});
+    const t = useT();
 
-    useEffect(() => {
-        const newOpenGroups: { [key: string]: boolean } = {};
-        for (const group of menuGroups) {
-            if (group.links.some((link) => pathname.startsWith(link.href))) {
-                newOpenGroups[group.key] = true;
-            }
-        }
-        setOpenGroups((prev) => ({ ...prev, ...newOpenGroups }));
-    }, [pathname]);
-
-    const toggleGroup = (key: string) => {
-        setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
-    };
-
-    const isActive = (href: string) =>
-        pathname === href || pathname.startsWith(`${href}/`);
+    const dashboardActive = pathname === '/admin';
 
     return (
-        <aside className="w-64 bg-white shadow-md h-screen fixed" aria-label="Sidebar">
-            <div className="h-full px-3 py-4 overflow-y-auto space-y-4">
-                <div>
-                    <a
-                        href="/admin"
-                        className="block p-2 font-semibold text-gray-900 rounded-lg hover:bg-gray-100"
-                    >
-                        Dashboard
-                    </a>
-                </div>
+        <aside
+            className="fixed inset-y-0 left-0 z-30 flex w-64 flex-col border-r border-sand bg-white"
+            aria-label={t('nav.dashboard')}
+        >
+            <div className="flex h-16 shrink-0 items-center border-b border-sand px-5">
+                <span className="text-lg font-bold tracking-wide text-tile">SAYODA</span>
+                <span className="ml-2 text-xs uppercase tracking-widest text-inkMuted">admin</span>
+            </div>
 
-                {menuGroups.map((group) => (
-                    <div key={group.key}>
-                        <button
-                            onClick={() => toggleGroup(group.key)}
-                            className="w-full text-left px-2 py-2 text-sm font-bold text-gray-600 uppercase hover:bg-gray-100 rounded"
-                        >
-                            {group.title}
-                        </button>
+            <nav className="flex-1 overflow-y-auto px-3 py-4">
+                <Link
+                    href="/admin"
+                    className={`mb-4 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                        dashboardActive
+                            ? 'bg-tile text-white'
+                            : 'text-ink hover:bg-tileTint hover:text-tile'
+                    }`}
+                >
+                    <LuLayoutDashboard className="size-5 shrink-0" />
+                    {t('nav.dashboard')}
+                </Link>
 
-                        {openGroups[group.key] && (
-                            <ul className="mt-1 space-y-1 ml-2">
-                                {group.links.map(({ href, label, icon: Icon }) => (
-                                    <li
-                                        key={href}
-                                        className={`flex items-center p-2 rounded-md font-medium ${
-                                            isActive(href) ? "bg text-white" : "text-gray-700 hover:bg-gray-100"
-                                        }`}
-                                    >
-                                        <Icon className={`size-5 ${isActive(href) ? "text-white" : "text-gray-500"}`} />
-                                        <a href={href} className="ml-3 w-full block">
-                                            {label}
-                                        </a>
+                {navGroups.map((group) => (
+                    <div key={group.key} className="mb-5">
+                        <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-inkMuted">
+                            {t(group.titleKey)}
+                        </p>
+                        <ul className="space-y-0.5">
+                            {group.links.map(({ href, labelKey, icon: Icon }) => {
+                                const active = isActiveHref(pathname, href);
+                                return (
+                                    <li key={href}>
+                                        <Link
+                                            href={href}
+                                            aria-current={active ? 'page' : undefined}
+                                            className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+                                                active
+                                                    ? 'bg-tile font-medium text-white'
+                                                    : 'text-ink hover:bg-tileTint hover:text-tile'
+                                            }`}
+                                        >
+                                            <Icon
+                                                className={`size-[18px] shrink-0 ${
+                                                    active ? 'text-white' : 'text-inkMuted'
+                                                }`}
+                                            />
+                                            <span className="min-w-0 truncate">{t(labelKey)}</span>
+                                        </Link>
                                     </li>
-                                ))}
-                            </ul>
-                        )}
+                                );
+                            })}
+                        </ul>
                     </div>
                 ))}
-            </div>
+            </nav>
         </aside>
     );
 };
