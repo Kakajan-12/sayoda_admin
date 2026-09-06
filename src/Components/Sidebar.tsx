@@ -12,6 +12,7 @@ import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline  } from "react-icon
 import { TbCategoryFilled } from "react-icons/tb";
 import { FaLocationDot,FaMapLocationDot, FaPassport, FaEarthAsia } from "react-icons/fa6";
 import { RiLinksLine } from "react-icons/ri";
+import { RiQuestionAnswerLine } from "react-icons/ri";
 
 const menuGroups = [
     {
@@ -33,6 +34,8 @@ const menuGroups = [
             { href: "/admin/sliders", label: "Sliders", icon: TfiLayoutSlider },
             // Страницы стран: описание, разделы и виза
             { href: "/admin/destinations", label: "Destinations", icon: FaEarthAsia },
+            // Вопросы в конце главной: их правит заказчик по мере обращений
+            { href: "/admin/faq", label: "FAQ", icon: RiQuestionAnswerLine },
             { href: "/admin/testimonials", label: "Testimonials", icon: VscFeedback },
         ],
     },
