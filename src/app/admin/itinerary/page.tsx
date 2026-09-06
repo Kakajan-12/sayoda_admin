@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -27,6 +28,7 @@ interface GroupedItinerary {
 }
 
 const Itinerary = () => {
+    const t = useT();
     const [groupedData, setGroupedData] = useState<GroupedItinerary[]>([]);
     const [expanded, setExpanded] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -85,7 +87,7 @@ const Itinerary = () => {
                 <h2 className="text-2xl font-bold">Itinerary</h2>
                 <Link
                     href="/admin/itinerary/add-itinerary"
-                    className="bg text-white py-2 px-8 rounded-md flex items-center hover:bg-blue-700"
+                    className="bg text-white py-2 px-8 rounded-md flex items-center"
                 >
                     <PlusCircleIcon className="w-6 h-6" />
                     <span className="ml-2">Add</span>

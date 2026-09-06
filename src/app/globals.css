@@ -175,3 +175,40 @@ body {
   background-color: white;
   color: black;
 }
+/*
+ * Вкладки языков в формах.
+ *
+ * daisyUI рисовала их белым по белому: активная вкладка отличалась от
+ * неактивной только тонкой рамкой, и понять, какой язык сейчас правишь,
+ * было можно только по содержимому полей.
+ */
+.tabs .tab {
+  background-color: #F7F1E7;
+  color: #5D6B6A;
+  border-color: #EDE3D2;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tabs .tab:hover {
+  color: #0F5257;
+}
+
+.tabs .tab:checked,
+.tabs .tab[aria-checked="true"],
+.tabs .tab.tab-active {
+  background-color: #ffffff;
+  color: #0F5257;
+  border-color: #EDE3D2;
+}
+
+.tab-content {
+  background-color: #ffffff;
+  border-color: #EDE3D2;
+}
+
+/* Редактор текста внутри карточки формы: рамка палитры вместо серой */
+.tiptap-content,
+.ProseMirror {
+  border-radius: 0.375rem;
+}

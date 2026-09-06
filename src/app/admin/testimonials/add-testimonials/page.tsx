@@ -1,10 +1,12 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import TipTapEditor from '@/Components/TipTapEditor';
 
 const AddTestimonials = () => {
+    const t = useT();
     const [isClient, setIsClient] = useState(false);
     const [image, setImage] = useState<File | null>(null);
     const [comment, setComment] = useState('');
@@ -64,12 +66,12 @@ const AddTestimonials = () => {
                 onSubmit={handleSubmit}
                 className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
             >
-                <h2 className="text-2xl font-bold mb-4 text-left">Add new testimonials</h2>
+                <h2 className="text-2xl font-bold mb-4 text-left">{t('form.addTitle')}</h2>
 
                 <div className="mb-4 flex space-x-4">
                     <div className="w-full">
-                        <label htmlFor="image" className="block text-gray-700 font-semibold mb-2">
-                            Image:
+                        <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('form.image')}
                         </label>
                         <input
                             type="file"
@@ -81,7 +83,7 @@ const AddTestimonials = () => {
                                 }
                             }}
                             required
-                            className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                         />
                     </div>
                 </div>
@@ -93,14 +95,14 @@ const AddTestimonials = () => {
                                    defaultChecked/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Comment:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">Comment:</label>
                                     <TipTapEditor
                                         content={comment}
                                         onChange={(content) => setComment(content)}
                                     />
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Name:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">Name:</label>
                                     <TipTapEditor
                                         content={name}
                                         onChange={(content) => setName(content)}
@@ -113,9 +115,9 @@ const AddTestimonials = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150"
+                    className="w-full rounded-md bg-tile py-2.5 px-4 font-semibold text-white transition-colors hover:bg-tileDark"
                 >
-                    Add testimonials
+                    {t('common.add')}
                 </button>
             </form>
         </div>

@@ -1,10 +1,12 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import TipTapEditor  from '@/Components/TipTapEditor';
 
 const AddAddress = () => {
+    const t = useT();
     const [isClient, setIsClient] = useState(false);
     const [iframe, setIframe] = useState('');
     const [address_tk, setAddressTk] = useState('');
@@ -92,10 +94,10 @@ const AddAddress = () => {
                 onSubmit={handleSubmit}
                 className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
             >
-                <h2 className="text-2xl font-bold mb-4 text-left">Add New Address</h2>
+                <h2 className="text-2xl font-bold mb-4 text-left">{t('form.addTitle')}</h2>
                 <div className="w-full">
-                    <label className="block text-gray-700 font-semibold mb-2">
-                        Location:
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">
+                        {t('form.location')}
                     </label>
                     <select
                         id="location_id"
@@ -103,9 +105,9 @@ const AddAddress = () => {
                         value={location_id}
                         onChange={(e) => setLocationId(e.target.value)}
                         required
-                        className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                     >
-                        <option value="">Select location</option>
+                        <option value="">{t('form.selectLocation')}</option>
                         {locations.map((location) => (
                             <option key={location.id} value={location.id}>
                                 {location.location_en} / {location.location_tk} / {location.location_ru}
@@ -116,12 +118,12 @@ const AddAddress = () => {
                 <div className="mb-4 flex space-x-4">
                     <div className="w-full">
                         <label
-                            className="block text-gray-700 font-semibold mb-2">Map:</label>
+                            className="mb-1 block text-sm font-medium text-inkMuted">{t('form.map')}</label>
                         <textarea value={iframe}
                                   onChange={(e) => setIframe(e.target.value)}
                                   rows={10}
                                   required
-                                  className="border border-gray-300 rounded p-2 w-full">
+                                  className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight">
 
                     </textarea>
                     </div>
@@ -130,11 +132,11 @@ const AddAddress = () => {
                 {isClient && (
                     <>
                         <div className="tabs tabs-lift">
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.tk')}
                                    defaultChecked/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Title:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                                     <TipTapEditor
                                         content={address_tk}
                                         onChange={(content) => setAddressTk(content)}
@@ -142,10 +144,10 @@ const AddAddress = () => {
                                 </div>
                             </div>
 
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.en')}/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Title:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                                     <TipTapEditor
                                         content={address_en}
                                         onChange={(content) => setAddressEn(content)}
@@ -153,10 +155,10 @@ const AddAddress = () => {
                                 </div>
                             </div>
 
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.ru')}/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Title:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                                     <TipTapEditor
                                         content={address_ru}
                                         onChange={(content) => setAddressRu(content)}
@@ -169,9 +171,9 @@ const AddAddress = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150"
+                    className="w-full rounded-md bg-tile py-2.5 px-4 font-semibold text-white transition-colors hover:bg-tileDark"
                 >
-                    Add Address
+                    {t('common.add')}
                 </button>
             </form>
         </div>

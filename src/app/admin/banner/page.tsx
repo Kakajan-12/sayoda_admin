@@ -1,4 +1,5 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -40,6 +41,7 @@ const LANGS: { code: 'en' | 'ru' | 'tk'; label: string }[] = [
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 const Banner = () => {
+    const t = useT();
     const [banner, setBanner] = useState<Banner>(EMPTY);
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
@@ -135,7 +137,7 @@ const Banner = () => {
 
             <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 space-y-8">
                 <div>
-                    <label className="block font-semibold mb-2">Фоновая картинка</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">Фоновая картинка</label>
                     <div className="flex items-start gap-6">
                         <div className="w-72 h-40 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                             {currentImage ? (

@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import { useState} from 'react';
 import { TextField, Button, MenuItem } from '@mui/material';
@@ -8,6 +9,7 @@ import { useRouter } from 'next/navigation';
 const icons = ['facebook', 'instagram', 'twitter', 'linkedin', 'tiktok', 'telegram', 'whatsapp'];
 
 const AddLink = () => {
+    const t = useT();
     const [icon, setIcon] = useState('');
     const [url, setUrl] = useState('');
     const router = useRouter();
@@ -59,7 +61,7 @@ const AddLink = () => {
 
                 <Button variant="contained" color="primary" onClick={handleSubmit}
                 className="w-44">
-                    Add link
+                    {t('common.add')}
                 </Button>
             </form>
         </div>

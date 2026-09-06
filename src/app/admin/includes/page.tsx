@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -20,6 +21,7 @@ interface GroupedInclude {
 }
 
 const Includes = () => {
+    const t = useT();
     const [groupedData, setGroupedData] = useState<GroupedInclude[]>([]);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -80,7 +82,7 @@ const Includes = () => {
                 <h2 className="text-2xl font-bold">Includes</h2>
                 <Link
                     href="/admin/includes/add-includes"
-                    className="bg text-white py-2 px-8 rounded-md flex items-center hover:bg-blue-700"
+                    className="bg text-white py-2 px-8 rounded-md flex items-center"
                 >
                     <PlusCircleIcon className="w-6 h-6" />
                     <span className="ml-2">Add</span>

@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -20,6 +21,7 @@ interface GroupedExclude {
 }
 
 const Excludes = () => {
+    const t = useT();
     const [groupedData, setGroupedData] = useState<GroupedExclude[]>([]);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -80,7 +82,7 @@ const Excludes = () => {
                 <h2 className="text-2xl font-bold">Excludes</h2>
                 <Link
                     href="/admin/excludes/add-excludes"
-                    className="bg text-white py-2 px-8 rounded-md flex items-center hover:bg-blue-700"
+                    className="bg text-white py-2 px-8 rounded-md flex items-center"
                 >
                     <PlusCircleIcon className="w-6 h-6" />
                     <span className="ml-2">Add</span>

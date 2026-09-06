@@ -1,4 +1,5 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -45,6 +46,7 @@ const emptyItem = (order: number): FaqItem => ({
 });
 
 const Faq = () => {
+    const t = useT();
     const [items, setItems] = useState<FaqItem[]>([]);
     const [lang, setLang] = useState<Lang>('ru');
     const [loading, setLoading] = useState(true);
@@ -181,7 +183,7 @@ const Faq = () => {
                                     value={item.sort_order}
                                     onChange={(e) =>
                                         patch(item.id, { sort_order: Number(e.target.value) || 0 })}
-                                    className="border border-gray-300 rounded p-2 w-full"
+                                    className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                                 />
                                 <p className="text-xs text-gray-500 mt-1">Меньше — выше в списке.</p>
                             </div>
@@ -193,7 +195,7 @@ const Faq = () => {
                                     value={item[`question_${lang}`] ?? ''}
                                     onChange={(e) =>
                                         patch(item.id, { [`question_${lang}`]: e.target.value })}
-                                    className="border border-gray-300 rounded p-2 w-full"
+                                    className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                                 />
                             </div>
 
@@ -204,7 +206,7 @@ const Faq = () => {
                                     value={item[`answer_${lang}`] ?? ''}
                                     onChange={(e) =>
                                         patch(item.id, { [`answer_${lang}`]: e.target.value })}
-                                    className="border border-gray-300 rounded p-2 w-full resize-y"
+                                    className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight resize-y"
                                 />
                             </div>
 

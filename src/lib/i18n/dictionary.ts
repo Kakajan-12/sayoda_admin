@@ -65,6 +65,31 @@ export const dictionary = {
     'list.review': { ru: 'Отзыв', en: 'Review' },
     'list.author': { ru: 'Автор', en: 'Author' },
 
+
+    // ─── формы ───
+    'form.title': { ru: 'Заголовок', en: 'Title' },
+    'form.text': { ru: 'Текст', en: 'Text' },
+    'form.image': { ru: 'Картинка', en: 'Image' },
+    'form.newImage': { ru: 'Новая картинка', en: 'New image' },
+    'form.currentImage': { ru: 'Текущая картинка', en: 'Current image' },
+    'form.map': { ru: 'Карта', en: 'Map' },
+    'form.selectTour': { ru: 'Тур', en: 'Tour' },
+    'form.selectType': { ru: 'Тип тура', en: 'Tour type' },
+    'form.selectCategory': { ru: 'Категория', en: 'Category' },
+    'form.selectLocation': { ru: 'Локация', en: 'Location' },
+    'form.selectBlog': { ru: 'Статья', en: 'Article' },
+    'form.location': { ru: 'Локация', en: 'Location' },
+    'form.price': { ru: 'Цена', en: 'Price' },
+    'form.popular': { ru: 'Показывать в «Популярных»', en: 'Show in “Popular”' },
+    'form.date': { ru: 'Дата', en: 'Date' },
+    'form.icon': { ru: 'Значок', en: 'Icon' },
+    'form.url': { ru: 'Ссылка', en: 'Link' },
+    'form.email': { ru: 'Почта', en: 'E-mail' },
+    'form.phone': { ru: 'Телефон', en: 'Phone' },
+    'form.backToList': { ru: '← К списку', en: '← Back to list' },
+    'form.addTitle': { ru: 'Новая запись', en: 'New entry' },
+    'form.editTitle': { ru: 'Редактирование', en: 'Editing' },
+
     // ─── языки контента ───
     'lang.tk': { ru: 'Туркменский', en: 'Turkmen' },
     'lang.en': { ru: 'Английский', en: 'English' },

@@ -1,9 +1,11 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 
 const AddMail = () => {
+    const t = useT();
     const [number, setNumber] = useState('');
     const router = useRouter();
     const [location_id, setLocationId] = useState('');
@@ -74,11 +76,11 @@ const AddMail = () => {
                 onSubmit={handleSubmit}
                 className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
             >
-                <h2 className="text-2xl font-bold mb-4 text-left">Add new number</h2>
+                <h2 className="text-2xl font-bold mb-4 text-left">{t('form.addTitle')}</h2>
 
                 <div className="w-full">
-                    <label className="block text-gray-700 font-semibold mb-2">
-                        Location:
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">
+                        {t('form.location')}
                     </label>
                     <select
                         id="location_id"
@@ -86,9 +88,9 @@ const AddMail = () => {
                         value={location_id}
                         onChange={(e) => setLocationId(e.target.value)}
                         required
-                        className="border border-gray-300 rounded p-2 w-full focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
                     >
-                        <option value="">Select location</option>
+                        <option value="">{t('form.selectLocation')}</option>
                         {locations.map((location) => (
                             <option key={location.id} value={location.id}>
                                 {location.location_en} / {location.location_tk} / {location.location_ru}
@@ -97,21 +99,21 @@ const AddMail = () => {
                     </select>
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">Phone number:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">Phone number:</label>
                     <input
                         value={number}
                         onChange={(e) => setNumber(e.target.value)}
                         type="text"
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
                 <button
                     type="submit"
-                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150"
+                    className="w-full rounded-md bg-tile py-2.5 px-4 font-semibold text-white transition-colors hover:bg-tileDark"
                 >
-                    Add number
+                    {t('common.add')}
                 </button>
             </form>
         </div>

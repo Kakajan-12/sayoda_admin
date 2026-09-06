@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -6,6 +7,7 @@ import TipTapEditor from '@/Components/TipTapEditor';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const EditAddress = () => {
+    const t = useT();
     const { id } = useParams();
     const router = useRouter();
 
@@ -83,7 +85,7 @@ const EditAddress = () => {
             );
 
 
-            router.push(`/admin/address/view-address/${id}`);
+            router.push('/admin/address');
         } catch (err) {
             console.error(err);
             setError('Ошибка при сохранении');
@@ -96,11 +98,11 @@ const EditAddress = () => {
     return (
         <>
         <div className="mt-8">
-            <h1 className="text-2xl font-bold mb-4">Edit Address</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+            <h1 className="text-2xl font-bold mb-4">{t('form.editTitle')}</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
                 <div className="w-full">
-                    <label className="block text-gray-700 font-semibold mb-2">
-                        Select Location:
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">
+                        {t('form.selectLocation')}
                     </label>
                     <select
                         id="location"
@@ -108,9 +110,9 @@ const EditAddress = () => {
                         value={String(data.location_id)}
                         onChange={(e) => setData((prev) => ({...prev, location_id: e.target.value}))}
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     >
-                        <option value="">Select tour</option>
+                        <option value="">{t('form.selectTour')}</option>
                         {locations.map((location) => (
                             <option key={location.id} value={location.id}>
                                 {location.location_en} / {location.location_tk} / {location.location_ru}
@@ -120,21 +122,21 @@ const EditAddress = () => {
                 </div>
                 <div className="mb-4 w-full">
                     <label
-                        className="block text-gray-700 font-semibold mb-2">Map:</label>
+                        className="mb-1 block text-sm font-medium text-inkMuted">{t('form.map')}</label>
                     <textarea value={data.iframe}
                               onChange={(e) => setData((prev) => ({...prev, iframe: e.target.value}))}
                               rows={10}
                               required
-                              className="border border-gray-300 rounded p-2 w-full">
+                              className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight">
 
                     </textarea>
                 </div>
 
                 <div className="tabs tabs-lift">
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.tk')} defaultChecked/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Address</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Address</label>
                             <TipTapEditor
                                 content={data.address_tk}
                                 onChange={(content) => handleEditorChange('address_tk', content)}
@@ -142,10 +144,10 @@ const EditAddress = () => {
                         </div>
                     </div>
 
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.en')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Address:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Address:</label>
                             <TipTapEditor
                                 content={data.address_en}
                                 onChange={(content) => handleEditorChange('address_en', content)}
@@ -153,10 +155,10 @@ const EditAddress = () => {
                         </div>
                     </div>
 
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.ru')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Address:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Address:</label>
                             <TipTapEditor
                                 content={data.address_ru}
                                 onChange={(content) => handleEditorChange('address_ru', content)}
@@ -167,10 +169,10 @@ const EditAddress = () => {
 
                 <button
                     type="submit"
-                    className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                    className="flex items-center rounded-md bg-tile px-5 py-2.5 text-white transition-colors hover:bg-tileDark"
                 >
                     <DocumentIcon className="size-5 mr-2"/>
-                    Save
+                    {t('common.save')}
                 </button>
             </form>
         </div>

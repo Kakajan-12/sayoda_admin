@@ -1,4 +1,5 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -93,6 +94,7 @@ const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint: s
 ];
 
 const Settings = () => {
+    const t = useT();
     const [settings, setSettings] = useState<Settings>(EMPTY);
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);

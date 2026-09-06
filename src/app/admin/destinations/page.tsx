@@ -1,4 +1,5 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
@@ -24,6 +25,7 @@ interface Destination {
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 const Destinations = () => {
+    const t = useT();
     const [items, setItems] = useState<Destination[]>([]);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
@@ -74,7 +76,7 @@ const Destinations = () => {
                 </div>
                 <Link
                     href="/admin/destinations/add"
-                    className="bg text-white h-fit py-2 px-8 rounded-md cursor-pointer flex items-center"
+                    className="flex h-fit items-center rounded-md bg-tile px-5 py-2.5 text-white transition-colors hover:bg-tileDark"
                 >
                     <PlusCircleIcon className="size-6" color="#ffffff"/>
                     <span className="ml-2">Добавить</span>

@@ -1,11 +1,11 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { LuInbox, LuArrowRight } from "react-icons/lu";
 import { MdTour } from "react-icons/md";
 import { PiReadCvLogo } from "react-icons/pi";
-import { useT } from "@/lib/i18n/LocaleProvider";
 import { navGroups } from "@/lib/navigation";
 import { readToken } from "@/lib/auth";
 

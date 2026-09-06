@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -13,6 +14,7 @@ interface BlogData {
 }
 
 const EditTestimonials = () => {
+    const t = useT();
     const { id } = useParams();
     const router = useRouter();
 
@@ -98,7 +100,7 @@ const EditTestimonials = () => {
                 }
             );
 
-            router.push(`/admin/testimonials/view-testimonials/${id}`);
+            router.push('/admin/testimonials');
         } catch (err) {
             console.error('Ошибка при сохранении:', err);
             setError('Ошибка при сохранении данных');
@@ -113,11 +115,11 @@ const EditTestimonials = () => {
     return (
         <>
         <div className="mt-8">
-            <h1 className="text-2xl font-bold mb-4">Edit Testimonials</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow max-w-3xl">
+            <h1 className="text-2xl font-bold mb-4">{t('form.editTitle')}</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6 max-w-3xl">
                 {data.image && (
                     <div className="mb-4">
-                        <label className="block font-semibold mb-2">Current image:</label>
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.currentImage')}</label>
                         <Image
                             src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace(/\\/g, '/')}`}
                             alt="Service"
@@ -128,7 +130,7 @@ const EditTestimonials = () => {
                     </div>
                 )}
                 <div className="mb-4">
-                    <label htmlFor="image" className="block font-semibold mb-2">New image:</label>
+                    <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">{t('form.newImage')}</label>
                     <input
                         type="file"
                         id="image"
@@ -138,7 +140,7 @@ const EditTestimonials = () => {
                                 setImageFile(e.target.files[0]);
                             }
                         }}
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
@@ -146,14 +148,14 @@ const EditTestimonials = () => {
                     <input type="radio" name="my_tabs_3" className="tab" aria-label="Comment" defaultChecked />
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Title</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                             <TipTapEditor
                                 content={data.name}
                                 onChange={content => handleEditorChange('name', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Text:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={data.text}
                                 onChange={content => handleEditorChange('text', content)}
@@ -164,10 +166,10 @@ const EditTestimonials = () => {
 
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                    className="bg-blue-600 text-white px-4 py-2 rounded flex items-center"
                 >
                     <DocumentIcon className="h-5 w-5 mr-2" />
-                    Save
+                    {t('common.save')}
                 </button>
             </form>
         </div>

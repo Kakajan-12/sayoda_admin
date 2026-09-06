@@ -1,10 +1,12 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DestinationSelect from '@/Components/DestinationSelect';
 
 const AddTourLocation = () => {
+    const t = useT();
     const [location_tk, setLocationTk] = useState('');
     const [location_en, setLocationEn] = useState('');
     const [location_ru, setLocationRu] = useState('');
@@ -61,38 +63,38 @@ const AddTourLocation = () => {
                 onSubmit={handleSubmit}
                 className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
             >
-                <h2 className="text-2xl font-bold mb-4">Add tour location</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('form.addTitle')}</h2>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">Turkmen:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('lang.tk')}:</label>
                     <input
                         value={location_tk}
                         onChange={(e) => setLocationTk(e.target.value)}
                         type="text"
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">English:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('lang.en')}:</label>
                     <input
                         value={location_en}
                         onChange={(e) => setLocationEn(e.target.value)}
                         type="text"
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">Russian:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('lang.ru')}:</label>
                     <input
                         value={location_ru}
                         onChange={(e) => setLocationRu(e.target.value)}
                         type="text"
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
@@ -107,9 +109,9 @@ const AddTourLocation = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="w-full bg text-white font-bold py-2 px-4 rounded"
                 >
-                    Add location
+                    {t('common.add')}
                 </button>
             </form>
         </div>

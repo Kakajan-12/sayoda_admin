@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, {useEffect, useState} from 'react';
 import SlugField from '@/Components/SlugField';
 import {useParams, useRouter} from 'next/navigation';
@@ -8,6 +9,7 @@ import {DocumentIcon} from "@heroicons/react/16/solid";
 import Image from "next/image";
 
 const EditTour = () => {
+    const t = useT();
     const {id} = useParams();
     const router = useRouter();
 
@@ -188,7 +190,7 @@ const EditTour = () => {
                 }
             );
 
-            router.push(`/admin/tours/view-tour/${id}`);
+            router.push('/admin/tours');
         } catch (err) {
             console.error(err);
             setError('Ошибка при сохранении');
@@ -201,12 +203,12 @@ const EditTour = () => {
     return (
         <>
         <div className="mt-8">
-            <h1 className="text-2xl font-bold mb-4">Edit Tour</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+            <h1 className="text-2xl font-bold mb-4">{t('form.editTitle')}</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
                 <SlugField value={data.slug} onChange={() => {}} section="tours" locked />
                 {data.image && (
                     <div className="mb-4">
-                        <label className="block font-semibold mb-2">Current image:</label>
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.currentImage')}</label>
                         <Image
                             src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace('\\', '/')}`}
                             alt="News"
@@ -219,7 +221,7 @@ const EditTour = () => {
                 <div className="mb-4 flex space-x-4">
                     <div className="w-full">
                         <div className="mb-4">
-                            <label htmlFor="image" className="block font-semibold mb-2">New image:</label>
+                            <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">{t('form.newImage')}</label>
                             <input
                                 type="file"
                                 id="image"
@@ -229,13 +231,13 @@ const EditTour = () => {
                                         setImageFile(e.target.files[0]);
                                     }
                                 }}
-                                className="border border-gray-300 rounded p-2 w-full"
+                                className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                             />
                         </div>
                     </div>
                     <div className="w-full">
-                        <label className="block text-gray-700 font-semibold mb-2">
-                            Select Types:
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('form.selectType')}
                         </label>
                         <select
                             id="tour_type"
@@ -248,9 +250,9 @@ const EditTour = () => {
                                 }))
                             }
                             required
-                            className="border border-gray-300 rounded p-2 w-full"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         >
-                            <option value="">Select type</option>
+                            <option value="">{t('form.selectType')}</option>
                             {types.map((type) => (
                                 <option key={type.id} value={type.id}>
                                     {type.type_en} / {type.type_tk} / {type.type_ru}
@@ -260,8 +262,8 @@ const EditTour = () => {
                     </div>
 
                     <div className="w-full">
-                        <label className="block text-gray-700 font-semibold mb-2">
-                            Select Category:
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('form.selectCategory')}
                         </label>
                         <select
                             id="tour_cat"
@@ -274,9 +276,9 @@ const EditTour = () => {
                                 }))
                             }
                             required
-                            className="border border-gray-300 rounded p-2 w-full"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         >
-                            <option value="">Select type</option>
+                            <option value="">{t('form.selectType')}</option>
                             {cat.map((cat) => (
                                 <option key={cat.id} value={cat.id}>
                                     {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
@@ -286,8 +288,8 @@ const EditTour = () => {
                     </div>
 
                     <div className="w-full">
-                        <label className="block text-gray-700 font-semibold mb-2">
-                            Select Location:
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('form.selectLocation')}
                         </label>
                         <select
                             id="location_id"
@@ -300,9 +302,9 @@ const EditTour = () => {
                                 }))
                             }
                             required
-                            className="border border-gray-300 rounded p-2 w-full"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         >
-                            <option value="">Select location</option>
+                            <option value="">{t('form.selectLocation')}</option>
                             {location.map((location) => (
                                 <option key={location.id} value={location.id}>
                                     {location.location_en} / {location.location_tk} / {location.location_ru}
@@ -312,7 +314,7 @@ const EditTour = () => {
                     </div>
 
                     <div className="mb-4 w-full">
-                        <label className="block text-gray-700 font-semibold mb-2">Price:</label>
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.price')}</label>
                         <input
                             name="price"
                             value={data.price}
@@ -324,13 +326,13 @@ const EditTour = () => {
                             }
                             type="number" // лучше number, чтобы на фронте сразу был контроль
                             required
-                            className="border border-gray-300 rounded p-2 w-full"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         />
                     </div>
 
                     <div className="mb-4 w-full">
-                        <label className="block text-gray-700 font-semibold mb-2">
-                            Popular:
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('form.popular')}
                         </label>
                         <select
                             id="popular"
@@ -343,7 +345,7 @@ const EditTour = () => {
                                 }))
                             }
                             required
-                            className="border border-gray-300 rounded p-2 w-full"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         >
                             <option value="">Select</option>
                             <option value="1">True</option>
@@ -355,18 +357,18 @@ const EditTour = () => {
 
                 {/*<div className="mb-4 w-full">*/}
                 {/*    <label*/}
-                {/*        className="block text-gray-700 font-semibold mb-2">Map:</label>*/}
+                {/*        className="mb-1 block text-sm font-medium text-inkMuted">{t('form.map')}</label>*/}
                 {/*    <textarea value={data.map}*/}
                 {/*              onChange={(e) => setData((prev) => ({...prev, map: e.target.value}))}*/}
                 {/*              rows={10}*/}
                 {/*              required*/}
-                {/*              className="border border-gray-300 rounded p-2 w-full">*/}
+                {/*              className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight">*/}
 
                 {/*    </textarea>*/}
                 {/*</div>*/}
 
                 <div className="mb-4">
-                    <label htmlFor="image" className="block font-semibold mb-2">Map:</label>
+                    <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">{t('form.map')}</label>
                     <input
                         type="file"
                         id="map"
@@ -376,43 +378,43 @@ const EditTour = () => {
                                 setMapFile(e.target.files[0]);
                             }
                         }}
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
                 <div className="tabs tabs-lift">
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.tk')} defaultChecked/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Title</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                             <TipTapEditor
                                 content={data.title_tk}
                                 onChange={(content) => handleEditorChange('title_tk', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Text:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={data.text_tk}
                                 onChange={(content) => handleEditorChange('text_tk', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Destination:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Destination:</label>
                             <TipTapEditor
                                 content={data.destination_tk}
                                 onChange={(content) => handleEditorChange('destination_tk', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Duration:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Duration:</label>
                             <TipTapEditor
                                 content={data.duration_tk}
                                 onChange={(content) => handleEditorChange('duration_tk', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Lang:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Lang:</label>
                             <TipTapEditor
                                 content={data.lang_tk}
                                 onChange={(content) => handleEditorChange('lang_tk', content)}
@@ -420,38 +422,38 @@ const EditTour = () => {
                         </div>
                     </div>
 
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.en')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Title:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                             <TipTapEditor
                                 content={data.title_en}
                                 onChange={(content) => handleEditorChange('title_en', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Text:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={data.text_en}
                                 onChange={(content) => handleEditorChange('text_en', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Destination:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Destination:</label>
                             <TipTapEditor
                                 content={data.destination_en}
                                 onChange={(content) => handleEditorChange('destination_en', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Duration:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Duration:</label>
                             <TipTapEditor
                                 content={data.duration_en}
                                 onChange={(content) => handleEditorChange('duration_en', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Lang:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Lang:</label>
                             <TipTapEditor
                                 content={data.lang_en}
                                 onChange={(content) => handleEditorChange('lang_en', content)}
@@ -459,38 +461,38 @@ const EditTour = () => {
                         </div>
                     </div>
 
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.ru')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Title:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                             <TipTapEditor
                                 content={data.title_ru}
                                 onChange={(content) => handleEditorChange('title_ru', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Text:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={data.text_ru}
                                 onChange={(content) => handleEditorChange('text_ru', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Destination:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Destination:</label>
                             <TipTapEditor
                                 content={data.destination_ru}
                                 onChange={(content) => handleEditorChange('destination_ru', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Duration:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Duration:</label>
                             <TipTapEditor
                                 content={data.duration_ru}
                                 onChange={(content) => handleEditorChange('duration_ru', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Lang:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">Lang:</label>
                             <TipTapEditor
                                 content={data.lang_ru}
                                 onChange={(content) => handleEditorChange('lang_ru', content)}
@@ -501,10 +503,10 @@ const EditTour = () => {
 
                 <button
                     type="submit"
-                    className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                    className="flex items-center rounded-md bg-tile px-5 py-2.5 text-white transition-colors hover:bg-tileDark"
                 >
                     <DocumentIcon className="size-5 mr-2"/>
-                    Save
+                    {t('common.save')}
                 </button>
             </form>
         </div>

@@ -1,10 +1,12 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import TipTapEditor from "@/Components/TipTapEditor";
 
 const ContactLocation = () => {
+    const t = useT();
     const [isClient, setIsClient] = useState(false);
     const [location_tk, setLocationTk] = useState('');
     const [location_en, setLocationEn] = useState('');
@@ -62,16 +64,16 @@ const ContactLocation = () => {
                 onSubmit={handleSubmit}
                 className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
             >
-                <h2 className="text-2xl font-bold mb-4">Add contact locations</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('form.addTitle')}</h2>
 
                 {isClient && (
                     <>
                         <div className="tabs tabs-lift">
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen"
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.tk')}
                                    defaultChecked/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">Location Address:</label>
                                     <TipTapEditor
                                         content={location_tk}
                                         onChange={(content) => setLocationTk(content)}
@@ -79,10 +81,10 @@ const ContactLocation = () => {
                                 </div>
                             </div>
 
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.en')}/>
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">Location Address:</label>
                                     <TipTapEditor
                                         content={location_en}
                                         onChange={(content) => setLocationEn(content)}
@@ -90,10 +92,10 @@ const ContactLocation = () => {
                                 </div>
                             </div>
 
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian" />
+                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.ru')} />
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Location Address:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">Location Address:</label>
                                     <TipTapEditor
                                         content={location_ru}
                                         onChange={(content) => setLocationRu(content)}
@@ -106,9 +108,9 @@ const ContactLocation = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="w-full bg text-white font-bold py-2 px-4 rounded"
                 >
-                    Add location
+                    {t('common.add')}
                 </button>
             </form>
         </div>

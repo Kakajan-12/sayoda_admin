@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import { useState, useEffect } from 'react';
 import { TextField, Button, MenuItem } from '@mui/material';
@@ -7,6 +8,7 @@ import { useRouter, useParams } from 'next/navigation';
 const icons = ['facebook', 'instagram', 'twitter', 'linkedin', 'tiktok', 'telegram', 'whatsapp'];
 
 const EditLink = () => {
+    const t = useT();
     const [icon, setIcon] = useState('');
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(true);
@@ -97,7 +99,7 @@ const EditLink = () => {
                 />
 
                 <Button variant="contained" onClick={handleSubmit} className="w-64">
-                    Save changes
+                    {t('common.save')}
                 </Button>
             </form>
         </div>

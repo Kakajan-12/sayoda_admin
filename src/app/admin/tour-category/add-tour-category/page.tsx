@@ -1,9 +1,11 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const AddTourCategory = () => {
+    const t = useT();
     const [cat_tk, setCatTk] = useState('');
     const [cat_en, setCatEn] = useState('');
     const [cat_ru, setCatRu] = useState('');
@@ -57,46 +59,46 @@ const AddTourCategory = () => {
                 onSubmit={handleSubmit}
                 className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
             >
-                <h2 className="text-2xl font-bold mb-4">Add tour category</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('form.addTitle')}</h2>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">Turkmen:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('lang.tk')}:</label>
                     <input
                         value={cat_tk}
                         onChange={(e) => setCatTk(e.target.value)}
                         type="text"
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">English:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('lang.en')}:</label>
                     <input
                         value={cat_en}
                         onChange={(e) => setCatEn(e.target.value)}
                         type="text"
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">Russian:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('lang.ru')}:</label>
                     <input
                         value={cat_ru}
                         onChange={(e) => setCatRu(e.target.value)}
                         type="text"
                         required
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                 </div>
 
                 <button
                     type="submit"
-                    className="w-full bg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="w-full bg text-white font-bold py-2 px-4 rounded"
                 >
-                    Add category
+                    {t('common.add')}
                 </button>
             </form>
         </div>

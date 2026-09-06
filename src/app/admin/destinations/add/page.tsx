@@ -1,4 +1,5 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -8,6 +9,7 @@ import { DocumentIcon } from "@heroicons/react/16/solid";
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 const AddDestination = () => {
+    const t = useT();
     const router = useRouter();
     const [form, setForm] = useState<DestinationForm>(EMPTY_DESTINATION);
     const [heroFile, setHeroFile] = useState<File | null>(null);
@@ -45,14 +47,14 @@ const AddDestination = () => {
         <>
         <div className="mt-8">
             <h1 className="text-2xl font-bold mb-4">Новая страна</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
                 <div>
-                    <label className="block font-semibold mb-2">Картинка обложки</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">Картинка обложки</label>
                     <input
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
                         onChange={(e) => setHeroFile(e.target.files?.[0] || null)}
-                        className="border border-gray-300 rounded p-2 w-full"
+                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                         Горизонтальная, от 1600px по ширине.
@@ -65,7 +67,7 @@ const AddDestination = () => {
                     <button
                         type="submit"
                         disabled={saving}
-                        className="bg text-white px-4 py-2 rounded flex items-center disabled:opacity-60"
+                        className="flex items-center rounded-md bg-tile px-5 py-2.5 text-white transition-colors hover:bg-tileDark disabled:opacity-60"
                     >
                         <DocumentIcon className="w-5 h-5 mr-2"/>
                         {saving ? 'Сохраняем…' : 'Создать и перейти к разделам'}

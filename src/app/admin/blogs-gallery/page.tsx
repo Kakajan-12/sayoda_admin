@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -24,6 +25,7 @@ type GroupedGallery = {
 };
 
 const BlogsGallery = () => {
+    const t = useT();
     const [gallery, setGallery] = useState<GroupedGallery[]>([]);
     const [expanded, setExpanded] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -78,9 +80,9 @@ const BlogsGallery = () => {
             <div className="w-full flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold">Blogs Gallery</h2>
                 <Link href="/admin/blogs-gallery/add-gallery"
-                      className="bg text-white py-2 px-8 rounded-md flex items-center hover:bg-blue-700">
+                      className="bg text-white py-2 px-8 rounded-md flex items-center">
                     <PlusCircleIcon className="w-5 h-5 mr-2" />
-                    Add
+                    {t('common.add')}
                 </Link>
             </div>
 

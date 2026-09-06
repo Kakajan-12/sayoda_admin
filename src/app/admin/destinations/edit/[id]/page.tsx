@@ -1,4 +1,5 @@
 'use client'
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
@@ -17,6 +18,7 @@ interface DestinationRow extends Record<string, unknown> {
 }
 
 const EditDestination = () => {
+    const t = useT();
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
 
@@ -105,9 +107,9 @@ const EditDestination = () => {
                 </Link>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
                 <div>
-                    <label className="block font-semibold mb-2">Картинка обложки</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">Картинка обложки</label>
                     <div className="flex items-start gap-6">
                         <div className="w-64 h-36 bg-gray-100 rounded overflow-hidden flex items-center justify-center shrink-0">
                             {currentHero ? (
@@ -146,7 +148,7 @@ const EditDestination = () => {
                     <button
                         type="submit"
                         disabled={saving}
-                        className="bg text-white px-4 py-2 rounded flex items-center disabled:opacity-60"
+                        className="flex items-center rounded-md bg-tile px-5 py-2.5 text-white transition-colors hover:bg-tileDark disabled:opacity-60"
                     >
                         <DocumentIcon className="w-5 h-5 mr-2"/>
                         {saving ? 'Сохраняем…' : 'Сохранить страну'}

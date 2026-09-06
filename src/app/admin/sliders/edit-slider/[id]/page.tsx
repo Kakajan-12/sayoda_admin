@@ -1,4 +1,5 @@
 'use client';
+import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -8,6 +9,7 @@ import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
 const EditSlider = () => {
+    const t = useT();
     const { id } = useParams();
     const router = useRouter();
 
@@ -97,7 +99,7 @@ const EditSlider = () => {
                 }
             );
 
-            router.push(`/admin/sliders/view-slider/${id}`);
+            router.push('/admin/sliders');
         } catch (err) {
             console.error(err);
             setError('Error saving slider');
@@ -110,11 +112,11 @@ const EditSlider = () => {
     return (
         <>
         <div className="mt-8">
-            <h1 className="text-2xl font-bold mb-4">Edit Slider</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
+            <h1 className="text-2xl font-bold mb-4">{t('form.editTitle')}</h1>
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
                 {slider.image && (
                     <div className="mb-4">
-                        <label className="block font-semibold mb-2">Current Image:</label>
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.currentImage')}</label>
                         <Image
                             src={`${process.env.NEXT_PUBLIC_API_URL}/${slider.image.replace('\\', '/')}`}
                             alt="Slider"
@@ -127,7 +129,7 @@ const EditSlider = () => {
 
                 <div className="flex space-x-4">
                     <div className="w-full">
-                        <label htmlFor="image" className="block font-semibold mb-2">New Image:</label>
+                        <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">{t('form.newImage')}</label>
                         <input
                             type="file"
                             id="image"
@@ -137,12 +139,12 @@ const EditSlider = () => {
                                     setImageFile(e.target.files[0]);
                                 }
                             }}
-                            className="border border-gray-300 rounded p-2 w-full"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         />
                     </div>
                     <div className="w-full">
-                        <label className="block text-gray-700 font-semibold mb-2">
-                            Select Tour:
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('form.selectTour')}
                         </label>
                         <select
                             id="tour"
@@ -150,9 +152,9 @@ const EditSlider = () => {
                             value={String(slider.tour_id)}
                             onChange={(e) => setSlider((prev) => ({...prev, tour_id: e.target.value}))}
                             required
-                            className="border border-gray-300 rounded p-2 w-full"
+                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         >
-                            <option value="">Select tour</option>
+                            <option value="">{t('form.selectTour')}</option>
                             {tours.map((tour) => (
                                 <option key={tour.id} value={tour.id}>
                                     {tour.title_en} / {tour.title_tk} / {tour.title_ru}
@@ -170,17 +172,17 @@ const EditSlider = () => {
                 />
 
                 <div className="tabs tabs-lift">
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Turkmen" defaultChecked/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.tk')} defaultChecked/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Title</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                             <TipTapEditor
                                 content={slider.title_tk}
                                 onChange={(content) => handleEditorChange('title_tk', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Text:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={slider.text_tk}
                                 onChange={(content) => handleEditorChange('text_tk', content)}
@@ -188,17 +190,17 @@ const EditSlider = () => {
                         </div>
                     </div>
 
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="English"/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.en')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Title:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                             <TipTapEditor
                                 content={slider.title_en}
                                 onChange={(content) => handleEditorChange('title_en', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Text:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={slider.text_en}
                                 onChange={(content) => handleEditorChange('text_en', content)}
@@ -206,17 +208,17 @@ const EditSlider = () => {
                         </div>
                     </div>
 
-                    <input type="radio" name="my_tabs_3" className="tab" aria-label="Russian"/>
+                    <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.ru')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Title:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
                             <TipTapEditor
                                 content={slider.title_ru}
                                 onChange={(content) => handleEditorChange('title_ru', content)}
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block font-semibold mb-2">Text:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={slider.text_ru}
                                 onChange={(content) => handleEditorChange('text_ru', content)}
@@ -227,10 +229,10 @@ const EditSlider = () => {
 
                 <button
                     type="submit"
-                    className="bg text-white px-4 py-2 rounded flex items-center hover:bg-blue-700"
+                    className="flex items-center rounded-md bg-tile px-5 py-2.5 text-white transition-colors hover:bg-tileDark"
                 >
                     <DocumentIcon className="w-5 h-5 mr-2"/>
-                    Save
+                    {t('common.save')}
                 </button>
             </form>
         </div>
