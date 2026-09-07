@@ -1,5 +1,13 @@
 import type { IconType } from "react-icons";
-import { LuInbox, LuSettings, LuImage, LuCalendarDays, LuMails } from "react-icons/lu";
+import {
+    LuInbox,
+    LuSettings,
+    LuImage,
+    LuCalendarClock,
+    LuCalendarDays,
+    LuMails,
+    LuSparkles,
+} from "react-icons/lu";
 import { TfiLayoutSlider } from "react-icons/tfi";
 import { VscFeedback, VscTypeHierarchySub } from "react-icons/vsc";
 import { PiReadCvLogo } from "react-icons/pi";
@@ -67,6 +75,8 @@ export const navGroups: NavGroup[] = [
             { href: '/admin/itinerary', labelKey: 'nav.itinerary', icon: LuCalendarDays },
             { href: '/admin/includes', labelKey: 'nav.includes', icon: IoMdCheckmarkCircleOutline },
             { href: '/admin/excludes', labelKey: 'nav.excludes', icon: IoIosCloseCircleOutline },
+            { href: '/admin/highlights', labelKey: 'nav.highlights', icon: LuSparkles },
+            { href: '/admin/departures', labelKey: 'nav.departures', icon: LuCalendarClock },
             { href: '/admin/tour-gallery', labelKey: 'nav.tourGallery', icon: GrGallery },
             { href: '/admin/visa', labelKey: 'nav.visa', icon: FaPassport },
         ],

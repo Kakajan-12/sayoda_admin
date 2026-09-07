@@ -25,6 +25,8 @@ interface RequestItem {
     phone: string | null;
     tour: string | null;
     travelers: string | null;
+    /** Выбранный заезд, «ГГГГ-ММ-ДД». Пусто, если заявка пришла не из расписания. */
+    departure_date: string | null;
     subject: string | null;
     message: string | null;
     mail_sent: number;
@@ -187,6 +189,9 @@ const Requests = () => {
                                     <td colSpan={6} className="bg-gray-50 px-4 py-4 border-b border-gray-200">
                                         <dl className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
                                             {r.citizenship && (<><dt className="font-semibold">Citizenship</dt><dd>{r.citizenship}</dd></>)}
+                                            {/* Заезд идёт сразу за туром: менеджеру нужно
+                                                знать не только что бронируют, но и на когда. */}
+                                            {r.departure_date && (<><dt className="font-semibold">{t('req.departure')}</dt><dd>{r.departure_date}</dd></>)}
                                             {r.travelers && (<><dt className="font-semibold">Travelers</dt><dd>{r.travelers}</dd></>)}
                                             {r.locale && (<><dt className="font-semibold">Language</dt><dd>{r.locale}</dd></>)}
                                             {r.page_url && (<><dt className="font-semibold">Page</dt><dd className="break-all">{r.page_url}</dd></>)}
