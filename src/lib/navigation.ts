@@ -3,10 +3,7 @@ import {
     LuInbox,
     LuSettings,
     LuImage,
-    LuCalendarClock,
-    LuCalendarDays,
     LuMails,
-    LuSparkles,
 } from "react-icons/lu";
 import { VscFeedback, VscTypeHierarchySub } from "react-icons/vsc";
 import { PiReadCvLogo } from "react-icons/pi";
@@ -14,7 +11,6 @@ import { GrGallery } from "react-icons/gr";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
-import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline } from "react-icons/io";
 import { TbCategoryFilled } from "react-icons/tb";
 import { FaLocationDot, FaPassport, FaEarthAsia } from "react-icons/fa6";
 import { RiLinksLine, RiQuestionAnswerLine } from "react-icons/ri";
@@ -70,12 +66,6 @@ export const navGroups: NavGroup[] = [
             { href: '/admin/tours', labelKey: 'nav.tours', icon: MdTour },
             { href: '/admin/tour-types', labelKey: 'nav.tourTypes', icon: VscTypeHierarchySub },
             { href: '/admin/tour-category', labelKey: 'nav.tourCategory', icon: TbCategoryFilled },
-            { href: '/admin/itinerary', labelKey: 'nav.itinerary', icon: LuCalendarDays },
-            { href: '/admin/includes', labelKey: 'nav.includes', icon: IoMdCheckmarkCircleOutline },
-            { href: '/admin/excludes', labelKey: 'nav.excludes', icon: IoIosCloseCircleOutline },
-            { href: '/admin/highlights', labelKey: 'nav.highlights', icon: LuSparkles },
-            { href: '/admin/departures', labelKey: 'nav.departures', icon: LuCalendarClock },
-            { href: '/admin/tour-gallery', labelKey: 'nav.tourGallery', icon: GrGallery },
             { href: '/admin/visa', labelKey: 'nav.visa', icon: FaPassport },
         ],
     },

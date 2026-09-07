@@ -2,9 +2,12 @@
 import { useT } from "@/lib/i18n/LocaleProvider";
 import React, {useEffect, useState} from 'react';
 import SlugField from '@/Components/SlugField';
+import { plainText } from '@/Components/ResourceList';
 import {useParams, useRouter} from 'next/navigation';
 import axios from 'axios';
 import TipTapEditor from '@/Components/TipTapEditor';
+import TourTabsBar, { type TourPageTab } from '@/Components/tour/TourTabsBar';
+import TourPanels from '@/Components/tour/TourPanels';
 import {DocumentIcon} from "@heroicons/react/16/solid";
 import Image from "next/image";
 
@@ -64,6 +67,7 @@ const EditTour = () => {
         location_id: 0,
         map: ''
     });
+    const [tab, setTab] = useState<TourPageTab>('main');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [mapFile, setMapFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
@@ -203,8 +207,22 @@ const EditTour = () => {
     return (
         <>
         <div className="mt-8">
-            <h1 className="text-2xl font-bold mb-4">{t('form.editTitle')}</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
+            <h1 className="text-2xl font-bold mb-4">
+                {plainText(data.title_ru) || plainText(data.title_en) || t('form.editTitle')}
+            </h1>
+
+            {/* Программа, состав цены, «главное», заезды и снимки редактируются
+                здесь же. Раньше каждый из этих списков был отдельным разделом
+                меню, и чтобы поправить один день, редактор уходил со страницы
+                тура и заново искал его там. */}
+            <TourTabsBar active={tab} onChange={setTab} />
+
+            {tab !== 'main' && <TourPanels tourId={Number(id)} tab={tab} />}
+
+            <form
+                onSubmit={handleSubmit}
+                className={`space-y-6 rounded-lg border border-sand bg-white p-6 ${tab === 'main' ? '' : 'hidden'}`}
+            >
                 <SlugField value={data.slug} onChange={() => {}} section="tours" locked />
                 {data.image && (
                     <div className="mb-4">
