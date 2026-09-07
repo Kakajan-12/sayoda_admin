@@ -289,7 +289,7 @@ const EditTour = () => {
 
                     <div className="w-full">
                         <label className="mb-1 block text-sm font-medium text-inkMuted">
-                            {t('form.selectLocation')}
+                            {t('form.selectDestination')}
                         </label>
                         <select
                             id="location_id"
@@ -304,7 +304,7 @@ const EditTour = () => {
                             required
                             className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
                         >
-                            <option value="">{t('form.selectLocation')}</option>
+                            <option value="">{t('form.selectDestination')}</option>
                             {location.map((location) => (
                                 <option key={location.id} value={location.id}>
                                     {location.location_en} / {location.location_tk} / {location.location_ru}
