@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import CountryImageField from "@/Components/CountryImageField";
 import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/Components/DestinationFields";
 import DestinationSections, { Section } from "@/Components/DestinationSections";
 import { DocumentIcon } from "@heroicons/react/16/solid";
@@ -14,6 +15,7 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 interface DestinationRow extends Record<string, unknown> {
     id: number;
     hero_image: string | null;
+    card_image: string | null;
     sections?: Section[];
 }
 
@@ -25,6 +27,8 @@ const EditDestination = () => {
     const [form, setForm] = useState<DestinationForm>(EMPTY_DESTINATION);
     const [heroImage, setHeroImage] = useState<string | null>(null);
     const [heroFile, setHeroFile] = useState<File | null>(null);
+    const [cardImage, setCardImage] = useState<string | null>(null);
+    const [cardFile, setCardFile] = useState<File | null>(null);
     const [sections, setSections] = useState<Section[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -52,6 +56,7 @@ const EditDestination = () => {
                 });
                 setForm(next);
                 setHeroImage(row.hero_image ?? null);
+                setCardImage(row.card_image ?? null);
                 setSections(row.sections ?? []);
                 setLoading(false);
             } catch (err) {
@@ -74,6 +79,7 @@ const EditDestination = () => {
             (Object.keys(EMPTY_DESTINATION) as (keyof DestinationForm)[])
                 .forEach((k) => data.append(k, String(form[k] ?? '')));
             if (heroFile) data.append('hero_image', heroFile);
+            if (cardFile) data.append('card_image', cardFile);
 
             await axios.put(`${API}/api/destinations/${id}`, data, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -108,38 +114,24 @@ const EditDestination = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
-                <div>
-                    <label className="mb-1 block text-sm font-medium text-inkMuted">Картинка обложки</label>
-                    <div className="flex items-start gap-6">
-                        <div className="w-64 h-36 bg-gray-100 rounded overflow-hidden flex items-center justify-center shrink-0">
-                            {currentHero ? (
-                                <Image
-                                    src={currentHero}
-                                    alt=""
-                                    width={256}
-                                    height={144}
-                                    className="w-full h-full object-cover"
-                                    unoptimized
-                                />
-                            ) : (
-                                <span className="text-sm text-gray-500 px-4 text-center">
-                                    Картинка не задана
-                                </span>
-                            )}
-                        </div>
-                        <div>
-                            <input
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={(e) => setHeroFile(e.target.files?.[0] || null)}
-                                className="text-sm"
-                            />
-                            <p className="text-xs text-gray-500 mt-1 max-w-sm">
-                                Новый файл заменит текущую картинку. Если файл не выбран,
-                                картинка остаётся прежней.
-                            </p>
-                        </div>
-                    </div>
+                {/* Две картинки страны: обложка её страницы и плитка на
+                    главной. Раньше плитка жила отдельной сущностью
+                    «Карточки на главной» — той же страной, заведённой второй раз. */}
+                <div className="grid gap-6 lg:grid-cols-2">
+                    <CountryImageField
+                        label="Обложка страницы страны"
+                        hint="Горизонтальная, от 1600px по ширине. Новый файл заменит текущую; если файл не выбран, картинка остаётся прежней."
+                        current={heroImage}
+                        shape="wide"
+                        onFile={setHeroFile}
+                    />
+                    <CountryImageField
+                        label="Плитка на главной"
+                        hint="Вертикальная, пропорции 3:4, от 800px по ширине. Не задана — на главной покажется обложка."
+                        current={cardImage}
+                        shape="card"
+                        onFile={setCardFile}
+                    />
                 </div>
 
                 <DestinationFields value={form} onChange={patch} slugLocked/>

@@ -150,7 +150,6 @@ export const dictionary = {
     'nav.requests': { ru: 'Заявки', en: 'Requests' },
     'nav.settings': { ru: 'Настройки', en: 'Settings' },
     'nav.banner': { ru: 'Главный баннер', en: 'Main banner' },
-    'nav.sliders': { ru: 'Карточки на главной', en: 'Home cards' },
     'nav.destinations': { ru: 'Направления', en: 'Destinations' },
     'nav.faq': { ru: 'Частые вопросы', en: 'FAQ' },
     'nav.testimonials': { ru: 'Отзывы', en: 'Testimonials' },
