@@ -64,6 +64,11 @@ export const dictionary = {
     'list.map': { ru: 'Карта', en: 'Map' },
     'list.review': { ru: 'Отзыв', en: 'Review' },
     'list.author': { ru: 'Автор', en: 'Author' },
+    'list.perPage': { ru: 'Показывать по', en: 'Rows per page' },
+    'list.pageOf': { ru: 'Страница {page} из {pages}', en: 'Page {page} of {pages}' },
+    'list.prevPage': { ru: 'Предыдущая страница', en: 'Previous page' },
+    'list.nextPage': { ru: 'Следующая страница', en: 'Next page' },
+    'list.shown': { ru: 'Показано {from}–{to} из {n}', en: 'Showing {from}–{to} of {n}' },
 
 
     // ─── формы ───

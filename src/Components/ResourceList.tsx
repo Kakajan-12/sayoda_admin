@@ -7,6 +7,7 @@ import Image from "next/image";
 import { LuPencil, LuPlus, LuSearch, LuTrash2 } from "react-icons/lu";
 import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
 import type { DictKey } from "@/lib/i18n/dictionary";
+import { PAGE_SIZES, usePageSize } from '@/lib/pageSize';
 import { readToken } from "@/lib/auth";
 
 /**
@@ -88,6 +89,8 @@ const ResourceList: React.FC<Props> = ({
     const [error, setError] = useState<string | null>(null);
     const [query, setQuery] = useState('');
     const [busyId, setBusyId] = useState<Row['id'] | null>(null);
+    const [pageSize, setPageSize] = usePageSize();
+    const [page, setPage] = useState(1);
 
     const load = useCallback(async () => {
         try {
@@ -130,6 +133,27 @@ const ResourceList: React.FC<Props> = ({
         );
     }, [rows, query, searchFields]);
 
+    /*
+     * Режем уже отфильтрованный список, а не то, что пришло с сервера:
+     * иначе поиск находил бы совпадения только на видимой странице.
+     */
+    const total = filtered?.length ?? 0;
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+    const current = Math.min(page, pages);
+    const from = (current - 1) * pageSize;
+    const visible = filtered ? filtered.slice(from, from + pageSize) : null;
+
+    /*
+     * Поиск сузил выдачу до двух записей — оставаться на седьмой странице
+     * бессмысленно, там пусто.
+     *
+     * rows в зависимости намеренно не входит: список перечитывается после
+     * каждого удаления, и с ним человек, удаливший запись на третьей
+     * странице, отбрасывался бы на первую. Выход за последнюю страницу
+     * и так не даёт `current` выше.
+     */
+    useEffect(() => { setPage(1); }, [query, pageSize]);
+
     const remove = async (row: Row) => {
         if (!deleteEndpoint) return;
         const name = rowLabel ? rowLabel(row) : String(row[idField]);
@@ -158,12 +182,37 @@ const ResourceList: React.FC<Props> = ({
                     <h2 className="text-xl font-bold text-ink">{t(titleKey)}</h2>
                     {filtered && (
                         <p className="mt-0.5 text-sm text-inkMuted">
-                            {t('list.count', { n: filtered.length })}
+                            {total > pageSize
+                                ? t('list.shown', { from: from + 1, to: Math.min(from + pageSize, total), n: total })
+                                : t('list.count', { n: total })}
                         </p>
                     )}
                 </div>
 
                 <div className="flex items-center gap-3">
+                    {/* Показываем только когда есть что листать: на списке
+                        из пяти строк выбор «50 или 100» лишь занимает место. */}
+                    {total > PAGE_SIZES[0] && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-inkMuted">{t('list.perPage')}</span>
+                            <div className="flex gap-1 rounded-lg border border-sand bg-white p-1">
+                                {PAGE_SIZES.map((size) => (
+                                    <button
+                                        key={size}
+                                        type="button"
+                                        onClick={() => setPageSize(size)}
+                                        className={`rounded-md px-3 py-1 text-xs transition ${
+                                            pageSize === size
+                                                ? 'bg-tileMid text-white'
+                                                : 'text-inkMuted hover:bg-sand/40'
+                                        }`}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     {!!searchFields?.length && (
                         <div className="relative">
                             <LuSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-inkMuted" />
@@ -217,20 +266,20 @@ const ResourceList: React.FC<Props> = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered === null ? (
+                        {visible === null ? (
                             <tr>
                                 <td colSpan={columns.length + 2} className="px-4 py-10 text-center text-inkMuted">
                                     {t('common.loading')}
                                 </td>
                             </tr>
-                        ) : filtered.length === 0 ? (
+                        ) : visible.length === 0 ? (
                             <tr>
                                 <td colSpan={columns.length + 2} className="px-4 py-10 text-center text-inkMuted">
                                     {query ? t('list.nothingFound') : t('common.empty')}
                                 </td>
                             </tr>
                         ) : (
-                            filtered.map((row) => (
+                            visible!.map((row) => (
                                 <tr key={String(row[idField])} className="border-b border-sand last:border-0 hover:bg-sandLight/50">
                                     {columns.map((c) => (
                                         <td key={c.field} className={`px-4 py-3 align-middle ${c.className ?? ''}`}>
@@ -321,6 +370,37 @@ const ResourceList: React.FC<Props> = ({
                     </tbody>
                 </table>
             </div>
+
+            {/* Переходы по страницам. Кнопками, а не ссылками: админку не
+                индексируют, адрес раздела делить незачем, а состояние
+                поиска при переходе должно сохраняться. */}
+            {pages > 1 && (
+                <div className="mt-4 flex items-center justify-between gap-3">
+                    <button
+                        type="button"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={current === 1}
+                        aria-label={t('list.prevPage')}
+                        className="rounded-md border border-sand bg-white px-4 py-2 text-sm text-ink transition hover:border-tileLight disabled:cursor-default disabled:text-inkMuted disabled:hover:border-sand"
+                    >
+                        ‹
+                    </button>
+
+                    <span className="text-sm text-inkMuted">
+                        {t('list.pageOf', { page: current, pages })}
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() => setPage((p) => Math.min(pages, p + 1))}
+                        disabled={current === pages}
+                        aria-label={t('list.nextPage')}
+                        className="rounded-md border border-sand bg-white px-4 py-2 text-sm text-ink transition hover:border-tileLight disabled:cursor-default disabled:text-inkMuted disabled:hover:border-sand"
+                    >
+                        ›
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
