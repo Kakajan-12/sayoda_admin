@@ -3,6 +3,7 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import CountryImageField from "@/Components/CountryImageField";
 import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/Components/DestinationFields";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
@@ -13,6 +14,7 @@ const AddDestination = () => {
     const router = useRouter();
     const [form, setForm] = useState<DestinationForm>(EMPTY_DESTINATION);
     const [heroFile, setHeroFile] = useState<File | null>(null);
+    const [cardFile, setCardFile] = useState<File | null>(null);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +31,7 @@ const AddDestination = () => {
             (Object.keys(EMPTY_DESTINATION) as (keyof DestinationForm)[])
                 .forEach((k) => data.append(k, String(form[k] ?? '')));
             if (heroFile) data.append('hero_image', heroFile);
+            if (cardFile) data.append('card_image', cardFile);
 
             const res = await axios.post(`${API}/api/destinations`, data, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -48,17 +51,24 @@ const AddDestination = () => {
         <div className="mt-8">
             <h1 className="text-2xl font-bold mb-4">Новая страна</h1>
             <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
-                <div>
-                    <label className="mb-1 block text-sm font-medium text-inkMuted">Картинка обложки</label>
-                    <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp"
-                        onChange={(e) => setHeroFile(e.target.files?.[0] || null)}
-                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
+                {/* Две картинки страны: обложка её страницы и плитка на
+                    главной. Плитку можно загрузить и позже — без неё на
+                    главной покажется обложка. */}
+                <div className="grid gap-6 lg:grid-cols-2">
+                    <CountryImageField
+                        label="Обложка страницы страны"
+                        hint="Горизонтальная, от 1600px по ширине."
+                        current={null}
+                        shape="wide"
+                        onFile={setHeroFile}
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                        Горизонтальная, от 1600px по ширине.
-                    </p>
+                    <CountryImageField
+                        label="Плитка на главной"
+                        hint="Вертикальная, пропорции 3:4, от 800px по ширине. Не задана — на главной покажется обложка."
+                        current={null}
+                        shape="card"
+                        onFile={setCardFile}
+                    />
                 </div>
 
                 <DestinationFields value={form} onChange={patch}/>

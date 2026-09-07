@@ -8,7 +8,6 @@ import {
     LuMails,
     LuSparkles,
 } from "react-icons/lu";
-import { TfiLayoutSlider } from "react-icons/tfi";
 import { VscFeedback, VscTypeHierarchySub } from "react-icons/vsc";
 import { PiReadCvLogo } from "react-icons/pi";
 import { GrGallery } from "react-icons/gr";
@@ -59,7 +58,6 @@ export const navGroups: NavGroup[] = [
         titleKey: 'nav.group.content',
         links: [
             { href: '/admin/banner', labelKey: 'nav.banner', icon: LuImage },
-            { href: '/admin/sliders', labelKey: 'nav.sliders', icon: TfiLayoutSlider },
             { href: '/admin/destinations', labelKey: 'nav.destinations', icon: FaEarthAsia },
             { href: '/admin/faq', labelKey: 'nav.faq', icon: RiQuestionAnswerLine },
             { href: '/admin/testimonials', labelKey: 'nav.testimonials', icon: VscFeedback },
