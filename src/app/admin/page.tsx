@@ -8,6 +8,7 @@ import { MdTour } from "react-icons/md";
 import { PiReadCvLogo } from "react-icons/pi";
 import { navGroups } from "@/lib/navigation";
 import { readToken } from "@/lib/auth";
+import TrafficPanel from "@/Components/TrafficPanel";
 
 /**
  * Дашборд.
@@ -107,6 +108,8 @@ const Dashboard = () => {
                     </Link>
                 ))}
             </div>
+
+            <TrafficPanel />
 
             <div className="mt-8">
                 <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-inkMuted">
