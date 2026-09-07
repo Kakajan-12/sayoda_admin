@@ -69,6 +69,33 @@ export const dictionary = {
     'list.prevPage': { ru: 'Предыдущая страница', en: 'Previous page' },
     'list.nextPage': { ru: 'Следующая страница', en: 'Next page' },
     'list.shown': { ru: 'Показано {from}–{to} из {n}', en: 'Showing {from}–{to} of {n}' },
+    'list.moveUp': { ru: 'Поднять выше', en: 'Move up' },
+    'list.moveDown': { ru: 'Опустить ниже', en: 'Move down' },
+    'list.uploading': { ru: 'Загружено {done} из {total}', en: 'Uploaded {done} of {total}' },
+
+    // ─── вкладки тура ───
+    'tour.tabMain': { ru: 'Основное', en: 'Main' },
+    'tour.saveFirst': {
+        ru: 'Сначала сохраните тур — программу, состав цены и фотографии можно будет добавить сразу после этого',
+        en: 'Save the tour first — the itinerary, price breakdown and photos can be added right after',
+    },
+    'tour.hintItinerary': {
+        ru: 'Дни выводятся на странице тура в этом порядке. Номер дня подставляется сам — в заголовке его писать не нужно',
+        en: 'Days appear on the tour page in this order. The day number is added automatically — no need to type it in the title',
+    },
+    'tour.hintIncludes': { ru: 'Что входит в цену тура', en: 'What the tour price covers' },
+    'tour.hintExcludes': { ru: 'Что оплачивается отдельно', en: 'What is paid separately' },
+    'tour.hintHighlights': {
+        ru: 'Короткие доводы «ради чего ехать». Выводятся сразу под первым экраном',
+        en: 'Short reasons to go. Shown right below the first screen',
+    },
+    'tour.hintDepartures': {
+        ru: 'Даты заездов с ценой и наличием мест. Прошедшие даты сайт не показывает',
+        en: 'Departure dates with price and availability. Past dates are hidden on the site',
+    },
+    'tour.hintGallery': { ru: 'Снимки тура. Можно выбрать сразу несколько', en: 'Tour photos. You can pick several at once' },
+    'tour.dayTitle': { ru: 'Заголовок дня', en: 'Day title' },
+    'tour.dayText': { ru: 'Описание дня', en: 'Day description' },
 
 
     // ─── формы ───

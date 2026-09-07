@@ -139,7 +139,17 @@ const AddTour = () => {
                 setTourType('');
                 setTourCat('');
                 setLocationTour('');
-                router.push('/admin/tours');
+                /*
+                 * Открываем сразу созданный тур, а не общий список.
+                 *
+                 * Программу, состав цены и снимки теперь заводят во вкладках
+                 * самого тура, и им нужен уже существующий тур. Возврат
+                 * в список означал бы, что редактор тут же ищет только что
+                 * созданную запись руками.
+                 */
+                router.push(
+                    data?.id ? `/admin/tours/edit-tour/${data.id}` : '/admin/tours',
+                );
             } else {
                 const errorText = await response.text();
                 console.error('Ошибка при добавлении:', errorText);
