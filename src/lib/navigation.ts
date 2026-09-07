@@ -9,7 +9,7 @@ import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline } from "react-icons/io";
 import { TbCategoryFilled } from "react-icons/tb";
-import { FaLocationDot, FaMapLocationDot, FaPassport, FaEarthAsia } from "react-icons/fa6";
+import { FaLocationDot, FaPassport, FaEarthAsia } from "react-icons/fa6";
 import { RiLinksLine, RiQuestionAnswerLine } from "react-icons/ri";
 import type { DictKey } from "./i18n/dictionary";
 
@@ -68,7 +68,6 @@ export const navGroups: NavGroup[] = [
             { href: '/admin/includes', labelKey: 'nav.includes', icon: IoMdCheckmarkCircleOutline },
             { href: '/admin/excludes', labelKey: 'nav.excludes', icon: IoIosCloseCircleOutline },
             { href: '/admin/tour-gallery', labelKey: 'nav.tourGallery', icon: GrGallery },
-            { href: '/admin/tour-location', labelKey: 'nav.tourLocation', icon: FaMapLocationDot },
             { href: '/admin/visa', labelKey: 'nav.visa', icon: FaPassport },
         ],
     },
@@ -100,7 +99,7 @@ export const isActiveHref = (pathname: string, href: string) =>
 /** Ищет раздел по адресу — шапке нужно название текущей страницы. */
 export function findNavLink(pathname: string): NavLink | undefined {
     const all = navGroups.flatMap((g) => g.links);
-    // Сначала самое длинное совпадение: /admin/tour-location не должен
+    // Сначала самое длинное совпадение: /admin/tour-gallery не должен
     // определиться как /admin/tours.
     return [...all]
         .sort((a, b) => b.href.length - a.href.length)

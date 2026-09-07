@@ -77,6 +77,9 @@ export const dictionary = {
     'form.selectType': { ru: 'Тип тура', en: 'Tour type' },
     'form.selectCategory': { ru: 'Категория', en: 'Category' },
     'form.selectLocation': { ru: 'Локация', en: 'Location' },
+    // Отдельный ключ от form.selectLocation: тот выбирает точку на карте
+    // в контактах, а здесь — страну из раздела «Направления».
+    'form.selectDestination': { ru: 'Направление', en: 'Destination' },
     'form.selectBlog': { ru: 'Статья', en: 'Article' },
     'form.location': { ru: 'Локация', en: 'Location' },
     'form.price': { ru: 'Цена', en: 'Price' },
@@ -125,7 +128,6 @@ export const dictionary = {
     'nav.includes': { ru: 'Что включено', en: 'Included' },
     'nav.excludes': { ru: 'Что не включено', en: 'Not included' },
     'nav.tourGallery': { ru: 'Галерея туров', en: 'Tour gallery' },
-    'nav.tourLocation': { ru: 'Локации туров', en: 'Tour locations' },
     'nav.visa': { ru: 'Визовые требования', en: 'Visa requirements' },
     'nav.address': { ru: 'Адрес', en: 'Address' },
     'nav.mails': { ru: 'Почта', en: 'E-mail' },
