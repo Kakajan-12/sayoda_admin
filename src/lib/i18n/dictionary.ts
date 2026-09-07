@@ -160,6 +160,37 @@ export const dictionary = {
     'dash.quick': { ru: 'Быстрый переход', en: 'Quick links' },
     'dash.checkRequests': { ru: 'Посмотреть заявки', en: 'Open requests' },
 
+    // ─── посещаемость ───
+    'traffic.title': { ru: 'Посещаемость', en: 'Traffic' },
+    'traffic.viewsToday': { ru: 'Просмотров сегодня', en: 'Views today' },
+    'traffic.visitorsToday': { ru: 'Посетителей сегодня', en: 'Visitors today' },
+    'traffic.viewsPeriod': { ru: 'Просмотров за период', en: 'Views in the period' },
+    'traffic.viewsTotal': { ru: 'Просмотров всего', en: 'Views in total' },
+    'traffic.views': { ru: 'Просмотры', en: 'Views' },
+    'traffic.visitors': { ru: 'Посетители', en: 'Visitors' },
+    'traffic.days7': { ru: '7 дней', en: '7 days' },
+    'traffic.days30': { ru: '30 дней', en: '30 days' },
+    'traffic.days90': { ru: '90 дней', en: '90 days' },
+    'traffic.topPages': { ru: 'Популярные страницы', en: 'Top pages' },
+    'traffic.sources': { ru: 'Откуда приходят', en: 'Where visitors come from' },
+    'traffic.languages': { ru: 'Языки страниц', en: 'Page languages' },
+    'traffic.empty': {
+        ru: 'Пока нет данных. Счётчик считает с момента установки — цифры появятся, когда на сайт зайдут.',
+        en: 'No data yet. The counter starts from the moment it was installed — numbers will appear once people visit.',
+    },
+    'traffic.error': {
+        ru: 'Не удалось загрузить статистику.',
+        en: 'Could not load the statistics.',
+    },
+    'traffic.hint': {
+        ru: 'Просмотр — открытие страницы. Посетитель — уникальный за день: один человек за день считается один раз, сколько бы страниц ни открыл.',
+        en: 'A view is a page opening. A visitor is unique per day: one person counts once a day no matter how many pages they open.',
+    },
+    'traffic.noSources': {
+        ru: 'Переходов с других сайтов пока не было — заходят по прямой ссылке.',
+        en: 'No referrals from other sites yet — visitors arrive directly.',
+    },
+
     "set.intro": { ru: "Значения подхватываются сайтом автоматически. Пустые поля нигде не выводятся.", en: "The site picks these up automatically. Empty fields are not shown anywhere." },
     "set.ga4.hint": { ru: "Пока не задан, счётчик на сайте не подключается и заявки нельзя посчитать.", en: "Until this is set the counter is not loaded and enquiries cannot be measured." },
     "set.whatsapp.hint": { ru: "Номер в международном формате. Если пусто, кнопка использует основной телефон компании.", en: "International format. If empty, the button falls back to the main company phone." },
