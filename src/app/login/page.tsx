@@ -18,6 +18,7 @@ const LoginForm = () => {
     const { locale, setLocale, t } = useAdminLocale();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [remember, setRemember] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [sending, setSending] = useState(false);
 
@@ -30,7 +31,9 @@ const LoginForm = () => {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
+                // remember уходит настоящим булевым: сервер сверяет его
+                // строго с true, и строка «false» не сошла бы за галочку.
+                body: JSON.stringify({ username, password, remember }),
             });
 
             if (!response.ok) {
@@ -97,6 +100,32 @@ const LoginForm = () => {
                                 className={field}
                             />
                         </div>
+                        {/*
+                            Галочка обёрнута в label целиком: щелчок по
+                            подписи должен переключать её, а не промахиваться
+                            мимо квадратика в четырнадцать пикселей.
+
+                            Подсказка под ней объясняет, что именно меняется:
+                            «запомнить меня» ничего не говорит о том, что
+                            сеанс станет месячным, а на чужом компьютере это
+                            имеет значение.
+                        */}
+                        <label className="flex cursor-pointer items-start gap-2.5 pt-1">
+                            <input
+                                type="checkbox"
+                                checked={remember}
+                                onChange={(e) => setRemember(e.target.checked)}
+                                className="mt-0.5 size-4 shrink-0 accent-tile"
+                            />
+                            <span className="min-w-0">
+                                <span className="block text-sm text-ink">
+                                    {t('login.remember')}
+                                </span>
+                                <span className="block text-xs text-inkMuted">
+                                    {t('login.rememberHint')}
+                                </span>
+                            </span>
+                        </label>
                     </div>
 
                     {error && (

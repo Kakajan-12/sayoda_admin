@@ -282,6 +282,11 @@ export const dictionary = {
     'login.title': { ru: 'Панель управления Sayoda', en: 'Sayoda admin panel' },
     'login.username': { ru: 'Логин', en: 'Username' },
     'login.password': { ru: 'Пароль', en: 'Password' },
+    'login.remember': { ru: 'Запомнить меня', en: 'Remember me' },
+    'login.rememberHint': {
+        ru: 'Сеанс продлится 30 дней вместо 7. Не ставьте на чужом компьютере',
+        en: 'The session lasts 30 days instead of 7. Leave it off on a shared computer',
+    },
     'login.submit': { ru: 'Войти', en: 'Sign in' },
     'login.error': { ru: 'Неверный логин или пароль', en: 'Wrong username or password' },
 } satisfies Dict;
