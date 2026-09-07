@@ -33,6 +33,14 @@ interface Props {
     groupField: string;
     /** Основа локализованного поля с текстом пункта: `text` → `text_ru`. */
     itemField?: string;
+    /**
+     * Своя подпись пункта, когда её нельзя собрать из локализованного поля.
+     *
+     * У заездов текста нет вовсе — только дата, статус, цена и места, и
+     * складывать их в строку должен тот, кто знает их смысл. Если функция
+     * передана, itemField не используется.
+     */
+    itemLabel?: (row: Row) => string;
     /** Основа локализованного заголовка пункта, если он есть. */
     itemTitleField?: string;
     /** Поле с путём к картинке, если пункт — изображение. */
@@ -43,8 +51,8 @@ interface Props {
 }
 
 const GroupedList: React.FC<Props> = ({
-    titleKey, endpoint, groupField, itemField, itemTitleField, itemImageField,
-    addHref, editHref, deleteEndpoint,
+    titleKey, endpoint, groupField, itemField, itemLabel, itemTitleField,
+    itemImageField, addHref, editHref, deleteEndpoint,
 }) => {
     const { locale, t } = useAdminLocale();
     const router = useRouter();
@@ -104,7 +112,10 @@ const GroupedList: React.FC<Props> = ({
 
     const remove = async (row: Row) => {
         if (!deleteEndpoint) return;
-        const name = localized(row, itemTitleField || itemField) || String(row.id);
+        const name =
+            (itemLabel ? itemLabel(row) : '') ||
+            localized(row, itemTitleField || itemField) ||
+            String(row.id);
         if (!window.confirm(t('common.confirmDelete', { name }))) return;
         setBusyId(row.id);
         try {
@@ -207,10 +218,16 @@ const GroupedList: React.FC<Props> = ({
                                                             {localized(row, itemTitleField) || '—'}
                                                         </p>
                                                     )}
-                                                    {itemField && (
-                                                        <p className="line-clamp-2 text-sm text-inkMuted">
-                                                            {localized(row, itemField) || '—'}
+                                                    {itemLabel ? (
+                                                        <p className="text-sm text-ink">
+                                                            {itemLabel(row) || '—'}
                                                         </p>
+                                                    ) : (
+                                                        itemField && (
+                                                            <p className="line-clamp-2 text-sm text-inkMuted">
+                                                                {localized(row, itemField) || '—'}
+                                                            </p>
+                                                        )
                                                     )}
                                                 </div>
 
