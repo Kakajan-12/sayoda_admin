@@ -94,6 +94,12 @@ export const dictionary = {
         en: 'Departure dates with price and availability. Past dates are hidden on the site',
     },
     'tour.hintGallery': { ru: 'Снимки тура. Можно выбрать сразу несколько', en: 'Tour photos. You can pick several at once' },
+    'tour.manageItems': { ru: 'Править справочник', en: 'Manage the list' },
+    'tour.emptyDictionary': {
+        ru: 'Справочник пуст — заведите пункты, и они появятся здесь галочками',
+        en: 'The list is empty — add entries and they will appear here as checkboxes',
+    },
+    'tour.chosenCount': { ru: 'Отмечено: {n}', en: 'Selected: {n}' },
     'tour.dayTitle': { ru: 'Заголовок дня', en: 'Day title' },
     'tour.dayText': { ru: 'Описание дня', en: 'Day description' },
 
