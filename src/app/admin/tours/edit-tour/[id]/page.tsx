@@ -49,7 +49,6 @@ type TourData = {
     duration_tk: string; duration_en: string; duration_ru: string;
     lang_tk: string; lang_en: string; lang_ru: string;
     image: string;
-    map: string;
     map_embed: string;
     price: number;
     tour_type_id: number;
@@ -64,7 +63,7 @@ const EMPTY: TourData = {
     destination_tk: '', destination_en: '', destination_ru: '',
     duration_tk: '', duration_en: '', duration_ru: '',
     lang_tk: '', lang_en: '', lang_ru: '',
-    image: '', map: '', map_embed: '', price: 0,
+    image: '', map_embed: '', price: 0,
     tour_type_id: 0, tour_cat_id: 0, location_id: 0,
 };
 
@@ -92,7 +91,6 @@ const EditTour = () => {
     const [lang, setLang] = useState<Lang>('ru');
     const [data, setData] = useState<TourData>(EMPTY);
     const [imageFile, setImageFile] = useState<File | null>(null);
-    const [mapFile, setMapFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -179,7 +177,6 @@ const EditTour = () => {
             }
 
             if (imageFile) body.append('image', imageFile);
-            if (mapFile) body.append('map', mapFile);
 
             await axios.put(`${API}/api/tours/${id}`, body, {
                 headers: { Authorization: `Bearer ${readToken()}` },
@@ -199,7 +196,6 @@ const EditTour = () => {
         plainText(data.title_ru) || plainText(data.title_en) || t('form.editTitle');
 
     const imageSrc = mediaUrl(data.image);
-    const mapSrc = mediaUrl(data.map);
 
     return (
         <div className="mt-8">
@@ -300,8 +296,9 @@ const EditTour = () => {
                 </FormSection>
 
                 <FormSection title={t('form.sectionImages')}>
-                    {/* Интерактивная карта идёт первой: именно её видит
-                        посетитель, а картинка ниже — запасной вариант. */}
+                    {/* Карта только интерактивная. Картинку карты убрали:
+                        два поля под одну карту путали, а снимок всё равно
+                        проигрывал настоящей — по нему нельзя двигаться. */}
                     <Field label={t('form.mapEmbed')} hint={t('form.mapEmbedHint')}>
                         <input
                             type="text"
@@ -312,47 +309,25 @@ const EditTour = () => {
                         />
                     </Field>
 
-                    <FieldRow>
-                        <Field label={t('form.image')} hint={t('form.replaceImage')} htmlFor="tour-image">
-                            {imageSrc && (
-                                <Image
-                                    src={imageSrc}
-                                    alt={heading}
-                                    width={320}
-                                    height={200}
-                                    unoptimized
-                                    className="mb-2 aspect-[16/10] w-full max-w-xs rounded-md border border-sand object-cover"
-                                />
-                            )}
-                            <input
-                                id="tour-image"
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-                                className={inputClass}
+                    <Field label={t('form.image')} hint={t('form.replaceImage')} htmlFor="tour-image">
+                        {imageSrc && (
+                            <Image
+                                src={imageSrc}
+                                alt={heading}
+                                width={320}
+                                height={200}
+                                unoptimized
+                                className="mb-2 aspect-[16/10] w-full max-w-xs rounded-md border border-sand object-cover"
                             />
-                        </Field>
-
-                        <Field label={t('form.map')} hint={t('form.mapImageHint')} htmlFor="tour-map">
-                            {mapSrc && (
-                                <Image
-                                    src={mapSrc}
-                                    alt={t('form.map')}
-                                    width={320}
-                                    height={200}
-                                    unoptimized
-                                    className="mb-2 aspect-[16/10] w-full max-w-xs rounded-md border border-sand object-contain"
-                                />
-                            )}
-                            <input
-                                id="tour-map"
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={(e) => setMapFile(e.target.files?.[0] ?? null)}
-                                className={inputClass}
-                            />
-                        </Field>
-                    </FieldRow>
+                        )}
+                        <input
+                            id="tour-image"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                            className={inputClass}
+                        />
+                    </Field>
                 </FormSection>
 
                 <FormSection title={t('form.sectionTexts')} hint={t('form.sectionTextsHint')}>

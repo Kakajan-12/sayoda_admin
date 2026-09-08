@@ -118,12 +118,8 @@ export const dictionary = {
     'form.map': { ru: 'Карта', en: 'Map' },
     'form.mapEmbed': { ru: 'Интерактивная карта маршрута', en: 'Interactive route map' },
     'form.mapEmbedHint': {
-        ru: 'Нарисуйте маршрут в Google My Maps (mymaps.google.com), нажмите «Поделиться» → «Встроить на сайт» и вставьте сюда полученный код или ссылку. Принимается только адрес Google Карт. Пусто — на сайте покажется картинка ниже',
-        en: 'Draw the route in Google My Maps (mymaps.google.com), choose Share → Embed on my site and paste the code or link here. Only Google Maps addresses are accepted. Leave empty and the image below is shown instead',
-    },
-    'form.mapImageHint': {
-        ru: 'Запасной вариант: показывается, пока посетитель не согласился на куки, и если интерактивной карты нет',
-        en: 'Fallback: shown until the visitor accepts cookies, and when there is no interactive map',
+        ru: 'Нарисуйте маршрут в Google My Maps (mymaps.google.com), нажмите «Поделиться» → «Встроить на сайт» и вставьте сюда полученный код или ссылку. Принимается только адрес Google Карт. Пусто — раздела «Карта» на странице тура не будет',
+        en: 'Draw the route in Google My Maps (mymaps.google.com), choose Share → Embed on my site and paste the code or link here. Only Google Maps addresses are accepted. Leave it empty and the tour page will have no map section',
     },
     'form.selectTour': { ru: 'Тур', en: 'Tour' },
     'form.selectType': { ru: 'Тип тура', en: 'Tour type' },
