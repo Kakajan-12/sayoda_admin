@@ -3,6 +3,7 @@
 import React from "react";
 import TourChildList, { type FieldSpec } from "@/Components/tour/TourChildList";
 import TourGalleryPanel from "@/Components/tour/TourGalleryPanel";
+import TourItemPicker from "@/Components/tour/TourItemPicker";
 import { useT } from "@/lib/i18n/LocaleProvider";
 import type { Row } from "@/Components/ResourceList";
 
@@ -99,36 +100,38 @@ export default function TourPanels({ tourId, tab }: { tourId: number; tab: TourT
         );
     }
 
-    const shared = {
-        includes: {
-            title: t('nav.includes'),
-            hint: t('tour.hintIncludes'),
-            endpoint: '/api/includes',
-            ordered: false,
-        },
-        excludes: {
-            title: t('nav.excludes'),
-            hint: t('tour.hintExcludes'),
-            endpoint: '/api/excludes',
-            ordered: false,
-        },
-        highlights: {
-            title: t('nav.highlights'),
-            hint: t('tour.hintHighlights'),
-            endpoint: '/api/highlights',
-            ordered: true,
-        },
-    }[tab];
+    /*
+     * «Включено» и «не включено» — не списки у тура, а отметки в справочнике.
+     *
+     * Пункты повторяются от тура к туру: 93 записи «включено» оказались 29
+     * разными текстами, один и тот же пункт лежал по восемь раз. Набирать
+     * их заново в каждом туре было и долго, и поправить формулировку
+     * значило открыть восемь туров.
+     */
+    if (tab === 'includes' || tab === 'excludes') {
+        const includes = tab === 'includes';
+        return (
+            <TourItemPicker
+                tourId={tourId}
+                title={t(includes ? 'nav.includes' : 'nav.excludes')}
+                hint={t(includes ? 'tour.hintIncludes' : 'tour.hintExcludes')}
+                endpoint={includes ? '/api/include-items' : '/api/exclude-items'}
+                manageHref={includes ? '/admin/include-items' : '/admin/exclude-items'}
+            />
+        );
+    }
 
+    // «Главное о туре» остаётся списком у тура: доводы «ради чего ехать»
+    // у каждого свои, повторять их между турами нечего.
     return (
         <TourChildList
             tourId={tourId}
-            title={shared.title}
-            hint={shared.hint}
-            endpoint={shared.endpoint}
-            listUrl={(id) => `${shared.endpoint}/tour/${id}`}
-            ordered={shared.ordered}
-            fields={localizedText(t('form.text'), tab === 'highlights' ? 500 : undefined)}
+            title={t('nav.highlights')}
+            hint={t('tour.hintHighlights')}
+            endpoint="/api/highlights"
+            listUrl={(id) => `/api/highlights/tour/${id}`}
+            ordered
+            fields={localizedText(t('form.text'), 500)}
             rowLabel={(row) => anyLocale(row, 'text')}
         />
     );
