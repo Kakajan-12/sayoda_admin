@@ -270,6 +270,11 @@ export const dictionary = {
     'traffic.days30': { ru: '30 дней', en: '30 days' },
     'traffic.days90': { ru: '90 дней', en: '90 days' },
     'traffic.topPages': { ru: 'Популярные страницы', en: 'Top pages' },
+    'traffic.countries': { ru: 'Откуда заходят', en: 'Where visitors come from' },
+    'traffic.noCountries': {
+        ru: 'Пока нет данных: страна определяется у посещений, начиная с этого обновления',
+        en: 'No data yet: the country is recorded for visits from this update onwards',
+    },
     'traffic.sources': { ru: 'Откуда приходят', en: 'Where visitors come from' },
     'traffic.languages': { ru: 'Языки страниц', en: 'Page languages' },
     'traffic.empty': {
