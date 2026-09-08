@@ -41,7 +41,7 @@ const DestinationSelect = ({ value, onChange, label = 'Страна', hint }: Pr
             <select
                 value={value ?? ''}
                 onChange={(e) => onChange(e.target.value)}
-                className="border border-gray-300 rounded p-2 w-full"
+                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
             >
                 <option value="">Не привязано</option>
                 {items.map((d) => (

@@ -68,7 +68,7 @@ const EditLink = () => {
     };
 
     if (loading) {
-        return <div className="p-10">Загрузка...</div>;
+        return <p className="mt-8 text-inkMuted">{t('common.loading')}</p>;
     }
 
     return (

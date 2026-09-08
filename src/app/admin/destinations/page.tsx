@@ -112,14 +112,14 @@ const Destinations = () => {
                             <div className="flex items-center gap-4">
                                 <Link
                                     href={`/admin/destinations/edit/${d.id}`}
-                                    className="text-blue-600 flex items-center gap-1"
+                                    className="flex items-center gap-1 text-tile hover:underline"
                                 >
                                     <PencilSquareIcon className="size-5"/> Изменить
                                 </Link>
                                 <button
                                     type="button"
                                     onClick={() => remove(d.id, d.name_ru || d.slug)}
-                                    className="text-red-600"
+                                    className="text-brick"
                                 >
                                     {t('common.delete')}
                                 </button>

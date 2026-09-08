@@ -94,8 +94,8 @@ const EditDestination = () => {
         }
     };
 
-    if (loading) return <p className="p-10">Загрузка…</p>;
-    if (error && !form.slug) return <p className="p-10 text-red-600">{error}</p>;
+    if (loading) return <p className="mt-8 text-inkMuted">{t('common.loading')}</p>;
+    if (error && !form.slug) return <p className="p-10 text-brick">{error}</p>;
 
     const currentHero = heroImage
         ? (heroImage.startsWith('/') ? heroImage : `${API}/${heroImage.replace(/\\/g, '/')}`)
@@ -108,7 +108,7 @@ const EditDestination = () => {
                 <h1 className="text-2xl font-bold">
                     {form.name_ru || form.name_en || form.slug}
                 </h1>
-                <Link href="/admin/destinations" className="text-blue-600">
+                <Link href="/admin/destinations" className="text-tile hover:underline">
                     ← Ко всем странам
                 </Link>
             </div>
@@ -145,8 +145,8 @@ const EditDestination = () => {
                         <DocumentIcon className="w-5 h-5 mr-2"/>
                         {saving ? 'Сохраняем…' : 'Сохранить страну'}
                     </button>
-                    {saved && <span className="text-green-600 text-sm">Сохранено</span>}
-                    {error && <span className="text-red-600 text-sm">{error}</span>}
+                    {saved && <span className="text-tileMid text-sm">Сохранено</span>}
+                    {error && <span className="text-brick text-sm">{error}</span>}
                 </div>
             </form>
 

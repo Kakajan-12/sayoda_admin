@@ -33,7 +33,7 @@ const SlugField = ({ value, onChange, section, locked }: Props) => (
                 onChange={(e) => onChange(e.target.value)}
                 readOnly={locked}
                 placeholder={locked ? '' : 'соберётся из английского названия'}
-                className={`border border-gray-300 rounded p-2 w-full ${locked ? 'bg-gray-100 text-gray-600' : ''}`}
+                className={`w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight ${locked ? 'bg-gray-100 text-gray-600' : ''}`}
             />
         </div>
         <p className="text-xs text-gray-500 mt-1">

@@ -82,7 +82,7 @@ const AddDestination = () => {
                         <DocumentIcon className="w-5 h-5 mr-2"/>
                         {saving ? 'Сохраняем…' : 'Создать и перейти к разделам'}
                     </button>
-                    {error && <span className="text-red-600 text-sm">{error}</span>}
+                    {error && <span className="text-brick text-sm">{error}</span>}
                 </div>
             </form>
         </div>

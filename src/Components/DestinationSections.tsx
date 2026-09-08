@@ -247,7 +247,7 @@ const DestinationSections = ({ destinationId, initial }: Props) => {
                                         value={section.section_key}
                                         onChange={(e) => patch(section.id, { section_key: e.target.value })}
                                         placeholder="overview"
-                                        className="border border-gray-300 rounded p-2 w-full"
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
                                         Латиницей. Используется как якорь ссылки в боковом меню.
@@ -258,7 +258,7 @@ const DestinationSections = ({ destinationId, initial }: Props) => {
                                     <select
                                         value={section.icon || 'overview'}
                                         onChange={(e) => patch(section.id, { icon: e.target.value })}
-                                        className="border border-gray-300 rounded p-2 w-full"
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                     >
                                         {ICONS.map((i) => (
                                             <option key={i.value} value={i.value}>{i.label}</option>
@@ -272,7 +272,7 @@ const DestinationSections = ({ destinationId, initial }: Props) => {
                                         value={section.sort_order}
                                         onChange={(e) =>
                                             patch(section.id, { sort_order: Number(e.target.value) || 0 })}
-                                        className="border border-gray-300 rounded p-2 w-full"
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                     />
                                 </div>
                             </div>
@@ -283,7 +283,7 @@ const DestinationSections = ({ destinationId, initial }: Props) => {
                                     type="text"
                                     value={section[`title_${lang}`] ?? ''}
                                     onChange={(e) => patch(section.id, { [`title_${lang}`]: e.target.value })}
-                                    className="border border-gray-300 rounded p-2 w-full"
+                                    className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                 />
                             </div>
 
@@ -319,20 +319,20 @@ const DestinationSections = ({ destinationId, initial }: Props) => {
                                                     onChange={(e) =>
                                                         patchImage(section, img.id, { [`caption_${lang}`]: e.target.value })}
                                                     placeholder="Подпись"
-                                                    className="border border-gray-300 rounded p-2 w-full text-sm"
+                                                    className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight text-sm"
                                                 />
                                                 <div className="flex gap-3 mt-2">
                                                     <button
                                                         type="button"
                                                         onClick={() => saveCaption(section, img)}
-                                                        className="text-sm text-blue-600"
+                                                        className="text-sm text-tile hover:underline"
                                                     >
                                                         Сохранить подпись
                                                     </button>
                                                     <button
                                                         type="button"
                                                         onClick={() => removeImage(section, img)}
-                                                        className="text-sm text-red-600"
+                                                        className="text-sm text-brick"
                                                     >
                                                         Удалить
                                                     </button>
@@ -365,12 +365,12 @@ const DestinationSections = ({ destinationId, initial }: Props) => {
                                 <button
                                     type="button"
                                     onClick={() => remove(section)}
-                                    className="text-red-600 flex items-center gap-1"
+                                    className="text-brick flex items-center gap-1"
                                 >
                                     <TrashIcon className="size-4"/> Удалить раздел
                                 </button>
                                 {message?.id === section.id && (
-                                    <span className={`text-sm ${message.ok ? 'text-green-600' : 'text-red-600'}`}>
+                                    <span className={`text-sm ${message.ok ? 'text-tileMid' : 'text-brick'}`}>
                                         {message.text}
                                     </span>
                                 )}

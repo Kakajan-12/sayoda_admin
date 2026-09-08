@@ -1,479 +1,300 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
 
-import React, {useState, useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { DocumentIcon } from '@heroicons/react/16/solid';
 import SlugField from '@/Components/SlugField';
-import {useRouter} from 'next/navigation';
 import TipTapEditor from '@/Components/TipTapEditor';
+import {
+    Field,
+    FieldRow,
+    FormSection,
+    LangTabs,
+    LANGS,
+    inputClass,
+    type Lang,
+} from '@/Components/form/Field';
+import { plainText } from '@/Components/ResourceList';
+import { useT } from '@/lib/i18n/LocaleProvider';
+import { readToken } from '@/lib/auth';
+
+const API = process.env.NEXT_PUBLIC_API_URL;
+
+/**
+ * Новый тур.
+ *
+ * Та же форма, что и при правке, и приведена к тому же виду: поля в сетке
+ * вместо ряда из пяти сжатых колонок, подписи на языке интерфейса, а
+ * редактор с панелью форматирования остался только у описания.
+ *
+ * Программа по дням, состав цены и снимки заводятся уже во вкладках самого
+ * тура — им нужен существующий тур, поэтому после сохранения открывается
+ * он, а не общий список.
+ */
+
+const BASES = ['title', 'text', 'destination', 'duration', 'lang'] as const;
+
+/** Пустые значения всех языковых полей: title_tk, title_en, … */
+const emptyTexts = () => {
+    const out: Record<string, string> = {};
+    for (const base of BASES) for (const code of LANGS) out[`${base}_${code}`] = '';
+    return out;
+};
 
 const AddTour = () => {
     const t = useT();
-    const [isClient, setIsClient] = useState(false);
-    const [image, setImage] = useState<File | null>(null);
-    const [popular, setPopular] = useState(false);
-    const [slug, setSlug] = useState('');
-    const [title_tk, setTitleTk] = useState('');
-    const [title_en, setTitleEn] = useState('');
-    const [title_ru, setTitleRu] = useState('');
-    const [text_tk, setTextTk] = useState('');
-    const [text_en, setTextEn] = useState('');
-    const [text_ru, setTextRu] = useState('');
-    const [destination_tk, setDestinationTk] = useState('');
-    const [destination_en, setDestinationEn] = useState('');
-    const [destination_ru, setDestinationRu] = useState('');
-    const [duration_tk, setDurationTk] = useState('');
-    const [duration_en, setDurationEn] = useState('');
-    const [duration_ru, setDurationRu] = useState('');
-    const [lang_tk, setLangTk] = useState('');
-    const [lang_en, setLangEn] = useState('');
-    const [lang_ru, setLangRu] = useState('');
-    const [price, setPrice] = useState('');
-    const [map, setMap] = useState<File | null>(null);
-    const [tour_type_id, setTourType] = useState('');
-    const [tour_cat_id, setTourCat] = useState('');
-    const [location_id, setLocationTour] = useState('');
-    const [types, setTypes] = useState<
-        { id: number; type_tk: string; type_en: string; type_ru: string }[]
-    >([]);
-    const [cat, setCat] = useState<
-        { id: number; cat_tk: string; cat_en: string; cat_ru: string }[]
-    >([]);
-    const [location, setLocation] = useState<
-        { id: number; location_tk: string; location_en: string; location_ru: string }[]
-    >([]);
-
     const router = useRouter();
 
+    const [lang, setLang] = useState<Lang>('ru');
+    const [texts, setTexts] = useState<Record<string, string>>(emptyTexts);
+    const [slug, setSlug] = useState('');
+    const [price, setPrice] = useState('');
+    const [popular, setPopular] = useState('0');
+    const [typeId, setTypeId] = useState('');
+    const [catId, setCatId] = useState('');
+    const [placeId, setPlaceId] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [mapFile, setMapFile] = useState<File | null>(null);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
+
+    const [types, setTypes] = useState<{ id: number; type_ru: string; type_en: string }[]>([]);
+    const [cats, setCats] = useState<{ id: number; cat_ru: string; cat_en: string }[]>([]);
+    const [places, setPlaces] = useState<{ id: number; location_ru: string; location_en: string }[]>([]);
+
     useEffect(() => {
-        setIsClient(true)
-        const fetchData = async () => {
-            try {
-                const [typesRes, catRes, locationRes] = await Promise.all([
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-types`),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-category`),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-location`)
-                ]);
-                const [typesData, catData, locationData] = await Promise.all([
-                    typesRes.json(),
-                    catRes.json(),
-                    locationRes.json()
-                ]);
-
-                setTypes(typesData);
-                setCat(catData);
-                setLocation(locationData)
-            } catch (err) {
-                console.error('Ошибка при загрузке данных:', err);
-            }
-        };
-
-        fetchData();
+        Promise.all([
+            axios.get(`${API}/api/tour-types`),
+            axios.get(`${API}/api/tour-category`),
+            axios.get(`${API}/api/tour-location`),
+        ])
+            .then(([typesRes, catRes, placeRes]) => {
+                setTypes(Array.isArray(typesRes.data) ? typesRes.data : []);
+                setCats(Array.isArray(catRes.data) ? catRes.data : []);
+                setPlaces(Array.isArray(placeRes.data) ? placeRes.data : []);
+            })
+            .catch(() => {
+                /* справочники не критичны для отрисовки формы */
+            });
     }, []);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const setText = (key: string, value: string) =>
+        setTexts((prev) => ({ ...prev, [key]: value }));
 
-        const token = localStorage.getItem('auth_token');
-        if (!token) {
-            console.error('Нет токена. Пользователь не авторизован.');
-            return;
-        }
-
-        const formData = new FormData();
-        if (image) formData.append('image', image);
-        if (map) formData.append('map', map);
-        formData.append('popular', popular ? '1' : '0');
-        formData.append('slug', slug);
-        formData.append('title_tk', title_tk ?? '');
-        formData.append('title_en', title_en ?? '');
-        formData.append('title_ru', title_ru ?? '');
-        formData.append('text_tk', text_tk ?? '');
-        formData.append('text_en', text_en ?? '');
-        formData.append('text_ru', text_ru ?? '');
-        formData.append('destination_tk', destination_tk ?? '');
-        formData.append('destination_en', destination_en ?? '');
-        formData.append('destination_ru', destination_ru ?? '');
-        formData.append('duration_tk', duration_en ?? '');
-        formData.append('duration_en', duration_en ?? '');
-        formData.append('duration_ru', duration_ru ?? '');
-        formData.append('lang_tk', lang_tk ?? '');
-        formData.append('lang_en', lang_en ?? '');
-        formData.append('lang_ru', lang_ru ?? '');
-        formData.append('price', price ?? '');
-        // formData.append('map', map ?? '');
-        formData.append('tour_type_id', tour_type_id ?? '');
-        formData.append('tour_cat_id', tour_cat_id ?? '');
-        formData.append('location_id', location_id ?? '');
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setSaving(true);
+        setError('');
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours`, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
+            const body = new FormData();
+            body.append('slug', slug);
+            body.append('price', price || '0');
+            body.append('popular', popular);
+            body.append('tour_type_id', typeId);
+            body.append('tour_cat_id', catId);
+            body.append('location_id', placeId);
+            for (const [key, value] of Object.entries(texts)) body.append(key, value);
+            if (imageFile) body.append('image', imageFile);
+            if (mapFile) body.append('map', mapFile);
+
+            const res = await axios.post(`${API}/api/tours`, body, {
+                headers: { Authorization: `Bearer ${readToken()}` },
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log('добавлен!', data);
-                setImage(null);
-                setPopular(Boolean)
-                setTitleTk('');
-                setTitleEn('');
-                setTitleRu('');
-                setTextTk('');
-                setTextEn('');
-                setTextRu('');
-                setDestinationTk('');
-                setDestinationEn('');
-                setDestinationRu('');
-                setDurationTk('');
-                setDurationEn('');
-                setDurationRu('');
-                setLangTk('')
-                setLangEn('');
-                setLangRu('');
-                setPrice('')
-                setMap(null);
-                setTourType('');
-                setTourCat('');
-                setLocationTour('');
-                /*
-                 * Открываем сразу созданный тур, а не общий список.
-                 *
-                 * Программу, состав цены и снимки теперь заводят во вкладках
-                 * самого тура, и им нужен уже существующий тур. Возврат
-                 * в список означал бы, что редактор тут же ищет только что
-                 * созданную запись руками.
-                 */
-                router.push(
-                    data?.id ? `/admin/tours/edit-tour/${data.id}` : '/admin/tours',
-                );
-            } else {
-                const errorText = await response.text();
-                console.error('Ошибка при добавлении:', errorText);
-            }
-        } catch (error) {
-            console.error('Ошибка запроса', error);
+            /*
+             * Открываем сразу созданный тур, а не общий список: программе,
+             * составу цены и снимкам нужен уже существующий тур, и возврат
+             * в список означал бы, что редактор тут же ищет только что
+             * созданную запись руками.
+             */
+            const newId = res.data?.id;
+            router.push(newId ? `/admin/tours/edit-tour/${newId}` : '/admin/tours');
+        } catch {
+            setError(t('common.error'));
+            setSaving(false);
         }
     };
 
     return (
-        <>
         <div className="mt-8">
+            <h1 className="mb-4 text-2xl font-bold text-ink">{t('form.addTitle')}</h1>
+
             <form
                 onSubmit={handleSubmit}
-                className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
+                className="space-y-6 rounded-lg border border-sand bg-white p-6"
             >
-                <h2 className="text-2xl font-bold mb-4 text-left">{t('form.addTitle')}</h2>
-
-                <div className="mb-4 flex space-x-4">
-                    <div className="w-full">
-                        <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">
-                            {t('form.image')}
-                        </label>
-                        <input
-                            type="file"
-                            id="image"
-                            accept="image/*"
-                            onChange={(e) => {
-                                if (e.target.files && e.target.files[0]) {
-                                    setImage(e.target.files[0]);
-                                }
-                            }}
-                            required
-                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
-                        />
-                    </div>
-                    <div className="w-full">
-                        <label className="mb-1 block text-sm font-medium text-inkMuted">
-                            {t('form.selectType')}
-                        </label>
-                        <select
-                            id="tour_type"
-                            name="tour_type_id"
-                            value={tour_type_id}
-                            onChange={(e) => setTourType(e.target.value)}
-                            required
-                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                        >
-                            <option value="">{t('form.selectType')}</option>
-                            {types.map((type) => (
-                                <option key={type.id} value={type.id}>
-                                    {type.type_en} / {type.type_tk} / {type.type_ru}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="w-full">
-                        <label className="mb-1 block text-sm font-medium text-inkMuted">
-                            {t('form.selectCategory')}
-                        </label>
-                        <select
-                            id="tour_cat"
-                            name="tour_cat_id"
-                            value={tour_cat_id}
-                            onChange={(e) => setTourCat(e.target.value)}
-                            required
-                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                        >
-                            <option value="">{t('form.selectCategory')}</option>
-                            {cat.map((cat) => (
-                                <option key={cat.id} value={cat.id}>
-                                    {cat.cat_en} / {cat.cat_tk} / {cat.cat_ru}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="w-full">
-                        <label className="mb-1 block text-sm font-medium text-inkMuted">
-                            {t('form.selectDestination')}
-                        </label>
-                        <select
-                            id="location_id"
-                            name="location_id"
-                            value={location_id}
-                            onChange={(e) => setLocationTour(e.target.value)}
-                            required
-                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                        >
-                            <option value="">{t('form.selectDestination')}</option>
-                            {location.map((location) => (
-                                <option key={location.id} value={location.id}>
-                                    {location.location_en} / {location.location_tk} / {location.location_ru}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="mb-4 w-full">
-                        <label
-                            className="mb-1 block text-sm font-medium text-inkMuted">{t('form.price')}</label>
-                        <input
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                            type="text"
-                            required
-                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                        />
-                    </div>
-                    <div className="mb-4 w-full">
-                        <label className="mb-1 block text-sm font-medium text-inkMuted">
-                            {t('form.popular')}
-                        </label>
-                        <select
-                            id="popular"
-                            name="popular"
-                            value={popular ? '1' : '0'}
-                            onChange={(e) => setPopular(e.target.value === '1')}
-                            required
-                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                        >
-                            <option value="1">{t('common.yes')}</option>
-                            <option value="0">{t('common.no')}</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="mb-4">
-                    <SlugField value={slug} onChange={setSlug} section="tours" />
-                </div>
-                {/*<div className="mb-4 w-full">*/}
-                {/*    <label*/}
-                {/*        className="mb-1 block text-sm font-medium text-inkMuted">{t('form.map')}</label>*/}
-                {/*    <textarea value={map}*/}
-                {/*              onChange={(e) => setMap(e.target.value)}*/}
-                {/*              rows={10}*/}
-                {/*              required*/}
-                {/*              className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight">*/}
-
-                {/*    </textarea>*/}
-                {/*</div>*/}
-
-                <div className="w-full">
-                    <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">
-                        {t('form.map')}
-                    </label>
-                    <input
-                        type="file"
-                        id="map"
-                        accept="image/*"
-                        onChange={(e) => {
-                            if (e.target.files && e.target.files[0]) {
-                                setMap(e.target.files[0]);
-                            }
-                        }}
-                        required
-                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
-                    />
-                </div>
-
-                {isClient && (
-                    <>
-                        <div className="tabs tabs-lift">
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.tk')}
-                                   defaultChecked/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={title_tk}
-                                        onChange={(content) => setTitleTk(content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
-                                    <TipTapEditor
-                                        content={text_tk}
-                                        onChange={(content) => setTextTk(content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label
-                                        className="mb-1 block text-sm font-medium text-inkMuted">Destinations:</label>
-                                    <TipTapEditor
-                                        content={destination_tk}
-                                        onChange={(content) => setDestinationTk(content)}
-                                    />
-                                </div>
-                                <div className="flex w-full space-x-4">
-                                    <div className="mb-4 w-full">
-                                        <label
-                                            className="mb-1 block text-sm font-medium text-inkMuted">Duration:</label>
-                                        <input
-                                            content={duration_tk}
-                                            onChange={(e) => setDurationTk(e.target.value)}
-                                            type="text"
-                                            required
-                                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                                        />
-                                    </div>
-                                    <div className="mb-4 w-full">
-                                        <label
-                                            className="mb-1 block text-sm font-medium text-inkMuted">Languages:</label>
-                                        <input
-                                            value={lang_tk}
-                                            onChange={(e) => setLangTk(e.target.value)}
-                                            type="text"
-                                            required
-                                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                                        />
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.en')}/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={title_en}
-                                        onChange={(content) => setTitleEn(content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
-                                    <TipTapEditor
-                                        content={text_en}
-                                        onChange={(content) => setTextEn(content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label
-                                        className="mb-1 block text-sm font-medium text-inkMuted">Destinations:</label>
-                                    <TipTapEditor
-                                        content={destination_en}
-                                        onChange={(content) => setDestinationEn(content)}
-                                    />
-                                </div>
-                                <div className="flex w-full space-x-4">
-                                    <div className="mb-4 w-full">
-                                        <label
-                                            className="mb-1 block text-sm font-medium text-inkMuted">Duration:</label>
-                                        <input
-                                            value={duration_en}
-                                            onChange={(e) => setDurationEn(e.target.value)}
-                                            type="text"
-                                            required
-                                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                                        />
-                                    </div>
-                                    <div className="mb-4 w-full">
-                                        <label
-                                            className="mb-1 block text-sm font-medium text-inkMuted">Languages:</label>
-                                        <input
-                                            value={lang_en}
-                                            onChange={(e) => setLangEn(e.target.value)}
-                                            type="text"
-                                            required
-                                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.ru')}/>
-                            <div className="tab-content bg-base-100 border-base-300 p-6">
-                                <div className="mb-4">
-                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={title_ru}
-                                        onChange={(content) => setTitleRu(content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
-                                    <TipTapEditor
-                                        content={text_ru}
-                                        onChange={(content) => setTextRu(content)}
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label
-                                        className="mb-1 block text-sm font-medium text-inkMuted">Destinations:</label>
-                                    <TipTapEditor
-                                        content={destination_ru}
-                                        onChange={(content) => setDestinationRu(content)}
-                                    />
-                                </div>
-                                <div className="flex w-full space-x-4">
-                                    <div className="mb-4 w-full">
-                                        <label
-                                            className="mb-1 block text-sm font-medium text-inkMuted">Duration:</label>
-                                        <input
-                                            value={duration_ru}
-                                            onChange={(e) => setDurationRu(e.target.value)}
-                                            type="text"
-                                            required
-                                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                                        />
-                                    </div>
-                                    <div className="mb-4 w-full">
-                                        <label
-                                            className="mb-1 block text-sm font-medium text-inkMuted">Languages:</label>
-                                        <input
-                                            value={lang_ru}
-                                            onChange={(e) => setLangRu(e.target.value)}
-                                            type="text"
-                                            required
-                                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </>
+                {error && (
+                    <p className="rounded-md bg-brick/10 px-4 py-3 text-sm text-brick">{error}</p>
                 )}
+
+                <FormSection title={t('form.sectionBasics')}>
+                    <SlugField value={slug} onChange={setSlug} section="tours" />
+
+                    <FieldRow cols={3}>
+                        <Field label={t('form.selectType')}>
+                            <select
+                                value={typeId}
+                                onChange={(e) => setTypeId(e.target.value)}
+                                required
+                                className={inputClass}
+                            >
+                                <option value="">{t('form.notSet')}</option>
+                                {types.map((type) => (
+                                    <option key={type.id} value={type.id}>
+                                        {plainText(type.type_ru) || plainText(type.type_en)}
+                                    </option>
+                                ))}
+                            </select>
+                        </Field>
+
+                        <Field label={t('form.selectCategory')}>
+                            <select
+                                value={catId}
+                                onChange={(e) => setCatId(e.target.value)}
+                                required
+                                className={inputClass}
+                            >
+                                <option value="">{t('form.notSet')}</option>
+                                {cats.map((cat) => (
+                                    <option key={cat.id} value={cat.id}>
+                                        {plainText(cat.cat_ru) || plainText(cat.cat_en)}
+                                    </option>
+                                ))}
+                            </select>
+                        </Field>
+
+                        <Field label={t('form.selectDestination')}>
+                            <select
+                                value={placeId}
+                                onChange={(e) => setPlaceId(e.target.value)}
+                                className={inputClass}
+                            >
+                                <option value="">{t('form.notSet')}</option>
+                                {places.map((place) => (
+                                    <option key={place.id} value={place.id}>
+                                        {plainText(place.location_ru) || plainText(place.location_en)}
+                                    </option>
+                                ))}
+                            </select>
+                        </Field>
+                    </FieldRow>
+
+                    <FieldRow>
+                        <Field label={t('form.price')}>
+                            <input
+                                type="number"
+                                min={0}
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                required
+                                className={inputClass}
+                            />
+                        </Field>
+
+                        <Field label={t('form.popular')}>
+                            <select
+                                value={popular}
+                                onChange={(e) => setPopular(e.target.value)}
+                                className={inputClass}
+                            >
+                                <option value="0">{t('common.no')}</option>
+                                <option value="1">{t('common.yes')}</option>
+                            </select>
+                        </Field>
+                    </FieldRow>
+                </FormSection>
+
+                <FormSection title={t('form.sectionImages')}>
+                    <FieldRow>
+                        <Field label={t('form.image')} htmlFor="tour-image">
+                            <input
+                                id="tour-image"
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                                className={inputClass}
+                            />
+                        </Field>
+
+                        <Field label={t('form.map')} htmlFor="tour-map">
+                            <input
+                                id="tour-map"
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                onChange={(e) => setMapFile(e.target.files?.[0] ?? null)}
+                                className={inputClass}
+                            />
+                        </Field>
+                    </FieldRow>
+                </FormSection>
+
+                <FormSection title={t('form.sectionTexts')} hint={t('form.sectionTextsHint')}>
+                    <LangTabs active={lang} onChange={setLang} />
+
+                    {/* Все три языка остаются в разметке и просто прячутся:
+                        набранный текст не теряется при переключении. */}
+                    {LANGS.map((code) => (
+                        <div key={code} className={`space-y-4 ${code === lang ? '' : 'hidden'}`}>
+                            <Field label={t('form.title')}>
+                                <input
+                                    type="text"
+                                    value={texts[`title_${code}`]}
+                                    onChange={(e) => setText(`title_${code}`, e.target.value)}
+                                    className={inputClass}
+                                />
+                            </Field>
+
+                            <FieldRow cols={3}>
+                                <Field label={t('form.destination')} hint={t('form.destinationHint')}>
+                                    <input
+                                        type="text"
+                                        value={texts[`destination_${code}`]}
+                                        onChange={(e) => setText(`destination_${code}`, e.target.value)}
+                                        className={inputClass}
+                                    />
+                                </Field>
+
+                                <Field label={t('form.duration')} hint={t('form.durationHint')}>
+                                    <input
+                                        type="text"
+                                        value={texts[`duration_${code}`]}
+                                        onChange={(e) => setText(`duration_${code}`, e.target.value)}
+                                        className={inputClass}
+                                    />
+                                </Field>
+
+                                <Field label={t('form.lang')} hint={t('form.langHint')}>
+                                    <input
+                                        type="text"
+                                        value={texts[`lang_${code}`]}
+                                        onChange={(e) => setText(`lang_${code}`, e.target.value)}
+                                        className={inputClass}
+                                    />
+                                </Field>
+                            </FieldRow>
+
+                            <Field label={t('form.text')}>
+                                <TipTapEditor
+                                    content={texts[`text_${code}`]}
+                                    onChange={(html) => setText(`text_${code}`, html)}
+                                />
+                            </Field>
+                        </div>
+                    ))}
+                </FormSection>
 
                 <button
                     type="submit"
-                    className="w-full rounded-md bg-tile py-2.5 px-4 font-semibold text-white transition-colors hover:bg-tileDark"
+                    disabled={saving}
+                    className="flex items-center rounded-md bg-tile px-5 py-2.5 text-white transition-colors hover:bg-tileDark disabled:opacity-60"
                 >
-                    {t('common.add')}
+                    <DocumentIcon className="mr-2 size-5" />
+                    {t(saving ? 'common.saving' : 'common.add')}
                 </button>
             </form>
         </div>
-        </>
     );
 };
 

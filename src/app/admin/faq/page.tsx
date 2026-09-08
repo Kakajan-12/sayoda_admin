@@ -147,7 +147,7 @@ const Faq = () => {
                 </div>
             </div>
 
-            {error && <p className="text-red-600 mb-4">{error}</p>}
+            {error && <p className="text-brick mb-4">{error}</p>}
 
             <div className="space-y-4">
                 {items.length === 0 && (
@@ -218,12 +218,12 @@ const Faq = () => {
                                 <button
                                     type="button"
                                     onClick={() => remove(item)}
-                                    className="text-red-600 flex items-center gap-1"
+                                    className="text-brick flex items-center gap-1"
                                 >
                                     <TrashIcon className="size-4"/> Удалить
                                 </button>
                                 {message?.id === item.id && (
-                                    <span className={`text-sm ${message.ok ? 'text-green-600' : 'text-red-600'}`}>
+                                    <span className={`text-sm ${message.ok ? 'text-tileMid' : 'text-brick'}`}>
                                         {message.text}
                                     </span>
                                 )}
