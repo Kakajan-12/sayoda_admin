@@ -13,7 +13,7 @@ import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline } from "react-icons/io";
 import { TbCategoryFilled } from "react-icons/tb";
-import { FaLocationDot, FaPassport, FaEarthAsia } from "react-icons/fa6";
+import { FaLocationDot, FaEarthAsia } from "react-icons/fa6";
 import { RiLinksLine, RiQuestionAnswerLine } from "react-icons/ri";
 import type { DictKey } from "./i18n/dictionary";
 
@@ -69,7 +69,6 @@ export const navGroups: NavGroup[] = [
             { href: '/admin/tour-category', labelKey: 'nav.tourCategory', icon: TbCategoryFilled },
             { href: '/admin/include-items', labelKey: 'nav.includes', icon: IoMdCheckmarkCircleOutline },
             { href: '/admin/exclude-items', labelKey: 'nav.excludes', icon: IoIosCloseCircleOutline },
-            { href: '/admin/visa', labelKey: 'nav.visa', icon: FaPassport },
         ],
     },
     {
