@@ -55,6 +55,11 @@ interface Stats {
     series: Point[];
     topPages: { path: string; views: number }[];
     locales: { locale: string; views: number }[];
+    /**
+     * Страны посетителей. Считаются по адресу в момент запроса, сам адрес
+     * нигде не сохраняется — это обещано в политике конфиденциальности.
+     */
+    countries: { country: string; views: number; visitors: number }[];
     referrers: { referrer: string; views: number }[];
 }
 
@@ -261,6 +266,20 @@ export default function TrafficPanel() {
                                     value: p.views,
                                 }))}
                             />
+                            {/*
+                                Страны считаем по посетителям, а не по
+                                просмотрам: один человек, открывший десять
+                                страниц, иначе выглядел бы как десять
+                                человек из своей страны.
+                            */}
+                            <ListCard
+                                title={t('traffic.countries')}
+                                rows={(stats?.countries ?? []).map((c) => ({
+                                    label: countryName(c.country, locale),
+                                    value: c.visitors,
+                                }))}
+                                empty={t('traffic.noCountries')}
+                            />
                             <ListCard
                                 title={t('traffic.sources')}
                                 rows={(stats?.referrers ?? []).map((r) => ({
@@ -275,6 +294,23 @@ export default function TrafficPanel() {
             )}
         </section>
     );
+}
+
+/**
+ * Название страны по двухбуквенному коду.
+ *
+ * Берём у браузера через Intl: свой справочник на две с лишним сотни стран
+ * пришлось бы вести руками и переводить на два языка. Если код незнаком —
+ * показываем его как есть, это честнее пустой строки.
+ */
+function countryName(code: string, locale: string): string {
+    if (!code) return '—';
+    try {
+        const names = new Intl.DisplayNames([locale], { type: 'region' });
+        return names.of(code.toUpperCase()) || code.toUpperCase();
+    } catch {
+        return code.toUpperCase();
+    }
 }
 
 /** Простой список «подпись — число» с долей от максимума полоской фона. */
