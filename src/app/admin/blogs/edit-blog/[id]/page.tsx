@@ -7,6 +7,7 @@ import axios from 'axios';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 import TipTapEditor from "@/Components/TipTapEditor";
+import { plainText } from "@/Components/ResourceList";
 
 interface BlogData {
     slug: string;
@@ -53,13 +54,22 @@ const EditBlog = () => {
                 if (Array.isArray(response.data) && response.data.length > 0) {
                     const rawData = response.data[0]; // Получаем первый элемент массива
 
+                    /*
+                     * Заголовок стал обычным полем, но в базе он лежит
+                     * обёрнутым в «<p>…</p>» — его набирали в редакторе
+                     * с панелью форматирования. В простое поле такое
+                     * значение попало бы вместе с тегами.
+                     *
+                     * Сайт заголовок статьи и так выводит без разметки,
+                     * так что сохранится уже чистый текст.
+                     */
                     setData({
                         slug: rawData.slug,
-                        title_tk: rawData.title_tk,
+                        title_tk: plainText(rawData.title_tk),
                         text_tk: rawData.text_tk,
-                        title_en: rawData.title_en,
+                        title_en: plainText(rawData.title_en),
                         text_en: rawData.text_en,
-                        title_ru: rawData.title_ru,
+                        title_ru: plainText(rawData.title_ru),
                         text_ru: rawData.text_ru,
                         main_image: rawData.main_image,
                     });
@@ -173,9 +183,11 @@ const EditBlog = () => {
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
 
-                            <TipTapEditor
-                                content={data.title_tk}
-                                onChange={(content) => handleEditorChange('title_tk', content)}
+                            <input
+                                type="text"
+                                value={data.title_tk}
+                                onChange={(e) => handleEditorChange('title_tk', e.target.value)}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                             />
 
                         </div>
@@ -192,10 +204,11 @@ const EditBlog = () => {
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                            <TipTapEditor
-                                content={data.title_en}
-                                onChange={(content) => handleEditorChange('title_en', content)}
-
+                            <input
+                                type="text"
+                                value={data.title_en}
+                                onChange={(e) => handleEditorChange('title_en', e.target.value)}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                             />
                         </div>
                         <div className="mb-4">
@@ -212,10 +225,11 @@ const EditBlog = () => {
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                            <TipTapEditor
-                                content={data.title_ru}
-                                onChange={(content) => handleEditorChange('title_ru', content)}
-
+                            <input
+                                type="text"
+                                value={data.title_ru}
+                                onChange={(e) => handleEditorChange('title_ru', e.target.value)}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                             />
                         </div>
                         <div className="mb-4">

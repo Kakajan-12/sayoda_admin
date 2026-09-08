@@ -132,9 +132,11 @@ const AddBlog = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={title_tk}
-                                        onChange={(content) => setTitleTk(content)}
+                                    <input
+                                        type="text"
+                                        value={title_tk}
+                                        onChange={(e) => setTitleTk(e.target.value)}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                     />
                                 </div>
                                 <div className="mb-4">
@@ -150,9 +152,11 @@ const AddBlog = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={title_en}
-                                        onChange={(content) => setTitleEn(content)}
+                                    <input
+                                        type="text"
+                                        value={title_en}
+                                        onChange={(e) => setTitleEn(e.target.value)}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                     />
                                 </div>
                                 <div className="mb-4">
@@ -168,9 +172,11 @@ const AddBlog = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={title_ru}
-                                        onChange={(content) => setTitleRu(content)}
+                                    <input
+                                        type="text"
+                                        value={title_ru}
+                                        onChange={(e) => setTitleRu(e.target.value)}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                     />
                                 </div>
                                 <div className="mb-4">
