@@ -7,6 +7,7 @@ import { DocumentIcon } from '@heroicons/react/16/solid';
 import SlugField from '@/Components/SlugField';
 import TipTapEditor from '@/Components/TipTapEditor';
 import {
+    Checkbox,
     Field,
     FieldRow,
     FormSection,
@@ -16,7 +17,8 @@ import {
     type Lang,
 } from '@/Components/form/Field';
 import { plainText } from '@/Components/ResourceList';
-import { useT } from '@/lib/i18n/LocaleProvider';
+import { useAdminLocale } from '@/lib/i18n/LocaleProvider';
+import { optionLabel } from '@/Components/form/optionLabel';
 import { readToken } from '@/lib/auth';
 
 const API = process.env.NEXT_PUBLIC_API_URL;
@@ -43,7 +45,7 @@ const emptyTexts = () => {
 };
 
 const AddTour = () => {
-    const t = useT();
+    const { locale, t } = useAdminLocale();
     const router = useRouter();
 
     const [lang, setLang] = useState<Lang>('ru');
@@ -142,8 +144,8 @@ const AddTour = () => {
                             >
                                 <option value="">{t('form.notSet')}</option>
                                 {types.map((type) => (
-                                    <option key={type.id} value={type.id}>
-                                        {plainText(type.type_ru) || plainText(type.type_en)}
+                                    <option key={type.id} value={type.id} title={optionLabel(type, 'type', locale)}>
+                                        {optionLabel(type, 'type', locale)}
                                     </option>
                                 ))}
                             </select>
@@ -158,8 +160,8 @@ const AddTour = () => {
                             >
                                 <option value="">{t('form.notSet')}</option>
                                 {cats.map((cat) => (
-                                    <option key={cat.id} value={cat.id}>
-                                        {plainText(cat.cat_ru) || plainText(cat.cat_en)}
+                                    <option key={cat.id} value={cat.id} title={optionLabel(cat, 'cat', locale)}>
+                                        {optionLabel(cat, 'cat', locale)}
                                     </option>
                                 ))}
                             </select>
@@ -173,8 +175,8 @@ const AddTour = () => {
                             >
                                 <option value="">{t('form.notSet')}</option>
                                 {places.map((place) => (
-                                    <option key={place.id} value={place.id}>
-                                        {plainText(place.location_ru) || plainText(place.location_en)}
+                                    <option key={place.id} value={place.id} title={optionLabel(place, 'location', locale)}>
+                                        {optionLabel(place, 'location', locale)}
                                     </option>
                                 ))}
                             </select>
@@ -193,16 +195,11 @@ const AddTour = () => {
                             />
                         </Field>
 
-                        <Field label={t('form.popular')}>
-                            <select
-                                value={popular}
-                                onChange={(e) => setPopular(e.target.value)}
-                                className={inputClass}
-                            >
-                                <option value="0">{t('common.no')}</option>
-                                <option value="1">{t('common.yes')}</option>
-                            </select>
-                        </Field>
+                        <Checkbox
+                            label={t('form.popular')}
+                            checked={popular === '1'}
+                            onChange={(on) => setPopular(on ? '1' : '0')}
+                        />
                     </FieldRow>
                 </FormSection>
 

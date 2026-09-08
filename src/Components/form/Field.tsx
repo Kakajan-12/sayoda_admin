@@ -59,6 +59,46 @@ export function FieldRow({ children, cols = 2 }: { children: React.ReactNode; co
     return <div className={`grid gap-4 sm:grid-cols-2 ${grid}`}>{children}</div>;
 }
 
+/**
+ * Флажок «да/нет».
+ *
+ * Такие поля были выпадающим списком с двумя вариантами: чтобы включить
+ * тур в «Популярные», редактор открывал список и выбирал «Да» из двух.
+ * Флажок отвечает на тот же вопрос одним щелчком.
+ *
+ * Подпись внутри label целиком — щелчок по тексту должен переключать
+ * флажок, а не промахиваться мимо квадратика в четырнадцать пикселей.
+ *
+ * Обёртка выравнивает флажок по нижнему краю ячейки: рядом в строке стоят
+ * обычные поля с подписью сверху, и без этого он висел бы выше их.
+ */
+export function Checkbox({
+    label,
+    hint,
+    checked,
+    onChange,
+}: {
+    label: string;
+    hint?: string;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+}) {
+    return (
+        <div className="flex flex-col justify-end">
+            <label className="flex cursor-pointer items-center gap-2.5 py-2">
+                <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) => onChange(e.target.checked)}
+                    className="size-4 shrink-0 accent-tile"
+                />
+                <span className="text-sm font-medium text-ink">{label}</span>
+            </label>
+            {hint && <p className="text-xs text-inkMuted">{hint}</p>}
+        </div>
+    );
+}
+
 /** Раздел формы с заголовком — длинную форму нужно делить на смысловые куски. */
 export function FormSection({
     title,
