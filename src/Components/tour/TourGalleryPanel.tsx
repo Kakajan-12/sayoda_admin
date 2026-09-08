@@ -4,9 +4,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import { LuTrash2, LuUpload } from "react-icons/lu";
+import Lightbox from "yet-another-react-lightbox";
+import Counter from "yet-another-react-lightbox/plugins/counter";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/counter.css";
 import { useT } from "@/lib/i18n/LocaleProvider";
 import { readToken } from "@/lib/auth";
-import type { Row } from "@/Components/ResourceList";
 
 /**
  * Снимки тура прямо на странице тура.
@@ -21,16 +25,30 @@ import type { Row } from "@/Components/ResourceList";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
+interface Photo {
+    /**
+     * Именно gallery_id, а не id.
+     *
+     * Эндпоинт /tour/:tourId отдаёт первичный ключ под именем gallery_id —
+     * так он назван в самом запросе. Обращение к row.id давало undefined,
+     * и удаление уходило на /api/tour-gallery/undefined: кнопка нажималась,
+     * подтверждение спрашивалось, а фотография оставалась на месте.
+     */
+    gallery_id: number;
+    image: string;
+    tour_id: number;
+}
+
 /**
  * Multer отдаёт абсолютный путь внутри контейнера («/app/uploads/x.webp»),
- * старые записи хранят относительный. Приводим к одному виду.
+ * старые записи хранят относительный, в части лежат обратные слэши.
  */
 const imageUrl = (src: unknown) => {
     const clean = String(src ?? '')
         .replace(/\\/g, '/')
         .replace(/^\/+/, '')
         .replace(/^app\//, '');
-    return clean ? `${API}/${clean}` : null;
+    return clean ? `${API}/${clean}` : '';
 };
 
 export default function TourGalleryPanel({
@@ -43,10 +61,13 @@ export default function TourGalleryPanel({
     hint?: string;
 }) {
     const t = useT();
-    const [rows, setRows] = useState<Row[] | null>(null);
+    const [rows, setRows] = useState<Photo[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
     const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+    // −1 значит «просмотр закрыт»: отдельный флаг рядом с индексом
+    // рассинхронился бы и открывал первый снимок вместо выбранного.
+    const [viewing, setViewing] = useState(-1);
 
     const auth = () => ({ Authorization: `Bearer ${readToken()}` });
 
@@ -91,11 +112,12 @@ export default function TourGalleryPanel({
         }
     };
 
-    const remove = async (row: Row) => {
-        if (!window.confirm(t('common.confirmDelete', { name: `#${row.id}` }))) return;
+    const remove = async (photo: Photo) => {
+        if (!window.confirm(t('common.confirmDelete', { name: `#${photo.gallery_id}` }))) return;
         setBusy(true);
+        setError(null);
         try {
-            await axios.delete(`${API}/api/tour-gallery/${row.id}`, { headers: auth() });
+            await axios.delete(`${API}/api/tour-gallery/${photo.gallery_id}`, { headers: auth() });
             await load();
         } catch {
             setError(t('list.deleteFailed'));
@@ -146,38 +168,69 @@ export default function TourGalleryPanel({
             ) : rows.length === 0 ? (
                 <p className="py-6 text-center text-inkMuted">{t('common.empty')}</p>
             ) : (
-                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                    {rows.map((row) => {
-                        const src = imageUrl(row.image);
-                        return (
-                            <li key={String(row.id)} className="group relative overflow-hidden rounded-md border border-sand">
-                                {src ? (
+                <>
+                    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                        {rows.map((photo, index) => (
+                            <li
+                                key={photo.gallery_id}
+                                className="group relative overflow-hidden rounded-md border border-sand"
+                            >
+                                {/* Снимок открывается во весь экран: в плитке
+                                    150 пикселей шириной не разглядеть, что
+                                    именно удаляешь. */}
+                                <button
+                                    type="button"
+                                    onClick={() => setViewing(index)}
+                                    aria-label={t('common.view')}
+                                    className="block w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tileLight"
+                                >
                                     <Image
-                                        src={src}
+                                        src={imageUrl(photo.image)}
                                         alt=""
                                         width={320}
                                         height={240}
                                         unoptimized
-                                        className="aspect-[4/3] w-full object-cover"
+                                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
-                                ) : (
-                                    <div className="flex aspect-[4/3] items-center justify-center bg-gray-100 text-xs text-gray-500">
-                                        —
-                                    </div>
-                                )}
+                                </button>
+
+                                {/*
+                                    Кнопка удаления видна всегда, а не только
+                                    при наведении: на планшете наведения нет,
+                                    и удалить снимок было бы нечем.
+                                */}
                                 <button
                                     type="button"
-                                    onClick={() => remove(row)}
+                                    onClick={() => remove(photo)}
                                     disabled={busy}
                                     aria-label={t('common.delete')}
-                                    className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-white/90 text-brick opacity-0 transition hover:bg-white focus-visible:opacity-100 group-hover:opacity-100 disabled:opacity-50"
+                                    className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-white/90 text-brick shadow-sm transition hover:bg-white disabled:opacity-50"
                                 >
                                     <LuTrash2 className="size-4" />
                                 </button>
                             </li>
-                        );
-                    })}
-                </ul>
+                        ))}
+                    </ul>
+
+                    <Lightbox
+                        open={viewing >= 0}
+                        index={viewing}
+                        close={() => setViewing(-1)}
+                        slides={rows.map((photo) => ({ src: imageUrl(photo.image) }))}
+                        plugins={[Counter, Zoom]}
+                        // Подписи кнопок идут в aria-label: без перевода
+                        // скринридер читал бы их по-английски.
+                        labels={{
+                            Previous: t('common.prev'),
+                            Next: t('common.next'),
+                            Close: t('common.close'),
+                            'Zoom in': t('common.zoomIn'),
+                            'Zoom out': t('common.zoomOut'),
+                        }}
+                        zoom={{ maxZoomPixelRatio: 3, scrollToZoom: true }}
+                        styles={{ container: { backgroundColor: 'rgba(0, 0, 0, .9)' } }}
+                    />
+                </>
             )}
         </section>
     );

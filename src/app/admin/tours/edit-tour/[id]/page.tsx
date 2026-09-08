@@ -50,6 +50,7 @@ type TourData = {
     lang_tk: string; lang_en: string; lang_ru: string;
     image: string;
     map: string;
+    map_embed: string;
     price: number;
     tour_type_id: number;
     tour_cat_id: number;
@@ -63,7 +64,7 @@ const EMPTY: TourData = {
     destination_tk: '', destination_en: '', destination_ru: '',
     duration_tk: '', duration_en: '', duration_ru: '',
     lang_tk: '', lang_en: '', lang_ru: '',
-    image: '', map: '', price: 0,
+    image: '', map: '', map_embed: '', price: 0,
     tour_type_id: 0, tour_cat_id: 0, location_id: 0,
 };
 
@@ -139,7 +140,12 @@ const EditTour = () => {
                     }
                 }
 
-                setData({ ...EMPTY, ...cleaned, popular: Number(row.popular) } as TourData);
+                setData({
+                    ...EMPTY,
+                    ...cleaned,
+                    map_embed: row.map_embed ?? '',
+                    popular: Number(row.popular),
+                } as TourData);
             })
             .catch(() => setError(t('common.error')))
             .finally(() => setLoading(false));
@@ -163,6 +169,7 @@ const EditTour = () => {
             body.append('tour_type_id', String(data.tour_type_id));
             body.append('tour_cat_id', String(data.tour_cat_id));
             body.append('location_id', String(data.location_id));
+            body.append('map_embed', data.map_embed ?? '');
 
             for (const base of ['title', 'text', 'destination', 'duration', 'lang'] as const) {
                 for (const code of LANGS) {
@@ -293,6 +300,18 @@ const EditTour = () => {
                 </FormSection>
 
                 <FormSection title={t('form.sectionImages')}>
+                    {/* Интерактивная карта идёт первой: именно её видит
+                        посетитель, а картинка ниже — запасной вариант. */}
+                    <Field label={t('form.mapEmbed')} hint={t('form.mapEmbedHint')}>
+                        <input
+                            type="text"
+                            value={data.map_embed}
+                            onChange={(e) => set({ map_embed: e.target.value })}
+                            placeholder="https://www.google.com/maps/d/u/0/embed?mid=…"
+                            className={inputClass}
+                        />
+                    </Field>
+
                     <FieldRow>
                         <Field label={t('form.image')} hint={t('form.replaceImage')} htmlFor="tour-image">
                             {imageSrc && (
@@ -314,7 +333,7 @@ const EditTour = () => {
                             />
                         </Field>
 
-                        <Field label={t('form.map')} hint={t('form.replaceImage')} htmlFor="tour-map">
+                        <Field label={t('form.map')} hint={t('form.mapImageHint')} htmlFor="tour-map">
                             {mapSrc && (
                                 <Image
                                     src={mapSrc}

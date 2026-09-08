@@ -58,6 +58,7 @@ const AddTour = () => {
     const [placeId, setPlaceId] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [mapFile, setMapFile] = useState<File | null>(null);
+    const [mapEmbed, setMapEmbed] = useState('');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
@@ -97,6 +98,7 @@ const AddTour = () => {
             body.append('tour_type_id', typeId);
             body.append('tour_cat_id', catId);
             body.append('location_id', placeId);
+            body.append('map_embed', mapEmbed);
             for (const [key, value] of Object.entries(texts)) body.append(key, value);
             if (imageFile) body.append('image', imageFile);
             if (mapFile) body.append('map', mapFile);
@@ -204,6 +206,16 @@ const AddTour = () => {
                 </FormSection>
 
                 <FormSection title={t('form.sectionImages')}>
+                    <Field label={t('form.mapEmbed')} hint={t('form.mapEmbedHint')}>
+                        <input
+                            type="text"
+                            value={mapEmbed}
+                            onChange={(e) => setMapEmbed(e.target.value)}
+                            placeholder="https://www.google.com/maps/d/u/0/embed?mid=…"
+                            className={inputClass}
+                        />
+                    </Field>
+
                     <FieldRow>
                         <Field label={t('form.image')} htmlFor="tour-image">
                             <input
