@@ -81,7 +81,7 @@ const EditLocationAddress = () => {
                     <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.tk')} defaultChecked/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="mb-1 block text-sm font-medium text-inkMuted">Address Location:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.location')}</label>
                             <TipTapEditor
                                 content={data.location_tk}
                                 onChange={(content) => handleEditorChange('location_tk', content)}
@@ -92,7 +92,7 @@ const EditLocationAddress = () => {
                     <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.en')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="mb-1 block text-sm font-medium text-inkMuted">Address Location:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.location')}</label>
                             <TipTapEditor
                                 content={data.location_en}
                                 onChange={(content) => handleEditorChange('location_en', content)}
@@ -103,7 +103,7 @@ const EditLocationAddress = () => {
                     <input type="radio" name="my_tabs_3" className="tab" aria-label={t('lang.ru')}/>
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
-                            <label className="mb-1 block text-sm font-medium text-inkMuted">Address Location:</label>
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.location')}</label>
                             <TipTapEditor
                                 content={data.location_ru}
                                 onChange={(content) => handleEditorChange('location_ru', content)}

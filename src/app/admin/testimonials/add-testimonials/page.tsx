@@ -102,7 +102,7 @@ const AddTestimonials = () => {
                                     />
                                 </div>
                                 <div className="mb-4">
-                                    <label className="mb-1 block text-sm font-medium text-inkMuted">Name:</label>
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('list.author')}</label>
                                     <TipTapEditor
                                         content={name}
                                         onChange={(content) => setName(content)}

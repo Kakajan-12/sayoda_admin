@@ -1,12 +1,13 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import TipTapEditor  from '@/Components/TipTapEditor';
 
 const AddAddress = () => {
-    const t = useT();
+    const { locale, t } = useAdminLocale();
     const [isClient, setIsClient] = useState(false);
     const [iframe, setIframe] = useState('');
     const [address_tk, setAddressTk] = useState('');
@@ -109,8 +110,8 @@ const AddAddress = () => {
                     >
                         <option value="">{t('form.selectLocation')}</option>
                         {locations.map((location) => (
-                            <option key={location.id} value={location.id}>
-                                {location.location_en} / {location.location_tk} / {location.location_ru}
+                            <option key={location.id} value={location.id} title={optionLabel(location, 'location', locale)}>
+                                {optionLabel(location, 'location', locale)}
                             </option>
                         ))}
                     </select>

@@ -1,11 +1,12 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const AddBlogGallery = () => {
-    const t = useT();
+    const { locale, t } = useAdminLocale();
     const [image, setImage] = useState<File | null>(null);
     const [blog_id, setBlogId] = useState('');
     const [blogs, setBlogs] = useState<{ id: number, title_tk: string, title_en: string, title_ru: string }[]>([]);
@@ -90,9 +91,9 @@ const AddBlogGallery = () => {
                             className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                         />
                     </div>
-                    <div className="w-full">
+                    <div className="w-full sm:col-span-2">
                         <label className="mb-1 block text-sm font-medium text-inkMuted">
-                            Blog:
+                            {t('form.selectBlog')}
                         </label>
                         <select
                             id="blog_id"
@@ -102,10 +103,10 @@ const AddBlogGallery = () => {
                             required
                             className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                         >
-                            <option value="">{t('form.selectLocation')}</option>
+                            <option value="">{t('form.notSet')}</option>
                             {blogs.map((blog) => (
-                                <option key={blog.id} value={blog.id}>
-                                    {blog.title_en} / {blog.title_tk} / {blog.title_ru}
+                                <option key={blog.id} value={blog.id} title={optionLabel(blog, 'title', locale)}>
+                                    {optionLabel(blog, 'title', locale)}
                                 </option>
                             ))}
                         </select>

@@ -1,5 +1,6 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -7,7 +8,7 @@ import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
 const EditGallery = () => {
-    const t = useT();
+    const { locale, t } = useAdminLocale();
     const { id } = useParams();
     const router = useRouter();
 
@@ -132,9 +133,9 @@ const EditGallery = () => {
                             />
                         </div>
                     </div>
-                    <div className="w-full">
+                    <div className="w-full sm:col-span-2">
                         <label className="mb-1 block text-sm font-medium text-inkMuted">
-                            Blogs:
+                            {t('form.selectBlog')}
                         </label>
                         <select
                             id="blog_id"
@@ -147,7 +148,7 @@ const EditGallery = () => {
                             <option value="">Select project</option>
                             {blogs.map((blog) => (
                                 <option key={blog.id} value={String(blog.id)}>
-                                    {blog.title_en} / {blog.title_tk} / {blog.title_ru}
+                                    {optionLabel(blog, 'title', locale)}
                                 </option>
                             ))}
                         </select>

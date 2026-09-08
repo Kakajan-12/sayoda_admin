@@ -1,11 +1,12 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 
 const AddMail = () => {
-    const t = useT();
+    const { locale, t } = useAdminLocale();
     const [mail, setMail] = useState('');
     const router = useRouter();
     const [location_id, setLocationId] = useState('');
@@ -90,14 +91,14 @@ const AddMail = () => {
                     >
                         <option value="">{t('form.selectLocation')}</option>
                         {locations.map((location) => (
-                            <option key={location.id} value={location.id}>
-                                {location.location_en} / {location.location_tk} / {location.location_ru}
+                            <option key={location.id} value={location.id} title={optionLabel(location, 'location', locale)}>
+                                {optionLabel(location, 'location', locale)}
                             </option>
                         ))}
                     </select>
                 </div>
                 <div className="mb-4">
-                    <label className="mb-1 block text-sm font-medium text-inkMuted">Mail address:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.email')}</label>
                     <input
                         value={mail}
                         onChange={(e) => setMail(e.target.value)}
