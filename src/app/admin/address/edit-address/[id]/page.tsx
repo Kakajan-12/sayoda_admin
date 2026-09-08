@@ -1,5 +1,6 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -7,7 +8,7 @@ import TipTapEditor from '@/Components/TipTapEditor';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const EditAddress = () => {
-    const t = useT();
+    const { locale, t } = useAdminLocale();
     const { id } = useParams();
     const router = useRouter();
 
@@ -114,8 +115,8 @@ const EditAddress = () => {
                     >
                         <option value="">{t('form.selectTour')}</option>
                         {locations.map((location) => (
-                            <option key={location.id} value={location.id}>
-                                {location.location_en} / {location.location_tk} / {location.location_ru}
+                            <option key={location.id} value={location.id} title={optionLabel(location, 'location', locale)}>
+                                {optionLabel(location, 'location', locale)}
                             </option>
                         ))}
                     </select>

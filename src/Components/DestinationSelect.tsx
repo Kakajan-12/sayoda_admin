@@ -1,5 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
+import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 
 /**
  * Выбор страны для слайдера и локации тура.
@@ -25,8 +27,12 @@ interface Props {
     hint?: string;
 }
 
-const DestinationSelect = ({ value, onChange, label = 'Страна', hint }: Props) => {
+const DestinationSelect = ({ value, onChange, label, hint }: Props) => {
+    const { locale, t } = useAdminLocale();
     const [items, setItems] = useState<Destination[]>([]);
+    // Подпись по умолчанию — из словаря, а не строкой по-русски: интерфейс
+    // админки переключается на английский.
+    const caption = label ?? t('form.selectDestination');
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/destinations`)
@@ -37,18 +43,26 @@ const DestinationSelect = ({ value, onChange, label = 'Страна', hint }: Pr
 
     return (
         <div className="w-full">
-            <label className="block text-gray-700 font-semibold mb-2">{label}</label>
+            {/* Подпись — как у остальных полей админки: тот же размер,
+                вес и цвет палитры. Был серый text-gray-700 полужирным. */}
+            <label className="mb-1 block text-sm font-medium text-inkMuted">{caption}</label>
             <select
                 value={value ?? ''}
                 onChange={(e) => onChange(e.target.value)}
                 className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
             >
-                <option value="">Не привязано</option>
-                {items.map((d) => (
-                    <option key={d.id} value={d.id}>
-                        {d.name_ru || d.name_en || d.slug}
-                    </option>
-                ))}
+                <option value="">{t('form.notSet')}</option>
+                {items.map((d) => {
+                    // Название страны хранится обычным текстом, но берём его
+                    // через ту же функцию, что и остальные списки: если поле
+                    // однажды заполнят через редактор, теги не вылезут.
+                    const name = optionLabel(d, 'name', locale) || d.slug;
+                    return (
+                        <option key={d.id} value={d.id} title={name}>
+                            {name}
+                        </option>
+                    );
+                })}
             </select>
             <p className="text-xs text-gray-500 mt-1">
                 {hint ?? 'Пусто — страна определится по названию, как раньше.'}

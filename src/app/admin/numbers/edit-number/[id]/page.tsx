@@ -1,12 +1,13 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 import React, {FormEvent, useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const EditNumber = () => {
-    const t = useT();
+    const { locale, t } = useAdminLocale();
     const { id } = useParams();
     const router = useRouter();
 
@@ -94,14 +95,14 @@ const EditNumber = () => {
                     >
                         <option value="">{t('form.selectTour')}</option>
                         {locations.map((location) => (
-                            <option key={location.id} value={location.id}>
-                                {location.location_en} / {location.location_tk} / {location.location_ru}
+                            <option key={location.id} value={location.id} title={optionLabel(location, 'location', locale)}>
+                                {optionLabel(location, 'location', locale)}
                             </option>
                         ))}
                     </select>
                 </div>
                 <div className="mb-4">
-                    <label className="mb-1 block text-sm font-medium text-inkMuted">Number:</label>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.phone')}</label>
                     <input
                         name="number"
                         value={data.number}
