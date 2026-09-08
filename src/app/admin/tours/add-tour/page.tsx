@@ -57,7 +57,6 @@ const AddTour = () => {
     const [catId, setCatId] = useState('');
     const [placeId, setPlaceId] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
-    const [mapFile, setMapFile] = useState<File | null>(null);
     const [mapEmbed, setMapEmbed] = useState('');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -101,7 +100,6 @@ const AddTour = () => {
             body.append('map_embed', mapEmbed);
             for (const [key, value] of Object.entries(texts)) body.append(key, value);
             if (imageFile) body.append('image', imageFile);
-            if (mapFile) body.append('map', mapFile);
 
             const res = await axios.post(`${API}/api/tours`, body, {
                 headers: { Authorization: `Bearer ${readToken()}` },
@@ -206,6 +204,7 @@ const AddTour = () => {
                 </FormSection>
 
                 <FormSection title={t('form.sectionImages')}>
+                    {/* Карта только интерактивная — картинку карты убрали. */}
                     <Field label={t('form.mapEmbed')} hint={t('form.mapEmbedHint')}>
                         <input
                             type="text"
@@ -216,27 +215,15 @@ const AddTour = () => {
                         />
                     </Field>
 
-                    <FieldRow>
-                        <Field label={t('form.image')} htmlFor="tour-image">
-                            <input
-                                id="tour-image"
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-                                className={inputClass}
-                            />
-                        </Field>
-
-                        <Field label={t('form.map')} htmlFor="tour-map">
-                            <input
-                                id="tour-map"
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={(e) => setMapFile(e.target.files?.[0] ?? null)}
-                                className={inputClass}
-                            />
-                        </Field>
-                    </FieldRow>
+                    <Field label={t('form.image')} htmlFor="tour-image">
+                        <input
+                            id="tour-image"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                            className={inputClass}
+                        />
+                    </Field>
                 </FormSection>
 
                 <FormSection title={t('form.sectionTexts')} hint={t('form.sectionTextsHint')}>
