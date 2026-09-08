@@ -225,7 +225,6 @@ export const dictionary = {
     'nav.highlights': { ru: 'Главное о туре', en: 'Tour highlights' },
     'nav.departures': { ru: 'Даты заездов', en: 'Departure dates' },
     'nav.tourGallery': { ru: 'Галерея туров', en: 'Tour gallery' },
-    'nav.visa': { ru: 'Визовые требования', en: 'Visa requirements' },
     'nav.address': { ru: 'Адрес', en: 'Address' },
     'nav.mails': { ru: 'Почта', en: 'E-mail' },
     'nav.numbers': { ru: 'Телефоны', en: 'Phone numbers' },
