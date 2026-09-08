@@ -218,8 +218,8 @@ const Settings = () => {
                     >
                         {saving ? t('common.saving') : t('common.save')}
                     </button>
-                    {saved && <span className="text-green-600 text-sm">{t('common.saved')}</span>}
-                    {error && <span className="text-red-600 text-sm">{error}</span>}
+                    {saved && <span className="text-tileMid text-sm">{t('common.saved')}</span>}
+                    {error && <span className="text-brick text-sm">{error}</span>}
                 </div>
             </form>
         </div>

@@ -109,8 +109,8 @@ const EditTestimonials = () => {
 
 
 
-    if (loading) return <p>Загрузка...</p>;
-    if (error) return <p className="text-red-600">{error}</p>;
+    if (loading) return <p className="mt-8 text-inkMuted">{t('common.loading')}</p>;
+    if (error) return <p className="text-brick">{error}</p>;
 
     return (
         <>
@@ -166,7 +166,7 @@ const EditTestimonials = () => {
 
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded flex items-center"
+                    className="flex items-center rounded-md bg-tile px-4 py-2 text-white transition-colors hover:bg-tileDark"
                 >
                     <DocumentIcon className="h-5 w-5 mr-2" />
                     {t('common.save')}

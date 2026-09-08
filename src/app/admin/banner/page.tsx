@@ -164,7 +164,7 @@ const Banner = () => {
                                 <button
                                     type="button"
                                     onClick={resetImage}
-                                    className="text-sm text-red-600 underline w-fit"
+                                    className="text-sm text-brick underline w-fit"
                                 >
                                     {t('ban.reset')}
                                 </button>
@@ -183,7 +183,7 @@ const Banner = () => {
                                     type="text"
                                     value={banner[`title_${lang.code}`]}
                                     onChange={(e) => set(`title_${lang.code}`, e.target.value)}
-                                    className="w-full border border-gray-300 rounded-md px-4 py-2"
+                                    className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                 />
                             </div>
                             <div>
@@ -192,7 +192,7 @@ const Banner = () => {
                                     rows={2}
                                     value={banner[`subtitle_${lang.code}`]}
                                     onChange={(e) => set(`subtitle_${lang.code}`, e.target.value)}
-                                    className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none"
+                                    className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight resize-none"
                                 />
                             </div>
                             <div>
@@ -201,7 +201,7 @@ const Banner = () => {
                                     type="text"
                                     value={banner[`button_text_${lang.code}`]}
                                     onChange={(e) => set(`button_text_${lang.code}`, e.target.value)}
-                                    className="w-full border border-gray-300 rounded-md px-4 py-2"
+                                    className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                 />
                             </div>
                         </div>
@@ -215,7 +215,7 @@ const Banner = () => {
                         value={banner.button_link}
                         onChange={(e) => set('button_link', e.target.value)}
                         placeholder="/tours"
-                        className="w-full border border-gray-300 rounded-md px-4 py-2"
+                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                     />
                     <p className="mt-1 text-xs text-inkMuted">{t('ban.buttonHint')}</p>
                 </div>
@@ -228,8 +228,8 @@ const Banner = () => {
                     >
                         {saving ? t('common.saving') : t('common.save')}
                     </button>
-                    {saved && <span className="text-green-600 text-sm">{t('common.saved')}</span>}
-                    {error && <span className="text-red-600 text-sm">{error}</span>}
+                    {saved && <span className="text-tileMid text-sm">{t('common.saved')}</span>}
+                    {error && <span className="text-brick text-sm">{error}</span>}
                 </div>
             </form>
         </div>

@@ -72,7 +72,7 @@ const AddVisa = () => {
         <div className="mt-8">
             <form
                 onSubmit={handleSubmit}
-                className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
+                className="w-full rounded-lg border border-sand bg-white p-6 shadow-sm"
             >
                 <h2 className="text-2xl font-bold mb-4 text-left">{t('form.addTitle')}</h2>
 

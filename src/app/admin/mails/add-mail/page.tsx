@@ -72,7 +72,7 @@ const AddMail = () => {
         <div className="mt-8">
             <form
                 onSubmit={handleSubmit}
-                className="w-full mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white"
+                className="w-full rounded-lg border border-sand bg-white p-6 shadow-sm"
             >
                 <h2 className="text-2xl font-bold mb-4 text-left">{t('form.addTitle')}</h2>
 
@@ -86,7 +86,7 @@ const AddMail = () => {
                         value={location_id}
                         onChange={(e) => setLocationId(e.target.value)}
                         required
-                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                     >
                         <option value="">{t('form.selectLocation')}</option>
                         {locations.map((location) => (

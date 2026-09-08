@@ -52,7 +52,7 @@ const DestinationFields = ({ value, onChange, slugLocked }: Props) => (
                     readOnly={slugLocked}
                     required
                     placeholder="uzbekistan"
-                    className={`border border-gray-300 rounded p-2 w-full ${slugLocked ? 'bg-gray-100 text-gray-600' : ''}`}
+                    className={`w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight ${slugLocked ? 'bg-gray-100 text-gray-600' : ''}`}
                 />
                 <p className="text-xs text-gray-500 mt-1">
                     {slugLocked
@@ -66,7 +66,7 @@ const DestinationFields = ({ value, onChange, slugLocked }: Props) => (
                     type="number"
                     value={value.sort_order}
                     onChange={(e) => onChange({ sort_order: e.target.value })}
-                    className="border border-gray-300 rounded p-2 w-full"
+                    className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                 />
                 <p className="text-xs text-gray-500 mt-1">Меньше — выше в списке.</p>
             </div>
@@ -89,7 +89,7 @@ const DestinationFields = ({ value, onChange, slugLocked }: Props) => (
                                 type="text"
                                 value={value[`name_${lang.code}`]}
                                 onChange={(e) => onChange({ [`name_${lang.code}`]: e.target.value })}
-                                className="border border-gray-300 rounded p-2 w-full"
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                             />
                         </div>
                         <div className="mb-4">
@@ -98,7 +98,7 @@ const DestinationFields = ({ value, onChange, slugLocked }: Props) => (
                                 type="text"
                                 value={value[`hero_title_${lang.code}`]}
                                 onChange={(e) => onChange({ [`hero_title_${lang.code}`]: e.target.value })}
-                                className="border border-gray-300 rounded p-2 w-full"
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                             />
                         </div>
                         <div className="mb-4">

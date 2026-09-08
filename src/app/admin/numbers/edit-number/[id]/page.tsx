@@ -72,7 +72,7 @@ const EditNumber = () => {
         }
     };
 
-    if (loading) return <p>Загрузка...</p>;
+    if (loading) return <p className="mt-8 text-inkMuted">{t('common.loading')}</p>;
     if (error) return <p>{error}</p>;
 
     return (

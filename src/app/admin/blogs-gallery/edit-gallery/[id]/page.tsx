@@ -94,7 +94,7 @@ const EditGallery = () => {
     };
 
 
-    if (loading) return <p>Загрузка...</p>;
+    if (loading) return <p className="mt-8 text-inkMuted">{t('common.loading')}</p>;
     if (error) return <p>{error}</p>;
 
     return (
@@ -114,7 +114,7 @@ const EditGallery = () => {
                         />
                     </div>
                 )}
-                <div className="mb-4 flex space-x-4">
+                <div className="mb-4 grid gap-4 sm:grid-cols-2">
                     <div className="w-full">
                         <div className="mb-4">
                             <label htmlFor="image" className="mb-1 block text-sm font-medium text-inkMuted">{t('form.newImage')}</label>
@@ -142,7 +142,7 @@ const EditGallery = () => {
                             value={String(data.blog_id)}
                             onChange={(e) => setData((prev) => ({ ...prev, blog_id: e.target.value }))}
                             required
-                            className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-150"
+                            className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                         >
                             <option value="">Select project</option>
                             {blogs.map((blog) => (

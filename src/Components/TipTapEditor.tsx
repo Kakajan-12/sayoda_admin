@@ -61,25 +61,25 @@ const TipTap = ({ content, onChange }: { content: string, onChange: (val: string
                             </select>
                         </div>
                         <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}
-                                className={`p-2 ${editor.isActive("bold") ? "bg-gray-300" : ""}`}>
+                                className={`p-2 ${editor.isActive("bold") ? "bg-tileTint text-tile" : ""}`}>
                             <FaBold/>
                         </button>
                         <button type="button"
                                 onClick={() => editor.chain().focus().toggleItalic().run()}
-                                className={`p-2 ${editor.isActive("italic") ? "bg-gray-300" : ""}`}>
+                                className={`p-2 ${editor.isActive("italic") ? "bg-tileTint text-tile" : ""}`}>
                             <FaItalic/>
                         </button>
                         <button type="button"
                                 onClick={() => editor.chain().focus().toggleUnderline().run()}
-                                className={`p-2 ${editor.isActive("underline") ? "bg-gray-300" : ""}`}>
+                                className={`p-2 ${editor.isActive("underline") ? "bg-tileTint text-tile" : ""}`}>
                             <FaUnderline/>
                         </button>
                         <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()}
-                                className={`p-2 ${editor.isActive("bulletList") ? "bg-gray-300" : ""}`}>
+                                className={`p-2 ${editor.isActive("bulletList") ? "bg-tileTint text-tile" : ""}`}>
                             <FaListUl/>
                         </button>
                         <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                                className={`p-2 ${editor.isActive("orderedList") ? "bg-gray-300" : ""}`}>
+                                className={`p-2 ${editor.isActive("orderedList") ? "bg-tileTint text-tile" : ""}`}>
                             <FaListOl/>
                         </button>
 
