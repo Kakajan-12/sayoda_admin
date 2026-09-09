@@ -3,7 +3,7 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 
 import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
-import TipTapEditor from "@/Components/TipTapEditor";
+import { inputClass } from '@/Components/form/Field';
 
 const ContactLocation = () => {
     const t = useT();
@@ -74,9 +74,11 @@ const ContactLocation = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">Location Address:</label>
-                                    <TipTapEditor
-                                        content={location_tk}
-                                        onChange={(content) => setLocationTk(content)}
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={location_tk}
+                                        onChange={(e) => setLocationTk(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -85,9 +87,11 @@ const ContactLocation = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">Location Address:</label>
-                                    <TipTapEditor
-                                        content={location_en}
-                                        onChange={(content) => setLocationEn(content)}
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={location_en}
+                                        onChange={(e) => setLocationEn(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -96,9 +100,11 @@ const ContactLocation = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">Location Address:</label>
-                                    <TipTapEditor
-                                        content={location_ru}
-                                        onChange={(content) => setLocationRu(content)}
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={location_ru}
+                                        onChange={(e) => setLocationRu(e.target.value)}
                                     />
                                 </div>
                             </div>
