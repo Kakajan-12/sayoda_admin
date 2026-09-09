@@ -42,16 +42,38 @@ const Dashboard = () => {
             const safe = async <T,>(p: Promise<T>, fallback: T) => {
                 try { return await p; } catch { return fallback; }
             };
+            /*
+             * Счётчик берём из заголовка, а не из длины ответа.
+             *
+             * Раньше дашборд запрашивал /api/tours и /api/blogs целиком и
+             * считал tours.length. Ради двух чисел на экран приходили все
+             * туры со всеми языковыми полями и все статьи с полным текстом —
+             * сотни килобайт при каждом открытии главной страницы админки.
+             *
+             * Оба списка умеют отдавать одну запись и общее число заголовком
+             * X-Total-Count. Просим limit=1: сам ответ нам не нужен, нужен
+             * только заголовок, а совсем без записей эндпоинт не спросить.
+             *
+             * Заголовок читается только потому, что он перечислен в
+             * exposedHeaders на стороне API: иначе браузер прячет его от
+             * скрипта молча, без ошибки в консоли.
+             */
+            const countOf = async (path: string) => {
+                const r = await axios.get(`${API}${path}?page=1&limit=1`);
+                const total = Number(r.headers['x-total-count']);
+                return Number.isFinite(total) ? total : null;
+            };
+
             const [requests, tours, blogs] = await Promise.all([
                 safe(axios.get(`${API}/api/requests/stats`, auth).then((r) => r.data), null),
-                safe(axios.get(`${API}/api/tours`).then((r) => r.data), null),
-                safe(axios.get(`${API}/api/blogs`).then((r) => r.data), null),
+                safe(countOf('/api/tours'), null),
+                safe(countOf('/api/blogs'), null),
             ]);
             setStats({
                 newRequests: requests ? Number(requests.new ?? 0) : null,
                 totalRequests: requests ? Number(requests.total ?? 0) : null,
-                tours: Array.isArray(tours) ? tours.length : null,
-                blogs: Array.isArray(blogs) ? blogs.length : null,
+                tours,
+                blogs,
             });
         };
         load();

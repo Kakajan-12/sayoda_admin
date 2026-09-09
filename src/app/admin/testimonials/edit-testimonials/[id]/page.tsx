@@ -3,7 +3,8 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import TipTapEditor from '@/Components/TipTapEditor';
+import { inputClass } from '@/Components/form/Field';
+import { plainMultiline } from '@/Components/ResourceList';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 
@@ -46,9 +47,13 @@ const EditTestimonials = () => {
                 if (Array.isArray(response.data) && response.data.length > 0) {
                     const rawData = response.data[0]; // Получаем первый элемент массива
 
+                    // Отзыв и имя автора раньше набирали в редакторе, поэтому
+                    // в базе они лежат как HTML. В обычном поле теги видно
+                    // буквально — снимаем их при открытии, а сохраняется
+                    // уже чистый текст.
                     setData({
-                        name: rawData.name || '',
-                        text: rawData.text || '',
+                        name: plainMultiline(rawData.name),
+                        text: plainMultiline(rawData.text),
                         image: rawData.image || '',
                     });
 
@@ -149,16 +154,20 @@ const EditTestimonials = () => {
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                            <TipTapEditor
-                                content={data.name}
-                                onChange={content => handleEditorChange('name', content)}
+                            <input
+                                type="text"
+                                className={inputClass}
+                                value={data.name}
+                                onChange={e => handleEditorChange('name', e.target.value)}
                             />
                         </div>
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
-                            <TipTapEditor
-                                content={data.text}
-                                onChange={content => handleEditorChange('text', content)}
+                            <textarea
+                                rows={6}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                value={data.text}
+                                onChange={e => handleEditorChange('text', e.target.value)}
                             />
                         </div>
                     </div>

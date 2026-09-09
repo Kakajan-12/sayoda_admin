@@ -3,7 +3,7 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
-import TipTapEditor from '@/Components/TipTapEditor';
+import { inputClass } from '@/Components/form/Field';
 
 const AddTestimonials = () => {
     const t = useT();
@@ -96,16 +96,20 @@ const AddTestimonials = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">Comment:</label>
-                                    <TipTapEditor
-                                        content={comment}
-                                        onChange={(content) => setComment(content)}
+                                    <textarea
+                                        rows={6}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('list.author')}</label>
-                                    <TipTapEditor
-                                        content={name}
-                                        onChange={(content) => setName(content)}
+                                    <input
+                                        type="text"
+                                        className={inputClass}
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                     />
                                 </div>
                             </div>

@@ -4,7 +4,7 @@ import { optionLabel } from "@/Components/form/optionLabel";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import TipTapEditor from '@/Components/TipTapEditor';
+import { plainMultiline } from '@/Components/ResourceList';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const EditAddress = () => {
@@ -43,7 +43,18 @@ const EditAddress = () => {
 
                 if (response.data && response.data.length > 0) {
                     const rawData = response.data[0]; // <-- берём первый элемент массива
-                    setData({ ...rawData });
+                    // Адрес раньше набирали в редакторе и в базе он лежит
+                    // как HTML. Снимаем теги при открытии, сохраняя переводы
+                    // строк: улица, город и индекс должны остаться на своих
+                    // строках. Остальные поля записи — iframe карты и
+                    // выбранный город — трогать нельзя, поэтому раскрываем
+                    // rawData и перекрываем только три адресных.
+                    setData({
+                        ...rawData,
+                        address_tk: plainMultiline(rawData.address_tk),
+                        address_en: plainMultiline(rawData.address_en),
+                        address_ru: plainMultiline(rawData.address_ru),
+                    });
                     setLoading(false);
                 } else {
                     throw new Error("Данные не найдены");
@@ -138,9 +149,11 @@ const EditAddress = () => {
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">Address</label>
-                            <TipTapEditor
-                                content={data.address_tk}
-                                onChange={(content) => handleEditorChange('address_tk', content)}
+                            <textarea
+                                rows={3}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                value={data.address_tk}
+                                onChange={(e) => handleEditorChange('address_tk', e.target.value)}
                             />
                         </div>
                     </div>
@@ -149,9 +162,11 @@ const EditAddress = () => {
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">Address:</label>
-                            <TipTapEditor
-                                content={data.address_en}
-                                onChange={(content) => handleEditorChange('address_en', content)}
+                            <textarea
+                                rows={3}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                value={data.address_en}
+                                onChange={(e) => handleEditorChange('address_en', e.target.value)}
                             />
                         </div>
                     </div>
@@ -160,9 +175,11 @@ const EditAddress = () => {
                     <div className="tab-content bg-base-100 border-base-300 p-6">
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">Address:</label>
-                            <TipTapEditor
-                                content={data.address_ru}
-                                onChange={(content) => handleEditorChange('address_ru', content)}
+                            <textarea
+                                rows={3}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                value={data.address_ru}
+                                onChange={(e) => handleEditorChange('address_ru', e.target.value)}
                             />
                         </div>
                     </div>

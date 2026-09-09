@@ -4,7 +4,6 @@ import { optionLabel } from "@/Components/form/optionLabel";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import TipTapEditor  from '@/Components/TipTapEditor';
 
 const AddAddress = () => {
     const { locale, t } = useAdminLocale();
@@ -138,9 +137,11 @@ const AddAddress = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={address_tk}
-                                        onChange={(content) => setAddressTk(content)}
+                                    <textarea
+                                        rows={3}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                        value={address_tk}
+                                        onChange={(e) => setAddressTk(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -149,9 +150,11 @@ const AddAddress = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={address_en}
-                                        onChange={(content) => setAddressEn(content)}
+                                    <textarea
+                                        rows={3}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                        value={address_en}
+                                        onChange={(e) => setAddressEn(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -160,9 +163,11 @@ const AddAddress = () => {
                             <div className="tab-content bg-base-100 border-base-300 p-6">
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.title')}</label>
-                                    <TipTapEditor
-                                        content={address_ru}
-                                        onChange={(content) => setAddressRu(content)}
+                                    <textarea
+                                        rows={3}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                        value={address_ru}
+                                        onChange={(e) => setAddressRu(e.target.value)}
                                     />
                                 </div>
                             </div>
