@@ -196,6 +196,11 @@ export default function TourChildList({
                     value={value}
                     maxLength={field.maxLength}
                     onChange={(e) => set(name, e.target.value)}
+                    /* Пустое поле даты браузер всё равно заполняет своим
+                       «mm/dd/yyyy», и из CSS не отличить его от введённой
+                       даты. Отметку читает правило в globals.css, которое
+                       приглушает подсказку до цвета остальных placeholder. */
+                    data-empty={field.kind === 'date' ? !value : undefined}
                     className={inputClass}
                 />
                 {field.hint && <p className="mt-1 text-xs text-inkMuted">{field.hint}</p>}
