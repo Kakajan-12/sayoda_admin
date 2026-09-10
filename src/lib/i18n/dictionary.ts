@@ -276,6 +276,14 @@ export const dictionary = {
         en: 'No data yet: the country is recorded for visits from this update onwards',
     },
     'traffic.sources': { ru: 'Откуда приходят', en: 'Where visitors come from' },
+    'traffic.countryPages': { ru: 'Что смотрели', en: 'Pages viewed' },
+    'traffic.expand': { ru: 'Показать страницы', en: 'Show pages' },
+    'traffic.collapse': { ru: 'Скрыть страницы', en: 'Hide pages' },
+    'traffic.noPages': {
+        ru: 'Страницы не записаны: просмотры пришли до того, как счётчик начал их различать',
+        en: 'No pages recorded: these views predate per-page tracking',
+    },
+    'traffic.visitorsShort': { ru: 'чел.', en: 'ppl' },
     'traffic.languages': { ru: 'Языки страниц', en: 'Page languages' },
     'traffic.empty': {
         ru: 'Пока нет данных. Счётчик считает с момента установки — цифры появятся, когда на сайт зайдут.',

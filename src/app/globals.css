@@ -212,3 +212,69 @@ body {
 .ProseMirror {
   border-radius: 0.375rem;
 }
+
+/*
+ * Поле даты.
+ *
+ * Это единственный элемент формы, начинку которого рисует браузер, а не
+ * мы. Правка внешнего прямоугольника его не меняет: у соседей пустое
+ * поле пустое, а здесь браузер пишет «mm/dd/yyyy» почти чёрным — то есть
+ * поле выглядит заполненным, когда оно пустое. Значок календаря свой,
+ * размера и отступа не наших, а при вводе сегмент подсвечивается синим,
+ * которого в палитре «Изразец» нет вообще.
+ *
+ * Классами до этого не дотянуться: части поля живут в теневом дереве,
+ * и добраться до них можно только псевдоэлементами.
+ *
+ * Те же правила стоят на сайте — даты должны выглядеть одинаково по обе
+ * стороны, иначе выезд, заведённый в админке, и выезд, выбранный
+ * посетителем, оказываются разными на вид полями.
+ */
+input[type="date"] {
+  color-scheme: light;
+  /* Красит выбранный день во всплывающем календаре браузера */
+  accent-color: var(--color-tile);
+}
+
+/* Цифры даты должны быть тем же шрифтом, что и остальные поля */
+input[type="date"]::-webkit-datetime-edit {
+  font-family: inherit;
+}
+
+/*
+ * Пустое поле. data-empty ставит форма: узнать из CSS, что дата не
+ * выбрана, нельзя — поле и без значения показывает «mm/dd/yyyy».
+ * Цвет тот же, что у placeholder остальных полей.
+ */
+input[type="date"][data-empty="true"]::-webkit-datetime-edit {
+  color: rgba(93, 107, 106, 0.6);
+}
+
+/* Подсветка сегмента при вводе: вместо системной синей — светлый изразец */
+input[type="date"]::-webkit-datetime-edit-day-field:focus,
+input[type="date"]::-webkit-datetime-edit-month-field:focus,
+input[type="date"]::-webkit-datetime-edit-year-field:focus {
+  background-color: var(--color-tileTint);
+  color: var(--color-tile);
+  border-radius: 3px;
+  outline: none;
+}
+
+/*
+ * Значок календаря. Перекрашиваем фильтром, а не цветом: у значка нет
+ * свойства fill, которым можно управлять снаружи.
+ */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.55;
+  margin-right: 0.15rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  /* #5D6B6A — тот же приглушённый цвет, что у подписей */
+  filter: invert(41%) sepia(8%) saturate(560%) hue-rotate(131deg) brightness(94%) contrast(88%);
+  transition: opacity 0.15s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}

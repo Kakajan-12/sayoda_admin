@@ -119,6 +119,10 @@ const AddBlog = () => {
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             required
+                            /* Пустое поле даты браузер заполняет своим
+                               «mm/dd/yyyy»; отметку читает правило в
+                               globals.css и приглушает подсказку. */
+                            data-empty={!date}
                             className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                         />
                     </div>
