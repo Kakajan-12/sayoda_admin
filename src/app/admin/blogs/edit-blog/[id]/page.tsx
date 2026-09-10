@@ -145,7 +145,12 @@ const EditBlog = () => {
         <div className="mt-8">
             <h1 className="text-2xl font-bold mb-4">{t('form.editTitle')}</h1>
             <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
-                <SlugField value={data.slug} onChange={() => {}} section="blog" locked />
+                <SlugField
+                    value={data.slug}
+                    onChange={(slug) => setData((prev) => ({ ...prev, slug }))}
+                    section="blog"
+                    existing
+                />
                 {data.main_image && (
                     <div className="mb-4">
                         <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.currentImage')}</label>

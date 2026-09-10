@@ -221,7 +221,12 @@ const EditTour = () => {
                 )}
 
                 <FormSection title={t('form.sectionBasics')}>
-                    <SlugField value={data.slug} onChange={() => {}} section="tours" locked />
+                    <SlugField
+                        value={data.slug}
+                        onChange={(slug) => set({ slug })}
+                        section="tours"
+                        existing
+                    />
 
                     <FieldRow cols={3}>
                         <Field label={t('form.selectType')}>
