@@ -14,7 +14,8 @@ import {
     type ChartOptions,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { LuEye, LuUsers } from 'react-icons/lu';
+import { LuChevronRight, LuEye, LuUsers } from 'react-icons/lu';
+import type { DictKey } from '@/lib/i18n/dictionary';
 import { useT, useAdminLocale } from '@/lib/i18n/LocaleProvider';
 import { readToken } from '@/lib/auth';
 
@@ -58,8 +59,16 @@ interface Stats {
     /**
      * Страны посетителей. Считаются по адресу в момент запроса, сам адрес
      * нигде не сохраняется — это обещано в политике конфиденциальности.
+     *
+     * pages — что именно смотрели из этой страны. Список приходит уже
+     * подрезанным сервером и отсортированным по убыванию просмотров.
      */
-    countries: { country: string; views: number; visitors: number }[];
+    countries: {
+        country: string;
+        views: number;
+        visitors: number;
+        pages: { path: string; views: number; visitors: number }[];
+    }[];
     referrers: { referrer: string; views: number }[];
 }
 
@@ -266,19 +275,10 @@ export default function TrafficPanel() {
                                     value: p.views,
                                 }))}
                             />
-                            {/*
-                                Страны считаем по посетителям, а не по
-                                просмотрам: один человек, открывший десять
-                                страниц, иначе выглядел бы как десять
-                                человек из своей страны.
-                            */}
-                            <ListCard
-                                title={t('traffic.countries')}
-                                rows={(stats?.countries ?? []).map((c) => ({
-                                    label: countryName(c.country, locale),
-                                    value: c.visitors,
-                                }))}
-                                empty={t('traffic.noCountries')}
+                            <CountriesCard
+                                countries={stats?.countries ?? []}
+                                locale={locale}
+                                t={t}
                             />
                             <ListCard
                                 title={t('traffic.sources')}
@@ -311,6 +311,109 @@ function countryName(code: string, locale: string): string {
     } catch {
         return code.toUpperCase();
     }
+}
+
+/**
+ * Откуда заходят — с раскрытием страниц по каждой стране.
+ *
+ * Двух отдельных списков, стран и популярных страниц, не хватало, чтобы
+ * ответить на главный вопрос: десять просмотров из Польши — это один
+ * человек, пролиставший каталог, или десять, открывших один тур. Теперь
+ * строка страны раскрывается и показывает, что именно смотрели.
+ *
+ * Считаем по посетителям, а не по просмотрам: один человек, открывший
+ * десять страниц, иначе выглядел бы как десять человек из своей страны.
+ *
+ * Раскрыта может быть только одна страна: карточка стоит в сетке рядом
+ * с соседями, и от нескольких открытых списков она вытягивалась бы,
+ * оставляя рядом пустоту.
+ */
+function CountriesCard({
+    countries,
+    locale,
+    t,
+}: {
+    countries: Stats['countries'];
+    locale: string;
+    t: (key: DictKey) => string;
+}) {
+    const [openCode, setOpenCode] = useState<string | null>(null);
+    const max = Math.max(1, ...countries.map((c) => Number(c.visitors)));
+
+    return (
+        <div className="rounded-lg border border-sand bg-white p-5">
+            <h4 className="mb-3 text-sm font-bold text-ink">{t('traffic.countries')}</h4>
+
+            {countries.length === 0 ? (
+                <p className="text-sm text-inkMuted">{t('traffic.noCountries')}</p>
+            ) : (
+                <ul className="space-y-1.5">
+                    {countries.map((c) => {
+                        const open = openCode === c.country;
+                        return (
+                            <li key={c.country}>
+                                <button
+                                    type="button"
+                                    onClick={() => setOpenCode(open ? null : c.country)}
+                                    aria-expanded={open}
+                                    className="relative block w-full text-left"
+                                >
+                                    {/* Полоска показывает вес строки относительно
+                                        первой: числа в столбик сравнивать медленнее. */}
+                                    <div
+                                        className="absolute inset-y-0 left-0 rounded bg-tileTint"
+                                        style={{ width: `${(Number(c.visitors) / max) * 100}%` }}
+                                    />
+                                    <div className="relative flex items-center justify-between gap-3 rounded px-2 py-1 text-sm transition hover:bg-sand/30">
+                                        <span className="flex min-w-0 items-center gap-1.5">
+                                            <LuChevronRight
+                                                className={`size-3.5 shrink-0 text-inkMuted transition-transform ${
+                                                    open ? 'rotate-90' : ''
+                                                }`}
+                                            />
+                                            <span className="truncate text-ink">
+                                                {countryName(c.country, locale)}
+                                            </span>
+                                        </span>
+                                        <span className="shrink-0 tabular-nums text-inkMuted">
+                                            {c.visitors} {t('traffic.visitorsShort')}
+                                        </span>
+                                    </div>
+                                </button>
+
+                                {open && (
+                                    <ul className="mb-1 ml-5 mt-1 space-y-0.5 border-l border-sand pl-3">
+                                        {c.pages.length === 0 ? (
+                                            <li className="py-1 text-xs text-inkMuted">
+                                                {t('traffic.noPages')}
+                                            </li>
+                                        ) : (
+                                            c.pages.map((p) => (
+                                                <li
+                                                    key={p.path}
+                                                    className="flex items-center justify-between gap-3 py-0.5 text-xs"
+                                                >
+                                                    <span
+                                                        className="min-w-0 truncate text-inkMuted"
+                                                        title={p.path}
+                                                    >
+                                                        {p.path}
+                                                    </span>
+                                                    <span className="shrink-0 tabular-nums text-inkMuted">
+                                                        {p.views}
+                                                    </span>
+                                                </li>
+                                            ))
+                                        )}
+                                    </ul>
+                                )}
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
+        </div>
+    );
 }
 
 /** Простой список «подпись — число» с долей от максимума полоской фона. */
