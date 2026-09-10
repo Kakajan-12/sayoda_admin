@@ -101,6 +101,21 @@ interface Props {
     /** Поля, по которым ищет строка поиска. Пусто — поиска нет. */
     searchFields?: string[];
     /**
+     * Отбор и разбивку считает сервер, а не браузер.
+     *
+     * По умолчанию список качает все записи разом и фильтрует в памяти.
+     * Для справочников на десяток строк это нормально и проще. Но у
+     * статей и туров записей будет много: качать их целиком при каждом
+     * открытии раздела — мегабайты текста на трёх языках ради двенадцати
+     * видимых строк, и поиск начнёт заметно тормозить.
+     *
+     * Включается только там, где эндпоинт умеет page, limit и q и отдаёт
+     * общее число заголовком X-Total-Count: сейчас это /api/blogs и
+     * /api/tours. На остальных включать нельзя — они молча вернут всё,
+     * и разбивка станет враньём.
+     */
+    serverSide?: boolean;
+    /**
      * Имя поля с идентификатором. У адресов это `address_id`, а не `id`,
      * и без этого все строки получали одинаковый ключ.
      */
@@ -109,7 +124,7 @@ interface Props {
 
 const ResourceList: React.FC<Props> = ({
     titleKey, endpoint, addHref, editHref, deleteEndpoint, rowLabel, columns, searchFields,
-    idField = 'id',
+    idField = 'id', serverSide = false,
 }) => {
     const { locale, t } = useAdminLocale();
     const router = useRouter();
@@ -119,15 +134,62 @@ const ResourceList: React.FC<Props> = ({
     const [busyId, setBusyId] = useState<Row['id'] | null>(null);
     const [pageSize, setPageSize] = usePageSize();
     const [page, setPage] = useState(1);
+    /** Сколько записей всего по текущему отбору — из заголовка ответа. */
+    const [serverTotal, setServerTotal] = useState(0);
+    /**
+     * Запрос с задержкой — только для серверного режима.
+     *
+     * Без неё каждая нажатая буква уходила бы отдельным запросом: слово
+     * «Мерв» — четыре обращения к базе, и последнее не обязательно
+     * вернулось бы последним. Здесь запрос уходит, когда человек
+     * перестал печатать.
+     */
+    const [debouncedQuery, setDebouncedQuery] = useState('');
+
+    useEffect(() => {
+        if (!serverSide) return;
+        const id = setTimeout(() => setDebouncedQuery(query), 400);
+        return () => clearTimeout(id);
+    }, [query, serverSide]);
+
+    /**
+     * Адрес запроса.
+     *
+     * В клиентском режиме он постоянный, поэтому смена страницы и ввод в
+     * поиске не вызывают лишнего обращения к серверу: там всё уже в памяти.
+     */
+    const requestUrl = useMemo(() => {
+        if (!serverSide) return `${API}${endpoint}`;
+        const params = new URLSearchParams({
+            page: String(page),
+            limit: String(pageSize),
+        });
+        const q = debouncedQuery.trim();
+        if (q) params.set('q', q);
+        return `${API}${endpoint}?${params.toString()}`;
+    }, [serverSide, endpoint, page, pageSize, debouncedQuery]);
 
     const load = useCallback(async () => {
         try {
             const token = readToken();
             if (!token) { router.push('/'); return; }
-            const res = await axios.get(`${API}${endpoint}`, {
+            const res = await axios.get(requestUrl, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setRows(Array.isArray(res.data) ? res.data : []);
+            const data = Array.isArray(res.data) ? res.data : [];
+            setRows(data);
+
+            if (serverSide) {
+                /*
+                 * Общее число приходит заголовком. Если его нет — считаем,
+                 * что пришло всё: так список покажется и на бэкенде старой
+                 * версии, просто без разбивки. Заголовок нестандартный, и
+                 * браузер отдаёт его скрипту только потому, что он назван
+                 * в exposedHeaders на стороне API.
+                 */
+                const header = Number(res.headers['x-total-count']);
+                setServerTotal(Number.isFinite(header) ? header : data.length);
+            }
             setError(null);
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 401) {
@@ -137,7 +199,7 @@ const ResourceList: React.FC<Props> = ({
             setError(t('common.error'));
             setRows([]);
         }
-    }, [endpoint, router, t]);
+    }, [requestUrl, serverSide, router, t]);
 
     useEffect(() => { load(); }, [load]);
 
@@ -149,6 +211,10 @@ const ResourceList: React.FC<Props> = ({
 
     const filtered = useMemo(() => {
         if (!rows) return null;
+        // В серверном режиме отбор уже сделан запросом: фильтровать пришедшую
+        // страницу второй раз значило бы искать среди двенадцати строк из
+        // пятисот и выбрасывать то, что сервер нашёл на других страницах.
+        if (serverSide) return rows;
         const q = query.trim().toLowerCase();
         if (!q || !searchFields?.length) return rows;
         return rows.filter((row) =>
@@ -159,17 +225,25 @@ const ResourceList: React.FC<Props> = ({
                 return values.some((v) => plainText(v).toLowerCase().includes(q));
             }),
         );
-    }, [rows, query, searchFields]);
+    }, [rows, query, searchFields, serverSide]);
 
     /*
-     * Режем уже отфильтрованный список, а не то, что пришло с сервера:
-     * иначе поиск находил бы совпадения только на видимой странице.
+     * Клиентский режим режет уже отфильтрованный список, а не то, что
+     * пришло с сервера: иначе поиск находил бы совпадения только на
+     * видимой странице.
+     *
+     * Серверный не режет вовсе — пришла ровно нужная страница, а общее
+     * число взято из заголовка.
      */
-    const total = filtered?.length ?? 0;
+    const total = serverSide ? serverTotal : (filtered?.length ?? 0);
     const pages = Math.max(1, Math.ceil(total / pageSize));
-    const current = Math.min(page, pages);
+    const current = serverSide ? page : Math.min(page, pages);
     const from = (current - 1) * pageSize;
-    const visible = filtered ? filtered.slice(from, from + pageSize) : null;
+    const visible = serverSide
+        ? filtered
+        : filtered
+          ? filtered.slice(from, from + pageSize)
+          : null;
 
     /*
      * Поиск сузил выдачу до двух записей — оставаться на седьмой странице
@@ -181,6 +255,22 @@ const ResourceList: React.FC<Props> = ({
      * и так не даёт `current` выше.
      */
     useEffect(() => { setPage(1); }, [query, pageSize]);
+
+    /*
+     * Страница опустела — отступаем на предыдущую.
+     *
+     * В серверном режиме это единственный способ заметить, что записей
+     * стало меньше: браузер видит только свою страницу. Удалив последнюю
+     * строку на третьей странице, человек иначе остался бы смотреть в
+     * пустоту с работающей пагинацией.
+     *
+     * В клиентском режиме такого не бывает: там current уже прижат к
+     * последней непустой странице.
+     */
+    useEffect(() => {
+        if (!serverSide) return;
+        if (rows && rows.length === 0 && page > 1) setPage((n) => n - 1);
+    }, [serverSide, rows, page]);
 
     const remove = async (row: Row) => {
         if (!deleteEndpoint) return;
