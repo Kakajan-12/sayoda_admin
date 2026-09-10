@@ -1,5 +1,6 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useT, useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
 import React, { useEffect, useState } from 'react';
 import SlugField from '@/Components/SlugField';
 import TabsBar from '@/Components/TabsBar';
@@ -19,7 +20,18 @@ interface BlogData {
     text_en: string;
     title_ru: string;
     text_ru: string;
-    main_image: string;
+    /**
+     * Путь к картинке. Именно image — так называется колонка в базе.
+     *
+     * Здесь стояло main_image, поля с таким именем не существует. Значение
+     * всегда приходило undefined, блок «текущая картинка» не показывался
+     * никогда, а при сохранении без выбора новой картинки в базу уходила
+     * строка «undefined» — ссылка на файл терялась, и статья оставалась
+     * без обложки. Ломалось у любого, кто просто правил текст.
+     */
+    image: string;
+    /** Строкой, а не числом: значение приходит из select и уходит в FormData. */
+    blog_cat_id: string;
 }
 
 const EditBlog = () => {
@@ -35,10 +47,22 @@ const EditBlog = () => {
         text_en: '',
         title_ru: '',
         text_ru: '',
-        main_image: ''
+        image: '',
+        blog_cat_id: ''
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [tab, setTab] = useState<'main' | 'gallery'>('main');
+    const { locale } = useAdminLocale();
+    const [cats, setCats] = useState<{ id: number }[]>([]);
+
+    // Ошибку глотаем: не сумев прочитать категории, форма должна дать
+    // сохранить статью без категории, а не встать колом.
+    useEffect(() => {
+        axios
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-category`)
+            .then((r) => setCats(Array.isArray(r.data) ? r.data : []))
+            .catch(() => setCats([]));
+    }, []);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -74,7 +98,11 @@ const EditBlog = () => {
                         text_en: rawData.text_en,
                         title_ru: plainText(rawData.title_ru),
                         text_ru: rawData.text_ru,
-                        main_image: rawData.main_image,
+                        image: rawData.image ?? '',
+                        // NULL из базы превращаем в пустую строку: select
+                        // с value={null} React считает неуправляемым и
+                        // ругается в консоль.
+                        blog_cat_id: rawData.blog_cat_id == null ? '' : String(rawData.blog_cat_id),
                     });
 
                     setLoading(false);
@@ -106,6 +134,7 @@ const EditBlog = () => {
 
             // См. комментарий в форме тура: слаг отправляем прежний явно.
             formData.append('slug', data.slug ?? '');
+            formData.append('blog_cat_id', String(data.blog_cat_id ?? ''));
             formData.append('title_tk', data.title_tk);
             formData.append('text_tk', data.text_tk);
             formData.append('title_en', data.title_en);
@@ -116,7 +145,7 @@ const EditBlog = () => {
             if (imageFile) {
                 formData.append('image', imageFile);
             } else {
-                formData.append('image', data.main_image);
+                formData.append('image', data.image);
             }
 
             await axios.put(
@@ -184,11 +213,31 @@ const EditBlog = () => {
                     section="blog"
                     existing
                 />
-                {data.main_image && (
+
+                <div>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">
+                        {t('nav.blogCategory')}
+                    </label>
+                    {/* Категория необязательна: статья без неё просто попадает
+                        в общий список. */}
+                    <select
+                        value={data.blog_cat_id ?? ''}
+                        onChange={(e) => setData((prev) => ({ ...prev, blog_cat_id: e.target.value }))}
+                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                    >
+                        <option value="">{t('form.notSet')}</option>
+                        {cats.map((c) => (
+                            <option key={c.id} value={c.id} title={optionLabel(c, 'cat', locale)}>
+                                {optionLabel(c, 'cat', locale)}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {data.image && (
                     <div className="mb-4">
                         <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.currentImage')}</label>
                         <Image
-                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.main_image.replace('\\', '/')}`}
+                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace('\\', '/')}`}
                             alt="Service"
                             width={200}
                             height={200}

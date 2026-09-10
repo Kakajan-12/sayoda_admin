@@ -75,6 +75,7 @@ export const navGroups: NavGroup[] = [
         titleKey: 'nav.group.blog',
         links: [
             { href: '/admin/blogs', labelKey: 'nav.blogs', icon: PiReadCvLogo },
+            { href: '/admin/blog-category', labelKey: 'nav.blogCategory', icon: TbCategoryFilled },
         ],
     },
     {
