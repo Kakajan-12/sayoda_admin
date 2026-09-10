@@ -2,6 +2,8 @@
 import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from 'react';
 import SlugField from '@/Components/SlugField';
+import TabsBar from '@/Components/TabsBar';
+import GalleryPanel from '@/Components/GalleryPanel';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { DocumentIcon } from "@heroicons/react/16/solid";
@@ -36,6 +38,7 @@ const EditBlog = () => {
         main_image: ''
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [tab, setTab] = useState<'main' | 'gallery'>('main');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -144,8 +147,43 @@ const EditBlog = () => {
         <>
         <div className="mt-8">
             <h1 className="text-2xl font-bold mb-4">{t('form.editTitle')}</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-sand bg-white p-6">
-                <SlugField value={data.slug} onChange={() => {}} section="blog" locked />
+
+            <TabsBar
+                active={tab}
+                onChange={setTab}
+                tabs={[
+                    { key: 'main', label: t('tour.tabMain') },
+                    { key: 'gallery', label: t('blog.tabGallery') },
+                ]}
+            />
+
+            {tab === 'gallery' && (
+                <GalleryPanel
+                    endpoint="blog-gallery"
+                    ownerKey="blog_id"
+                    ownerPath="blog"
+                    ownerId={Number(id)}
+                    idKey="blog_gallery_id"
+                    title={t('nav.blogsGallery')}
+                    hint={t('blog.hintGallery')}
+                />
+            )}
+
+            {/*
+                Форма остаётся в дереве и прячется классом, а не размонтируется:
+                уйдя на вкладку галереи и вернувшись, редактор должен застать
+                свои несохранённые правки на месте.
+            */}
+            <form
+                onSubmit={handleSubmit}
+                className={`space-y-6 rounded-lg border border-sand bg-white p-6 ${tab === 'main' ? '' : 'hidden'}`}
+            >
+                <SlugField
+                    value={data.slug}
+                    onChange={(slug) => setData((prev) => ({ ...prev, slug }))}
+                    section="blog"
+                    existing
+                />
                 {data.main_image && (
                     <div className="mb-4">
                         <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.currentImage')}</label>

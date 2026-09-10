@@ -13,31 +13,35 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 import { readToken } from "@/lib/auth";
 
 /**
- * Снимки тура прямо на странице тура.
+ * Снимки записи прямо на её странице — для туров и для статей.
  *
- * Галерея была отдельным разделом меню на 164 записи, сгруппированным по
- * турам: чтобы добавить фотографию к одному туру, редактор уходил со
- * страницы тура, искал его в списке и заново выбирал в форме.
+ * Обе галереи были отдельными разделами меню, сгруппированными по владельцу:
+ * чтобы добавить фотографию к одному туру, редактор уходил со страницы тура,
+ * искал его в длинном списке и заново выбирал в форме. Со статьями было то
+ * же самое.
  *
- * Загрузка сразу нескольких файлов: снимки к туру добавляют пачкой, а
- * прежняя форма принимала по одному за раз.
+ * Панель одна на оба раздела, потому что различий ровно три: адрес эндпоинта,
+ * имя поля с владельцем и имя первичного ключа в ответе. Всё остальное —
+ * загрузка пачкой, просмотр во весь экран, удаление — совпадает дословно,
+ * и вторая копия этих двухсот строк разошлась бы с первой при первой правке.
+ *
+ * Загрузка сразу нескольких файлов: снимки добавляют пачкой, а прежние формы
+ * принимали по одному за раз.
  */
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-interface Photo {
-    /**
-     * Именно gallery_id, а не id.
-     *
-     * Эндпоинт /tour/:tourId отдаёт первичный ключ под именем gallery_id —
-     * так он назван в самом запросе. Обращение к row.id давало undefined,
-     * и удаление уходило на /api/tour-gallery/undefined: кнопка нажималась,
-     * подтверждение спрашивалось, а фотография оставалась на месте.
-     */
-    gallery_id: number;
-    image: string;
-    tour_id: number;
-}
+/**
+ * Строка галереи как её отдаёт сервер.
+ *
+ * Первичный ключ приходит под разными именами: gallery_id у туров,
+ * blog_gallery_id у статей — так они названы в самих запросах. Поэтому имя
+ * поля передаётся пропсом, а не угадывается. Раньше в панели туров стояло
+ * row.id, оно давало undefined, и удаление уходило на адрес
+ * /api/tour-gallery/undefined: кнопка нажималась, подтверждение
+ * спрашивалось, а фотография оставалась на месте.
+ */
+type Photo = Record<string, unknown> & { image: string };
 
 /**
  * Multer отдаёт абсолютный путь внутри контейнера («/app/uploads/x.webp»),
@@ -51,12 +55,24 @@ const imageUrl = (src: unknown) => {
     return clean ? `${API}/${clean}` : '';
 };
 
-export default function TourGalleryPanel({
-    tourId,
+export default function GalleryPanel({
+    endpoint,
+    ownerKey,
+    ownerPath,
+    ownerId,
+    idKey,
     title,
     hint,
 }: {
-    tourId: number;
+    /** Раздел API: tour-gallery или blog-gallery. */
+    endpoint: string;
+    /** Имя поля владельца в теле запроса: tour_id или blog_id. */
+    ownerKey: string;
+    /** Сегмент адреса выборки по владельцу: tour или blog. */
+    ownerPath: string;
+    ownerId: number;
+    /** Имя первичного ключа в ответе: gallery_id или blog_gallery_id. */
+    idKey: string;
     title: string;
     hint?: string;
 }) {
@@ -73,14 +89,14 @@ export default function TourGalleryPanel({
 
     const load = useCallback(async () => {
         try {
-            const res = await axios.get(`${API}/api/tour-gallery/tour/${tourId}`, { headers: auth() });
+            const res = await axios.get(`${API}/api/${endpoint}/${ownerPath}/${ownerId}`, { headers: auth() });
             setRows(Array.isArray(res.data) ? res.data : []);
             setError(null);
         } catch {
             setError(t('common.error'));
             setRows([]);
         }
-    }, [tourId, t]);
+    }, [endpoint, ownerPath, ownerId, t]);
 
     useEffect(() => { load(); }, [load]);
 
@@ -98,8 +114,8 @@ export default function TourGalleryPanel({
             for (const file of Array.from(files)) {
                 const data = new FormData();
                 data.append('image', file);
-                data.append('tour_id', String(tourId));
-                await axios.post(`${API}/api/tour-gallery`, data, { headers: auth() });
+                data.append(ownerKey, String(ownerId));
+                await axios.post(`${API}/api/${endpoint}`, data, { headers: auth() });
                 done += 1;
                 setProgress({ done, total: files.length });
             }
@@ -113,11 +129,12 @@ export default function TourGalleryPanel({
     };
 
     const remove = async (photo: Photo) => {
-        if (!window.confirm(t('common.confirmDelete', { name: `#${photo.gallery_id}` }))) return;
+        const rowId = photo[idKey];
+        if (!window.confirm(t('common.confirmDelete', { name: `#${rowId}` }))) return;
         setBusy(true);
         setError(null);
         try {
-            await axios.delete(`${API}/api/tour-gallery/${photo.gallery_id}`, { headers: auth() });
+            await axios.delete(`${API}/api/${endpoint}/${rowId}`, { headers: auth() });
             await load();
         } catch {
             setError(t('list.deleteFailed'));
@@ -172,7 +189,7 @@ export default function TourGalleryPanel({
                     <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                         {rows.map((photo, index) => (
                             <li
-                                key={photo.gallery_id}
+                                key={String(photo[idKey])}
                                 className="group relative overflow-hidden rounded-md border border-sand"
                             >
                                 {/* Снимок открывается во весь экран: в плитке

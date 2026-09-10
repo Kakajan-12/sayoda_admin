@@ -7,7 +7,6 @@ import {
 } from "react-icons/lu";
 import { VscFeedback, VscTypeHierarchySub } from "react-icons/vsc";
 import { PiReadCvLogo } from "react-icons/pi";
-import { GrGallery } from "react-icons/gr";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdTour } from "react-icons/md";
@@ -76,7 +75,6 @@ export const navGroups: NavGroup[] = [
         titleKey: 'nav.group.blog',
         links: [
             { href: '/admin/blogs', labelKey: 'nav.blogs', icon: PiReadCvLogo },
-            { href: '/admin/blogs-gallery', labelKey: 'nav.blogsGallery', icon: GrGallery },
         ],
     },
     {

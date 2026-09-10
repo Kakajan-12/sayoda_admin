@@ -1,6 +1,5 @@
 import {useEditor, EditorContent} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
 import {
     FaBold,
     FaItalic,
@@ -14,8 +13,14 @@ import {useEffect, useState} from "react";
 const TipTap = ({ content, onChange }: { content: string, onChange: (val: string) => void }) => {
     const [headingLevel, setHeadingLevel] = useState(1);
     const editor = useEditor({
-        extensions: [StarterKit,
-            Underline],
+        /*
+         * Только StarterKit. Раньше рядом подключался отдельный
+         * @tiptap/extension-underline, но начиная с TipTap 3 подчёркивание
+         * входит в набор, и редактор на каждой странице с формой ругался
+         * в консоль: «Duplicate extension names found: ['underline']».
+         * Кнопка подчёркивания в панели работает от того же расширения.
+         */
+        extensions: [StarterKit],
         content,
         editorProps: {
             attributes: {
