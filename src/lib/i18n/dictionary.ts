@@ -215,6 +215,8 @@ export const dictionary = {
     'nav.faq': { ru: 'Частые вопросы', en: 'FAQ' },
     'nav.testimonials': { ru: 'Отзывы', en: 'Testimonials' },
     'nav.blogs': { ru: 'Статьи', en: 'Articles' },
+    'nav.blogCategory': { ru: 'Категории статей', en: 'Article categories' },
+    'list.blogsCount': { ru: 'Статей', en: 'Articles' },
     'nav.blogsGallery': { ru: 'Галерея статей', en: 'Article gallery' },
     'blog.tabGallery': { ru: 'Галерея', en: 'Gallery' },
     'blog.hintGallery': {

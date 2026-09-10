@@ -1,5 +1,7 @@
 'use client';
-import { useT } from "@/lib/i18n/LocaleProvider";
+import { useT, useAdminLocale } from "@/lib/i18n/LocaleProvider";
+import { optionLabel } from "@/Components/form/optionLabel";
+import axios from "axios";
 
 import { useState, useEffect } from 'react';
 import SlugField from '@/Components/SlugField';
@@ -8,6 +10,7 @@ import TipTapEditor from '@/Components/TipTapEditor';
 
 const AddBlog = () => {
     const t = useT();
+    const { locale } = useAdminLocale();
     const [isClient, setIsClient] = useState(false);
     const [image, setImage] = useState<File | null>(null);
     const [title_tk, setTitleTk] = useState('');
@@ -18,11 +21,22 @@ const AddBlog = () => {
     const [text_ru, setTextRu] = useState('');
     const [date, setDate] = useState('');
     const [slug, setSlug] = useState('');
+    const [catId, setCatId] = useState('');
+    const [cats, setCats] = useState<{ id: number }[]>([]);
 
     const router = useRouter();
 
     useEffect(() => {
         setIsClient(true);
+    }, []);
+
+    // Список категорий для выбора. Ошибку глотаем: не сумев их прочитать,
+    // форма должна дать сохранить статью без категории, а не встать колом.
+    useEffect(() => {
+        axios
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-category`)
+            .then((r) => setCats(Array.isArray(r.data) ? r.data : []))
+            .catch(() => setCats([]));
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -49,6 +63,7 @@ const AddBlog = () => {
         formData.append('text_ru', text_ru);
         formData.append('date', date);
         formData.append('slug', slug);
+        formData.append('blog_cat_id', catId);
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`, {
@@ -108,6 +123,30 @@ const AddBlog = () => {
                         />
                     </div>
                     <SlugField value={slug} onChange={setSlug} section="blog" />
+                    <div>
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('nav.blogCategory')}
+                        </label>
+                        {/*
+                            Категория необязательна: статья без неё просто
+                            попадает в общий список. Требовать выбор значило бы
+                            останавливать публикацию из-за того, что подходящей
+                            категории ещё не завели.
+                        */}
+                        <select
+                            value={catId}
+                            onChange={(e) => setCatId(e.target.value)}
+                            className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                        >
+                            <option value="">{t('form.notSet')}</option>
+                            {cats.map((c) => (
+                                <option key={c.id} value={c.id} title={optionLabel(c, 'cat', locale)}>
+                                    {optionLabel(c, 'cat', locale)}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div>
                         <label className="mb-1 block text-sm font-medium text-inkMuted">
                             {t('form.date')}
