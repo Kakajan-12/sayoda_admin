@@ -20,7 +20,16 @@ interface BlogData {
     text_en: string;
     title_ru: string;
     text_ru: string;
-    main_image: string;
+    /**
+     * Путь к картинке. Именно image — так называется колонка в базе.
+     *
+     * Здесь стояло main_image, поля с таким именем не существует. Значение
+     * всегда приходило undefined, блок «текущая картинка» не показывался
+     * никогда, а при сохранении без выбора новой картинки в базу уходила
+     * строка «undefined» — ссылка на файл терялась, и статья оставалась
+     * без обложки. Ломалось у любого, кто просто правил текст.
+     */
+    image: string;
     /** Строкой, а не числом: значение приходит из select и уходит в FormData. */
     blog_cat_id: string;
 }
@@ -38,7 +47,7 @@ const EditBlog = () => {
         text_en: '',
         title_ru: '',
         text_ru: '',
-        main_image: '',
+        image: '',
         blog_cat_id: ''
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -89,7 +98,7 @@ const EditBlog = () => {
                         text_en: rawData.text_en,
                         title_ru: plainText(rawData.title_ru),
                         text_ru: rawData.text_ru,
-                        main_image: rawData.main_image,
+                        image: rawData.image ?? '',
                         // NULL из базы превращаем в пустую строку: select
                         // с value={null} React считает неуправляемым и
                         // ругается в консоль.
@@ -136,7 +145,7 @@ const EditBlog = () => {
             if (imageFile) {
                 formData.append('image', imageFile);
             } else {
-                formData.append('image', data.main_image);
+                formData.append('image', data.image);
             }
 
             await axios.put(
@@ -224,11 +233,11 @@ const EditBlog = () => {
                         ))}
                     </select>
                 </div>
-                {data.main_image && (
+                {data.image && (
                     <div className="mb-4">
                         <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.currentImage')}</label>
                         <Image
-                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.main_image.replace('\\', '/')}`}
+                            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.image.replace('\\', '/')}`}
                             alt="Service"
                             width={200}
                             height={200}
