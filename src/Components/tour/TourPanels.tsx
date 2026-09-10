@@ -2,7 +2,7 @@
 
 import React from "react";
 import TourChildList, { type FieldSpec } from "@/Components/tour/TourChildList";
-import TourGalleryPanel from "@/Components/tour/TourGalleryPanel";
+import GalleryPanel from "@/Components/GalleryPanel";
 import TourItemPicker from "@/Components/tour/TourItemPicker";
 import { useT } from "@/lib/i18n/LocaleProvider";
 import type { Row } from "@/Components/ResourceList";
@@ -33,8 +33,12 @@ export default function TourPanels({ tourId, tab }: { tourId: number; tab: TourT
 
     if (tab === 'gallery') {
         return (
-            <TourGalleryPanel
-                tourId={tourId}
+            <GalleryPanel
+                endpoint="tour-gallery"
+                ownerKey="tour_id"
+                ownerPath="tour"
+                ownerId={tourId}
+                idKey="gallery_id"
                 title={t('nav.tourGallery')}
                 hint={t('tour.hintGallery')}
             />

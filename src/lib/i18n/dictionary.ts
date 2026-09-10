@@ -216,6 +216,11 @@ export const dictionary = {
     'nav.testimonials': { ru: 'Отзывы', en: 'Testimonials' },
     'nav.blogs': { ru: 'Статьи', en: 'Articles' },
     'nav.blogsGallery': { ru: 'Галерея статей', en: 'Article gallery' },
+    'blog.tabGallery': { ru: 'Галерея', en: 'Gallery' },
+    'blog.hintGallery': {
+        ru: 'Снимки к статье. Можно выбрать сразу несколько',
+        en: 'Photos for the article. You can pick several at once',
+    },
     'nav.tours': { ru: 'Туры', en: 'Tours' },
     'nav.tourTypes': { ru: 'Типы туров', en: 'Tour types' },
     'nav.tourCategory': { ru: 'Категории', en: 'Categories' },
