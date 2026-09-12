@@ -37,6 +37,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# рабочие копии claude code: внутри лежат отдельные git-репозитории, и без
+# этой строки git записывает их в коммит как вложенные
+.claude/worktrees/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
