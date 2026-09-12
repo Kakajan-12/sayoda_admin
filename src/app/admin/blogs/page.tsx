@@ -15,6 +15,7 @@ const Blogs = () => (
         { headerKey: "list.name", field: "title", localized: true },
     ]}
     searchFields={["title"]}
+    serverSide
   />
 );
 
