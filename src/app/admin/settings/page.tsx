@@ -19,6 +19,11 @@ interface Settings {
     company_legal_name: string;
     license_number: string;
     founded_year: string;
+    office_hours: string;
+    response_time_hours: string;
+    guide_languages: string;
+    team_size: string;
+    travellers_served: string;
 }
 
 const EMPTY: Settings = {
@@ -28,6 +33,11 @@ const EMPTY: Settings = {
     company_legal_name: '',
     license_number: '',
     founded_year: '',
+    office_hours: '',
+    response_time_hours: '',
+    guide_languages: '',
+    team_size: '',
+    travellers_served: '',
 };
 
 /**
@@ -57,6 +67,15 @@ const warn = (
     }
     if (key === 'whatsapp' && v.replace(/\D/g, '').length < 8) {
         return t('set.err.phone');
+    }
+    // Часы работы уходят в разметку организации как openingHours, и там
+    // формат строгий. Неверную строку сохраняем, но на сайте она покажется
+    // как есть, а в разметку не попадёт — предупреждаем об этом здесь.
+    if (key === 'office_hours' && !/^[A-Za-z]{2}(-[A-Za-z]{2})?\s+\d{2}:\d{2}-\d{2}:\d{2}$/.test(v)) {
+        return t('set.err.hours');
+    }
+    if (key === 'guide_languages' && !/^[a-z]{2}(,\s*[a-z]{2})*$/i.test(v)) {
+        return t('set.err.langs');
     }
     return null;
 };
@@ -108,6 +127,36 @@ const FIELDS: {
         labelKey: 'set.founded.label',
         placeholder: '2019',
         hintKey: 'set.founded.hint',
+    },
+    {
+        key: 'office_hours',
+        labelKey: 'set.hours.label',
+        placeholder: 'Mo-Fr 09:00-18:00',
+        hintKey: 'set.hours.hint',
+    },
+    {
+        key: 'response_time_hours',
+        labelKey: 'set.response.label',
+        placeholder: '24',
+        hintKey: 'set.response.hint',
+    },
+    {
+        key: 'guide_languages',
+        labelKey: 'set.langs.label',
+        placeholder: 'en,ru,tk,tr',
+        hintKey: 'set.langs.hint',
+    },
+    {
+        key: 'team_size',
+        labelKey: 'set.team.label',
+        placeholder: '8',
+        hintKey: 'set.team.hint',
+    },
+    {
+        key: 'travellers_served',
+        labelKey: 'set.travellers.label',
+        placeholder: '1200',
+        hintKey: 'set.travellers.hint',
     },
 ];
 
