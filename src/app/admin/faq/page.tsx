@@ -21,10 +21,23 @@ import { TrashIcon } from "@heroicons/react/16/solid";
 interface FaqItem {
     id: number;
     sort_order: number;
+    /**
+     * Страна вопроса. null — общий вопрос.
+     *
+     * Пустое значение здесь значащее, а не «не заполнено»: вопрос со
+     * страной сайт показывает только на её визовой странице, вопрос без
+     * страны — только на главной.
+     */
+    destination_id: number | null;
     question_tk: string | null; question_en: string | null; question_ru: string | null;
     answer_tk: string | null; answer_en: string | null; answer_ru: string | null;
     /** Ещё не сохранён — id в базе нет. */
     isNew?: boolean;
+}
+
+interface Destination {
+    id: number;
+    name_tk: string | null; name_en: string | null; name_ru: string | null;
 }
 
 type Lang = 'tk' | 'en' | 'ru';
@@ -40,6 +53,9 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 const emptyItem = (order: number): FaqItem => ({
     id: -Date.now(), // временный ключ для React до первого сохранения
     sort_order: order,
+    // По умолчанию общий: страну выбирают осознанно, а вопрос, случайно
+    // приписанный не той стране, потом ищут по всем пяти визовым страницам.
+    destination_id: null,
     question_tk: '', question_en: '', question_ru: '',
     answer_tk: '', answer_en: '', answer_ru: '',
     isNew: true,
@@ -48,6 +64,7 @@ const emptyItem = (order: number): FaqItem => ({
 const Faq = () => {
     const t = useT();
     const [items, setItems] = useState<FaqItem[]>([]);
+    const [destinations, setDestinations] = useState<Destination[]>([]);
     const [lang, setLang] = useState<Lang>('ru');
     const [loading, setLoading] = useState(true);
     const [busyId, setBusyId] = useState<number | null>(null);
@@ -61,8 +78,15 @@ const Faq = () => {
     const load = useCallback(async () => {
         try {
             if (!token()) { router.push('/'); return; }
-            const res = await axios.get(`${API}/api/faq`, authHeader());
+            // Страны тянем параллельно: без них селект был бы пустым, и
+            // редактор не понял бы, почему у сохранённого вопроса не видно
+            // выбранной страны.
+            const [res, dests] = await Promise.all([
+                axios.get(`${API}/api/faq`, authHeader()),
+                axios.get(`${API}/api/destinations`),
+            ]);
             setItems(Array.isArray(res.data) ? res.data : []);
+            setDestinations(Array.isArray(dests.data) ? dests.data : []);
             setError(null);
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 401) { router.push('/'); return; }
@@ -73,6 +97,12 @@ const Faq = () => {
     }, [router]);
 
     useEffect(() => { load(); }, [load]);
+
+    const destinationName = (id: number | null) => {
+        if (!id) return t('faq.countryGeneral');
+        const d = destinations.find((item) => item.id === id);
+        return d ? d[`name_${lang}`] || d.name_en || d.name_ru : `#${id}`;
+    };
 
     const patch = (id: number, p: Partial<FaqItem>) =>
         setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...p } : it)));
@@ -86,6 +116,7 @@ const Faq = () => {
         try {
             const payload = {
                 sort_order: item.sort_order,
+                destination_id: item.destination_id,
                 question_tk: item.question_tk ?? '', question_en: item.question_en ?? '', question_ru: item.question_ru ?? '',
                 answer_tk: item.answer_tk ?? '', answer_en: item.answer_en ?? '', answer_ru: item.answer_ru ?? '',
             };
@@ -166,22 +197,47 @@ const Faq = () => {
                             <span>
                                 {item[`question_${lang}`] || t('faq.newItem')}
                             </span>
+                            {/* Страна видна прямо в списке: иначе, чтобы
+                                понять, где показывается вопрос, пришлось бы
+                                раскрывать каждый по очереди. */}
                             <span className="text-sm font-normal text-gray-500 shrink-0">
-                                № {item.sort_order}
+                                {destinationName(item.destination_id)} · № {item.sort_order}
                             </span>
                         </summary>
 
                         <div className="p-4 border-t border-gray-200 space-y-4">
-                            <div className="w-40">
-                                <label className="block text-sm font-semibold mb-1">{t('common.order')}</label>
-                                <input
-                                    type="number"
-                                    value={item.sort_order}
-                                    onChange={(e) =>
-                                        patch(item.id, { sort_order: Number(e.target.value) || 0 })}
-                                    className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">{t('faq.orderHint')}</p>
+                            <div className="flex flex-wrap gap-4">
+                                <div className="w-40">
+                                    <label className="block text-sm font-semibold mb-1">{t('common.order')}</label>
+                                    <input
+                                        type="number"
+                                        value={item.sort_order}
+                                        onChange={(e) =>
+                                            patch(item.id, { sort_order: Number(e.target.value) || 0 })}
+                                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">{t('faq.orderHint')}</p>
+                                </div>
+
+                                <div className="min-w-[16rem] flex-1">
+                                    <label className="block text-sm font-semibold mb-1">{t('faq.country')}</label>
+                                    <select
+                                        value={item.destination_id ?? ''}
+                                        onChange={(e) =>
+                                            patch(item.id, {
+                                                destination_id: e.target.value ? Number(e.target.value) : null,
+                                            })}
+                                        className="w-full rounded-md border border-sand px-3 py-2 outline-none transition focus:border-tileLight bg-white"
+                                    >
+                                        <option value="">{t('faq.countryGeneral')}</option>
+                                        {destinations.map((d) => (
+                                            <option key={d.id} value={d.id}>
+                                                {d[`name_${lang}`] || d.name_en || d.name_ru}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="text-xs text-gray-500 mt-1">{t('faq.countryHint')}</p>
+                                </div>
                             </div>
 
                             <div>
