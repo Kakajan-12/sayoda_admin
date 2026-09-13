@@ -9,7 +9,7 @@ import { VscFeedback, VscTypeHierarchySub } from "react-icons/vsc";
 import { PiReadCvLogo } from "react-icons/pi";
 import { IoLocationSharp } from "react-icons/io5";
 import { FaPhoneSquareAlt } from "react-icons/fa";
-import { MdTour } from "react-icons/md";
+import { MdTour, MdHotel, MdLocationCity } from "react-icons/md";
 import { IoMdCheckmarkCircleOutline, IoIosCloseCircleOutline } from "react-icons/io";
 import { TbCategoryFilled } from "react-icons/tb";
 import { FaLocationDot, FaEarthAsia } from "react-icons/fa6";
@@ -57,6 +57,14 @@ export const navGroups: NavGroup[] = [
             { href: '/admin/destinations', labelKey: 'nav.destinations', icon: FaEarthAsia },
             { href: '/admin/faq', labelKey: 'nav.faq', icon: RiQuestionAnswerLine },
             { href: '/admin/testimonials', labelKey: 'nav.testimonials', icon: VscFeedback },
+        ],
+    },
+    {
+        key: 'hotels',
+        titleKey: 'nav.group.hotels',
+        links: [
+            { href: '/admin/hotels', labelKey: 'nav.hotels', icon: MdHotel },
+            { href: '/admin/cities', labelKey: 'nav.cities', icon: MdLocationCity },
         ],
     },
     {
