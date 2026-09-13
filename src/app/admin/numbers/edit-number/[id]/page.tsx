@@ -1,6 +1,6 @@
 'use client';
 import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
-import { optionLabel } from "@/Components/form/optionLabel";
+import { optionLabel } from "@/components/form/optionLabel";
 import React, {FormEvent, useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';

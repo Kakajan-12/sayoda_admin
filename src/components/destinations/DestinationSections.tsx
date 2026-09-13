@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import TipTapEditor from "@/Components/TipTapEditor";
-import { DESTINATION_LANGS } from "@/Components/DestinationFields";
+import TipTapEditor from "@/components/form/TipTapEditor";
+import { DESTINATION_LANGS } from "@/components/destinations/DestinationFields";
 import { TrashIcon } from "@heroicons/react/16/solid";
 
 /**

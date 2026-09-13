@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "@/Components/Sidebar";
-import TopBar from "@/Components/TopBar";
+import Sidebar from "@/components/layout/Sidebar";
+import TopBar from "@/components/layout/TopBar";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 
 /**

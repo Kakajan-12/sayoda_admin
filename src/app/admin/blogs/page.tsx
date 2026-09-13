@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import ResourceList, { plainText } from "@/Components/ResourceList";
+import ResourceList, { plainText } from "@/components/ui/ResourceList";
 
 const Blogs = () => (
   <ResourceList

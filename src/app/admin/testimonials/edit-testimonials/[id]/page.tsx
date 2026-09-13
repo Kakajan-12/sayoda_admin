@@ -3,8 +3,8 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import { inputClass } from '@/Components/form/Field';
-import { plainMultiline } from '@/Components/ResourceList';
+import { inputClass } from '@/components/form/Field';
+import { plainMultiline } from '@/components/ui/ResourceList';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 

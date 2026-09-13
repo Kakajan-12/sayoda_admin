@@ -1,16 +1,16 @@
 'use client';
 import { useT, useAdminLocale } from "@/lib/i18n/LocaleProvider";
-import { optionLabel } from "@/Components/form/optionLabel";
+import { optionLabel } from "@/components/form/optionLabel";
 import React, { useEffect, useState } from 'react';
-import SlugField from '@/Components/SlugField';
-import TabsBar from '@/Components/TabsBar';
-import GalleryPanel from '@/Components/GalleryPanel';
+import SlugField from '@/components/form/SlugField';
+import TabsBar from '@/components/ui/TabsBar';
+import GalleryPanel from '@/components/ui/GalleryPanel';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
-import TipTapEditor from "@/Components/TipTapEditor";
-import { plainText } from "@/Components/ResourceList";
+import TipTapEditor from "@/components/form/TipTapEditor";
+import { plainText } from "@/components/ui/ResourceList";
 
 interface BlogData {
     slug: string;

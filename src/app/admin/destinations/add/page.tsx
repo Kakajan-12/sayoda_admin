@@ -3,8 +3,8 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import CountryImageField from "@/Components/CountryImageField";
-import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/Components/DestinationFields";
+import CountryImageField from "@/components/destinations/CountryImageField";
+import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/components/destinations/DestinationFields";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const API = process.env.NEXT_PUBLIC_API_URL;

@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Field, FormSection, LANGS, inputClass } from "@/Components/form/Field";
-import { plainText } from "@/Components/ResourceList";
+import { Field, FormSection, LANGS, inputClass } from "@/components/form/Field";
+import { plainText } from "@/components/ui/ResourceList";
 import { useT } from "@/lib/i18n/LocaleProvider";
 import { readToken } from "@/lib/auth";
 

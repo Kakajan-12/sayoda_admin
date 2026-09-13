@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { DocumentIcon } from '@heroicons/react/16/solid';
-import SlugField from '@/Components/SlugField';
-import TipTapEditor from '@/Components/TipTapEditor';
+import SlugField from '@/components/form/SlugField';
+import TipTapEditor from '@/components/form/TipTapEditor';
 import {
     Checkbox,
     Field,
@@ -15,10 +15,10 @@ import {
     LANGS,
     inputClass,
     type Lang,
-} from '@/Components/form/Field';
-import { plainText } from '@/Components/ResourceList';
+} from '@/components/form/Field';
+import { plainText } from '@/components/ui/ResourceList';
 import { useAdminLocale } from '@/lib/i18n/LocaleProvider';
-import { optionLabel } from '@/Components/form/optionLabel';
+import { optionLabel } from '@/components/form/optionLabel';
 import { readToken } from '@/lib/auth';
 
 const API = process.env.NEXT_PUBLIC_API_URL;

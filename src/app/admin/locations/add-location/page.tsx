@@ -3,7 +3,7 @@ import { useT } from "@/lib/i18n/LocaleProvider";
 
 import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
-import { inputClass } from '@/Components/form/Field';
+import { inputClass } from '@/components/form/Field';
 
 const ContactLocation = () => {
     const t = useT();

@@ -1,12 +1,12 @@
 'use client';
 import { useT, useAdminLocale } from "@/lib/i18n/LocaleProvider";
-import { optionLabel } from "@/Components/form/optionLabel";
+import { optionLabel } from "@/components/form/optionLabel";
 import axios from "axios";
 
 import { useState, useEffect } from 'react';
-import SlugField from '@/Components/SlugField';
+import SlugField from '@/components/form/SlugField';
 import { useRouter } from 'next/navigation';
-import TipTapEditor from '@/Components/TipTapEditor';
+import TipTapEditor from '@/components/form/TipTapEditor';
 
 const AddBlog = () => {
     const t = useT();

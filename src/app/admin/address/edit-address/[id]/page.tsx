@@ -1,10 +1,10 @@
 'use client';
 import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
-import { optionLabel } from "@/Components/form/optionLabel";
+import { optionLabel } from "@/components/form/optionLabel";
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
-import { plainMultiline } from '@/Components/ResourceList';
+import { plainMultiline } from '@/components/ui/ResourceList';
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const EditAddress = () => {

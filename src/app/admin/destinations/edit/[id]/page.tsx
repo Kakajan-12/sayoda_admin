@@ -5,9 +5,9 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import CountryImageField from "@/Components/CountryImageField";
-import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/Components/DestinationFields";
-import DestinationSections, { Section } from "@/Components/DestinationSections";
+import CountryImageField from "@/components/destinations/CountryImageField";
+import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/components/destinations/DestinationFields";
+import DestinationSections, { Section } from "@/components/destinations/DestinationSections";
 import { DocumentIcon } from "@heroicons/react/16/solid";
 
 const API = process.env.NEXT_PUBLIC_API_URL;

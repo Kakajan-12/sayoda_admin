@@ -5,10 +5,10 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
 import { DocumentIcon } from '@heroicons/react/16/solid';
-import SlugField from '@/Components/SlugField';
-import TipTapEditor from '@/Components/TipTapEditor';
-import TourTabsBar, { type TourPageTab } from '@/Components/tour/TourTabsBar';
-import TourPanels from '@/Components/tour/TourPanels';
+import SlugField from '@/components/form/SlugField';
+import TipTapEditor from '@/components/form/TipTapEditor';
+import TourTabsBar, { type TourPageTab } from '@/components/tours/TourTabsBar';
+import TourPanels from '@/components/tours/TourPanels';
 import {
     Checkbox,
     Field,
@@ -18,10 +18,10 @@ import {
     LANGS,
     inputClass,
     type Lang,
-} from '@/Components/form/Field';
-import { plainText } from '@/Components/ResourceList';
+} from '@/components/form/Field';
+import { plainText } from '@/components/ui/ResourceList';
 import { useAdminLocale } from '@/lib/i18n/LocaleProvider';
-import { optionLabel } from '@/Components/form/optionLabel';
+import { optionLabel } from '@/components/form/optionLabel';
 import { readToken } from '@/lib/auth';
 
 const API = process.env.NEXT_PUBLIC_API_URL;

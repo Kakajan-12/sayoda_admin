@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useT } from "@/lib/i18n/LocaleProvider";
-import TabsBar from "@/Components/TabsBar";
-import type { TourTab } from "@/Components/tour/TourPanels";
+import TabsBar from "@/components/ui/TabsBar";
+import type { TourTab } from "@/components/tours/TourPanels";
 
 /**
  * Вкладки страницы тура.

@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import TipTapEditor from "@/Components/TipTapEditor";
+import TipTapEditor from "@/components/form/TipTapEditor";
 
 /**
  * Поля страны — общая часть форм добавления и редактирования.

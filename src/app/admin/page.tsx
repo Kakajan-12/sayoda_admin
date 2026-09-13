@@ -8,7 +8,7 @@ import { MdTour } from "react-icons/md";
 import { PiReadCvLogo } from "react-icons/pi";
 import { navGroups } from "@/lib/navigation";
 import { readToken } from "@/lib/auth";
-import TrafficPanel from "@/Components/TrafficPanel";
+import TrafficPanel from "@/components/dashboard/TrafficPanel";
 
 /**
  * Дашборд.

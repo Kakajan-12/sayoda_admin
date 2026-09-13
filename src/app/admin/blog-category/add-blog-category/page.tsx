@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useT } from '@/lib/i18n/LocaleProvider';
 import { readToken } from '@/lib/auth';
-import { Field, LangTabs, type Lang, inputClass } from '@/Components/form/Field';
+import { Field, LangTabs, type Lang, inputClass } from '@/components/form/Field';
 
 /**
  * Новая категория статей.

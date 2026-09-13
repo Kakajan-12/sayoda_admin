@@ -6,7 +6,7 @@ import axios from "axios";
 import { LuExternalLink } from "react-icons/lu";
 import { useAdminLocale } from "@/lib/i18n/LocaleProvider";
 import { readToken } from "@/lib/auth";
-import { optionLabel } from "@/Components/form/optionLabel";
+import { optionLabel } from "@/components/form/optionLabel";
 
 /**
  * Выбор пунктов «включено» / «не включено» галочками.

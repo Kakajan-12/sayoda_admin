@@ -3,10 +3,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { LuChevronDown, LuChevronUp, LuPencil, LuPlus, LuTrash2, LuX } from "react-icons/lu";
-import TipTapEditor from "@/Components/TipTapEditor";
+import TipTapEditor from "@/components/form/TipTapEditor";
 import { useT } from "@/lib/i18n/LocaleProvider";
 import { readToken } from "@/lib/auth";
-import { plainText, type Row } from "@/Components/ResourceList";
+import { plainText, type Row } from "@/components/ui/ResourceList";
 
 /**
  * Список, привязанный к туру, с правкой прямо на странице тура.

@@ -1,11 +1,11 @@
 'use client';
 
 import React from "react";
-import TourChildList, { type FieldSpec } from "@/Components/tour/TourChildList";
-import GalleryPanel from "@/Components/GalleryPanel";
-import TourItemPicker from "@/Components/tour/TourItemPicker";
+import TourChildList, { type FieldSpec } from "@/components/tours/TourChildList";
+import GalleryPanel from "@/components/ui/GalleryPanel";
+import TourItemPicker from "@/components/tours/TourItemPicker";
 import { useT } from "@/lib/i18n/LocaleProvider";
-import type { Row } from "@/Components/ResourceList";
+import type { Row } from "@/components/ui/ResourceList";
 
 /**
  * Списки, привязанные к туру: программа, состав цены, «главное», заезды,

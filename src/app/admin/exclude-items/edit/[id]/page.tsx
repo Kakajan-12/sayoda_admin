@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from "next/navigation";
-import TourItemForm from "@/Components/tour/TourItemForm";
+import TourItemForm from "@/components/tours/TourItemForm";
 
 const Page = () => {
     const { id } = useParams();

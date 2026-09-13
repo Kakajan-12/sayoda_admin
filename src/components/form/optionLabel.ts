@@ -1,4 +1,4 @@
-import { plainText } from "@/Components/ResourceList";
+import { plainText } from "@/components/ui/ResourceList";
 
 /**
  * Подпись варианта в выпадающем списке.
