@@ -408,6 +408,8 @@ export const dictionary = {
     "hotels.err.load": { ru: "Ошибка при загрузке отелей", en: "Could not load the hotels" },
     "hotels.err.save": { ru: "Не удалось сохранить", en: "Could not save" },
     "hotels.err.delete": { ru: "Не удалось удалить", en: "Could not delete" },
+    "blogs.country": { ru: "Страна", en: "Country" },
+    "blogs.countryHint": { ru: "Статья со страной попадает на вкладку «Достопримечательности» этого направления. Без страны она остаётся только в общем блоге — так и нужно для статей не про конкретную страну.", en: "An article with a country appears on that destination’s Sights tab. Without one it stays in the main blog only — which is right for articles not about a particular country." },
     "faq.country": { ru: "Страна", en: "Country" },
     "faq.countryGeneral": { ru: "Общий вопрос — на главной", en: "General question — on the home page" },
     "faq.countryHint": { ru: "Вопрос со страной показывается только на её визовой странице, общий — только на главной. Один и тот же вопрос в двух местах поиск считает дублем.", en: "A question with a country shows only on that country’s visa page; a general one only on the home page. The same question in both places counts as a duplicate for search engines." },

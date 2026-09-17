@@ -1,9 +1,8 @@
 'use client'
 import { useT } from "@/lib/i18n/LocaleProvider";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import Image from "next/image";
 import Link from "next/link";
 import CountryImageField from "@/components/destinations/CountryImageField";
 import DestinationFields, { DestinationForm, EMPTY_DESTINATION } from "@/components/destinations/DestinationFields";
@@ -35,38 +34,45 @@ const EditDestination = () => {
     const [saved, setSaved] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const load = async () => {
-            try {
-                const token = localStorage.getItem('auth_token');
-                if (!token) { router.push('/'); return; }
-                // Отдельной выдачи по id нет — берём список, он уже приходит
-                // вместе с разделами и картинками.
-                const res = await axios.get(`${API}/api/destinations`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                const row = (res.data as DestinationRow[]).find((d) => String(d.id) === String(id));
-                if (!row) { setError('Страна не найдена'); setLoading(false); return; }
+    /*
+     * Чтение страны вынесено из эффекта: тем же запросом форма обновляется
+     * после сохранения. Без этого пути новых картинок оставались старыми —
+     * ответ на сохранение их не возвращает, — и на месте только что
+     * загруженной обложки снова показывалась прежняя.
+     */
+    const load = useCallback(async () => {
+        try {
+            const token = localStorage.getItem('auth_token');
+            if (!token) { router.push('/'); return; }
+            // Отдельной выдачи по id нет — берём список, он уже приходит
+            // вместе с разделами и картинками.
+            const res = await axios.get(`${API}/api/destinations`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const row = (res.data as DestinationRow[]).find((d) => String(d.id) === String(id));
+            if (!row) { setError('Страна не найдена'); setLoading(false); return; }
 
-                const next = { ...EMPTY_DESTINATION };
-                (Object.keys(EMPTY_DESTINATION) as (keyof DestinationForm)[]).forEach((k) => {
-                    // null из базы приводим к пустой строке: иначе input
-                    // переходит из uncontrolled в controlled и React ругается.
-                    next[k] = String(row[k] ?? '');
-                });
-                setForm(next);
-                setHeroImage(row.hero_image ?? null);
-                setCardImage(row.card_image ?? null);
-                setSections(row.sections ?? []);
-                setLoading(false);
-            } catch (err) {
-                console.error(err);
-                setError('Ошибка при загрузке страны');
-                setLoading(false);
-            }
-        };
-        if (id) load();
+            const next = { ...EMPTY_DESTINATION };
+            (Object.keys(EMPTY_DESTINATION) as (keyof DestinationForm)[]).forEach((k) => {
+                // null из базы приводим к пустой строке: иначе input
+                // переходит из uncontrolled в controlled и React ругается.
+                next[k] = String(row[k] ?? '');
+            });
+            setForm(next);
+            setHeroImage(row.hero_image ?? null);
+            setCardImage(row.card_image ?? null);
+            setSections(row.sections ?? []);
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            setError('Ошибка при загрузке страны');
+            setLoading(false);
+        }
     }, [id, router]);
+
+    useEffect(() => {
+        if (id) load();
+    }, [id, load]);
 
     const patch = (p: Partial<DestinationForm>) => setForm((prev) => ({ ...prev, ...p }));
 
@@ -85,7 +91,18 @@ const EditDestination = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setSaved(true);
+            /*
+             * Сначала перечитываем страну, потом отпускаем выбранные файлы.
+             * В этом порядке превью сменяется уже сохранённой картинкой без
+             * промежутка, в котором показалась бы прежняя.
+             *
+             * Сбрасываются оба файла. Раньше — только обложка, и плитка
+             * уходила на сервер повторно при каждом следующем сохранении,
+             * плодя в uploads копии одного файла.
+             */
+            await load();
             setHeroFile(null);
+            setCardFile(null);
         } catch (err) {
             console.error(err);
             setError('Не удалось сохранить');
@@ -96,10 +113,6 @@ const EditDestination = () => {
 
     if (loading) return <p className="mt-8 text-inkMuted">{t('common.loading')}</p>;
     if (error && !form.slug) return <p className="p-10 text-brick">{error}</p>;
-
-    const currentHero = heroImage
-        ? (heroImage.startsWith('/') ? heroImage : `${API}/${heroImage.replace(/\\/g, '/')}`)
-        : null;
 
     return (
         <>
@@ -122,6 +135,7 @@ const EditDestination = () => {
                         label="Обложка страницы страны"
                         hint="Горизонтальная, от 1600px по ширине. Новый файл заменит текущую; если файл не выбран, картинка остаётся прежней."
                         current={heroImage}
+                        file={heroFile}
                         shape="wide"
                         onFile={setHeroFile}
                     />
@@ -129,6 +143,7 @@ const EditDestination = () => {
                         label="Плитка на главной"
                         hint="Вертикальная, пропорции 3:4, от 800px по ширине. Не задана — на главной покажется обложка."
                         current={cardImage}
+                        file={cardFile}
                         shape="card"
                         onFile={setCardFile}
                     />

@@ -23,6 +23,8 @@ const AddBlog = () => {
     const [slug, setSlug] = useState('');
     const [catId, setCatId] = useState('');
     const [cats, setCats] = useState<{ id: number }[]>([]);
+    const [destId, setDestId] = useState('');
+    const [dests, setDests] = useState<{ id: number }[]>([]);
 
     const router = useRouter();
 
@@ -30,13 +32,18 @@ const AddBlog = () => {
         setIsClient(true);
     }, []);
 
-    // Список категорий для выбора. Ошибку глотаем: не сумев их прочитать,
-    // форма должна дать сохранить статью без категории, а не встать колом.
+    // Списки для выбора: категории и страны. Ошибку глотаем: не сумев их
+    // прочитать, форма должна дать сохранить статью без них, а не встать
+    // колом — оба поля необязательные.
     useEffect(() => {
         axios
             .get(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-category`)
             .then((r) => setCats(Array.isArray(r.data) ? r.data : []))
             .catch(() => setCats([]));
+        axios
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/api/destinations`)
+            .then((r) => setDests(Array.isArray(r.data) ? r.data : []))
+            .catch(() => setDests([]));
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -64,6 +71,7 @@ const AddBlog = () => {
         formData.append('date', date);
         formData.append('slug', slug);
         formData.append('blog_cat_id', catId);
+        formData.append('destination_id', destId);
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`, {
@@ -145,6 +153,32 @@ const AddBlog = () => {
                                 </option>
                             ))}
                         </select>
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm font-medium text-inkMuted">
+                            {t('blogs.country')}
+                        </label>
+                        {/*
+                            Страна тоже необязательна. Статья без неё видна в
+                            общем блоге, но не попадает на вкладку
+                            «Достопримечательности» ни одного направления — и
+                            это верно для статей вроде «что взять в дорогу»,
+                            которые не про конкретную страну.
+                        */}
+                        <select
+                            value={destId}
+                            onChange={(e) => setDestId(e.target.value)}
+                            className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                        >
+                            <option value="">{t('form.notSet')}</option>
+                            {dests.map((d) => (
+                                <option key={d.id} value={d.id} title={optionLabel(d, 'name', locale)}>
+                                    {optionLabel(d, 'name', locale)}
+                                </option>
+                            ))}
+                        </select>
+                        <p className="mt-1 text-xs text-gray-500">{t('blogs.countryHint')}</p>
                     </div>
 
                     <div>

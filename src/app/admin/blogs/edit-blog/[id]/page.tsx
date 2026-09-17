@@ -32,6 +32,8 @@ interface BlogData {
     image: string;
     /** Строкой, а не числом: значение приходит из select и уходит в FormData. */
     blog_cat_id: string;
+    /** Страна статьи. Тоже строкой и по той же причине. */
+    destination_id: string;
 }
 
 const EditBlog = () => {
@@ -48,20 +50,26 @@ const EditBlog = () => {
         title_ru: '',
         text_ru: '',
         image: '',
-        blog_cat_id: ''
+        blog_cat_id: '',
+        destination_id: ''
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [tab, setTab] = useState<'main' | 'gallery'>('main');
     const { locale } = useAdminLocale();
     const [cats, setCats] = useState<{ id: number }[]>([]);
+    const [dests, setDests] = useState<{ id: number }[]>([]);
 
-    // Ошибку глотаем: не сумев прочитать категории, форма должна дать
-    // сохранить статью без категории, а не встать колом.
+    // Ошибку глотаем: не сумев прочитать справочники, форма должна дать
+    // сохранить статью без категории и страны, а не встать колом.
     useEffect(() => {
         axios
             .get(`${process.env.NEXT_PUBLIC_API_URL}/api/blog-category`)
             .then((r) => setCats(Array.isArray(r.data) ? r.data : []))
             .catch(() => setCats([]));
+        axios
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/api/destinations`)
+            .then((r) => setDests(Array.isArray(r.data) ? r.data : []))
+            .catch(() => setDests([]));
     }, []);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -103,6 +111,7 @@ const EditBlog = () => {
                         // с value={null} React считает неуправляемым и
                         // ругается в консоль.
                         blog_cat_id: rawData.blog_cat_id == null ? '' : String(rawData.blog_cat_id),
+                        destination_id: rawData.destination_id == null ? '' : String(rawData.destination_id),
                     });
 
                     setLoading(false);
@@ -135,6 +144,7 @@ const EditBlog = () => {
             // См. комментарий в форме тура: слаг отправляем прежний явно.
             formData.append('slug', data.slug ?? '');
             formData.append('blog_cat_id', String(data.blog_cat_id ?? ''));
+            formData.append('destination_id', String(data.destination_id ?? ''));
             formData.append('title_tk', data.title_tk);
             formData.append('text_tk', data.text_tk);
             formData.append('title_en', data.title_en);
@@ -232,6 +242,28 @@ const EditBlog = () => {
                             </option>
                         ))}
                     </select>
+                </div>
+
+                <div>
+                    <label className="mb-1 block text-sm font-medium text-inkMuted">
+                        {t('blogs.country')}
+                    </label>
+                    {/* Страна тоже необязательна: без неё статья видна в общем
+                        блоге, но не попадает на вкладку «Достопримечательности»
+                        ни одного направления. */}
+                    <select
+                        value={data.destination_id ?? ''}
+                        onChange={(e) => setData((prev) => ({ ...prev, destination_id: e.target.value }))}
+                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                    >
+                        <option value="">{t('form.notSet')}</option>
+                        {dests.map((d) => (
+                            <option key={d.id} value={d.id} title={optionLabel(d, 'name', locale)}>
+                                {optionLabel(d, 'name', locale)}
+                            </option>
+                        ))}
+                    </select>
+                    <p className="mt-1 text-xs text-gray-500">{t('blogs.countryHint')}</p>
                 </div>
                 {data.image && (
                     <div className="mb-4">

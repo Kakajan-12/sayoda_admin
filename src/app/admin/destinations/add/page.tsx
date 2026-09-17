@@ -59,6 +59,7 @@ const AddDestination = () => {
                         label="Обложка страницы страны"
                         hint="Горизонтальная, от 1600px по ширине."
                         current={null}
+                        file={heroFile}
                         shape="wide"
                         onFile={setHeroFile}
                     />
@@ -66,6 +67,7 @@ const AddDestination = () => {
                         label="Плитка на главной"
                         hint="Вертикальная, пропорции 3:4, от 800px по ширине. Не задана — на главной покажется обложка."
                         current={null}
+                        file={cardFile}
                         shape="card"
                         onFile={setCardFile}
                     />
