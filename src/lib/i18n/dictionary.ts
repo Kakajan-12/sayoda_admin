@@ -125,8 +125,8 @@ export const dictionary = {
     'form.selectType': { ru: 'Тип тура', en: 'Tour type' },
     'form.selectCategory': { ru: 'Категория', en: 'Category' },
     'form.selectLocation': { ru: 'Локация', en: 'Location' },
-    // Отдельный ключ от form.selectLocation: тот выбирает точку на карте
-    // в контактах, а здесь — страну из раздела «Направления».
+    // Отдельный ключ от form.selectLocation: тот выбирает офис из раздела
+    // «Офисы» в контактах, а здесь — страну из раздела «Направления».
     'form.selectDestination': { ru: 'Направление', en: 'Destination' },
     'form.selectBlog': { ru: 'Статья', en: 'Article' },
     'form.location': { ru: 'Локация', en: 'Location' },
@@ -236,7 +236,7 @@ export const dictionary = {
     'nav.mails': { ru: 'Почта', en: 'E-mail' },
     'nav.numbers': { ru: 'Телефоны', en: 'Phone numbers' },
     'nav.socialLinks': { ru: 'Соцсети', en: 'Social links' },
-    'nav.locations': { ru: 'Точки на карте', en: 'Map locations' },
+    'nav.locations': { ru: 'Офисы', en: 'Offices' },
 
     // ─── заявки ───
     'req.date': { ru: 'Дата', en: 'Date' },
