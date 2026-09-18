@@ -35,7 +35,7 @@ const API = process.env.NEXT_PUBLIC_API_URL;
  * он, а не общий список.
  */
 
-const BASES = ['title', 'text', 'destination', 'duration', 'lang'] as const;
+const BASES = ['title', 'seo_title', 'text', 'destination', 'duration', 'lang'] as const;
 
 /** Пустые значения всех языковых полей: title_tk, title_en, … */
 const emptyTexts = () => {
@@ -238,6 +238,18 @@ const AddTour = () => {
                                     type="text"
                                     value={texts[`title_${code}`]}
                                     onChange={(e) => setText(`title_${code}`, e.target.value)}
+                                    className={inputClass}
+                                />
+                            </Field>
+
+                            <Field
+                                label={t('form.seoTitle')}
+                                hint={t('form.seoTitleHint')}
+                            >
+                                <input
+                                    type="text"
+                                    value={texts[`seo_title_${code}`]}
+                                    onChange={(e) => setText(`seo_title_${code}`, e.target.value)}
                                     className={inputClass}
                                 />
                             </Field>

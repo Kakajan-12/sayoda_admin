@@ -16,6 +16,10 @@ const AddBlog = () => {
     const [title_tk, setTitleTk] = useState('');
     const [title_en, setTitleEn] = useState('');
     const [title_ru, setTitleRu] = useState('');
+    // Необязательный заголовок для выдачи, см. подсказку под полем.
+    const [seo_title_tk, setSeoTitleTk] = useState('');
+    const [seo_title_en, setSeoTitleEn] = useState('');
+    const [seo_title_ru, setSeoTitleRu] = useState('');
     const [text_tk, setTextTk] = useState('');
     const [text_en, setTextEn] = useState('');
     const [text_ru, setTextRu] = useState('');
@@ -65,6 +69,9 @@ const AddBlog = () => {
         formData.append('title_tk', title_tk);
         formData.append('title_en', title_en);
         formData.append('title_ru', title_ru);
+        formData.append('seo_title_tk', seo_title_tk);
+        formData.append('seo_title_en', seo_title_en);
+        formData.append('seo_title_ru', seo_title_ru);
         formData.append('text_tk', text_tk);
         formData.append('text_en', text_en);
         formData.append('text_ru', text_ru);
@@ -89,6 +96,9 @@ const AddBlog = () => {
                 setTitleTk('');
                 setTitleEn('');
                 setTitleRu('');
+                setSeoTitleTk('');
+                setSeoTitleEn('');
+                setSeoTitleRu('');
                 setTextTk('');
                 setTextEn('');
                 setTextRu('');
@@ -217,6 +227,16 @@ const AddBlog = () => {
                                     />
                                 </div>
                                 <div className="mb-4">
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.seoTitle')}</label>
+                                    <input
+                                        type="text"
+                                        value={seo_title_tk}
+                                        onChange={(e) => setSeoTitleTk(e.target.value)}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">{t('form.seoTitleHint')}</p>
+                                </div>
+                                <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                                     <TipTapEditor
                                         content={text_tk}
@@ -237,6 +257,16 @@ const AddBlog = () => {
                                     />
                                 </div>
                                 <div className="mb-4">
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.seoTitle')}</label>
+                                    <input
+                                        type="text"
+                                        value={seo_title_en}
+                                        onChange={(e) => setSeoTitleEn(e.target.value)}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">{t('form.seoTitleHint')}</p>
+                                </div>
+                                <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                                     <TipTapEditor
                                         content={text_en}
@@ -255,6 +285,16 @@ const AddBlog = () => {
                                         onChange={(e) => setTitleRu(e.target.value)}
                                         className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                                     />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.seoTitle')}</label>
+                                    <input
+                                        type="text"
+                                        value={seo_title_ru}
+                                        onChange={(e) => setSeoTitleRu(e.target.value)}
+                                        className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">{t('form.seoTitleHint')}</p>
                                 </div>
                                 <div className="mb-4">
                                     <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>

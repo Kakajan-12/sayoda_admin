@@ -44,6 +44,7 @@ type TourData = {
     popular: number;
     slug: string;
     title_tk: string; title_en: string; title_ru: string;
+    seo_title_tk: string; seo_title_en: string; seo_title_ru: string;
     text_tk: string; text_en: string; text_ru: string;
     destination_tk: string; destination_en: string; destination_ru: string;
     duration_tk: string; duration_en: string; duration_ru: string;
@@ -59,6 +60,7 @@ type TourData = {
 const EMPTY: TourData = {
     popular: 0, slug: '',
     title_tk: '', title_en: '', title_ru: '',
+    seo_title_tk: '', seo_title_en: '', seo_title_ru: '',
     text_tk: '', text_en: '', text_ru: '',
     destination_tk: '', destination_en: '', destination_ru: '',
     duration_tk: '', duration_en: '', duration_ru: '',
@@ -68,7 +70,7 @@ const EMPTY: TourData = {
 };
 
 /** Поля, которые раньше редактировались в rich-редакторе и потому хранят «<p>3</p>». */
-const PLAIN_FIELDS = ['title', 'destination', 'duration', 'lang'] as const;
+const PLAIN_FIELDS = ['title', 'seo_title', 'destination', 'duration', 'lang'] as const;
 
 /**
  * Multer пишет абсолютный путь внутри контейнера, часть старых записей —
@@ -169,7 +171,7 @@ const EditTour = () => {
             body.append('location_id', String(data.location_id));
             body.append('map_embed', data.map_embed ?? '');
 
-            for (const base of ['title', 'text', 'destination', 'duration', 'lang'] as const) {
+            for (const base of ['title', 'seo_title', 'text', 'destination', 'duration', 'lang'] as const) {
                 for (const code of LANGS) {
                     const key = `${base}_${code}` as keyof TourData;
                     body.append(key, String(data[key] ?? ''));
@@ -350,6 +352,18 @@ const EditTour = () => {
                                     type="text"
                                     value={data[`title_${code}`]}
                                     onChange={(e) => set({ [`title_${code}`]: e.target.value } as Partial<TourData>)}
+                                    className={inputClass}
+                                />
+                            </Field>
+
+                            <Field
+                                label={t('form.seoTitle')}
+                                hint={t('form.seoTitleHint')}
+                            >
+                                <input
+                                    type="text"
+                                    value={data[`seo_title_${code}`]}
+                                    onChange={(e) => set({ [`seo_title_${code}`]: e.target.value } as Partial<TourData>)}
                                     className={inputClass}
                                 />
                             </Field>

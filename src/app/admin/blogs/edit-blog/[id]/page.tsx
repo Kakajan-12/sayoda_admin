@@ -21,6 +21,13 @@ interface BlogData {
     title_ru: string;
     text_ru: string;
     /**
+     * Необязательный заголовок для поисковой выдачи, по одному на язык.
+     * Пусто — сайт берёт в заголовок обычное название статьи.
+     */
+    seo_title_tk: string;
+    seo_title_en: string;
+    seo_title_ru: string;
+    /**
      * Путь к картинке. Именно image — так называется колонка в базе.
      *
      * Здесь стояло main_image, поля с таким именем не существует. Значение
@@ -49,6 +56,9 @@ const EditBlog = () => {
         text_en: '',
         title_ru: '',
         text_ru: '',
+        seo_title_tk: '',
+        seo_title_en: '',
+        seo_title_ru: '',
         image: '',
         blog_cat_id: '',
         destination_id: ''
@@ -106,6 +116,10 @@ const EditBlog = () => {
                         text_en: rawData.text_en,
                         title_ru: plainText(rawData.title_ru),
                         text_ru: rawData.text_ru,
+                        // Поле необязательное, у старых статей в базе NULL.
+                        seo_title_tk: rawData.seo_title_tk ?? '',
+                        seo_title_en: rawData.seo_title_en ?? '',
+                        seo_title_ru: rawData.seo_title_ru ?? '',
                         image: rawData.image ?? '',
                         // NULL из базы превращаем в пустую строку: select
                         // с value={null} React считает неуправляемым и
@@ -150,6 +164,9 @@ const EditBlog = () => {
             formData.append('title_en', data.title_en);
             formData.append('text_en', data.text_en);
             formData.append('title_ru', data.title_ru);
+            formData.append('seo_title_tk', data.seo_title_tk);
+            formData.append('seo_title_en', data.seo_title_en);
+            formData.append('seo_title_ru', data.seo_title_ru);
             formData.append('text_ru', data.text_ru);
 
             if (imageFile) {
@@ -311,6 +328,16 @@ const EditBlog = () => {
 
                         </div>
                         <div className="mb-4">
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.seoTitle')}</label>
+                            <input
+                                type="text"
+                                value={data.seo_title_tk}
+                                onChange={(e) => handleEditorChange('seo_title_tk', e.target.value)}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                            />
+                            <p className="mt-1 text-xs text-gray-500">{t('form.seoTitleHint')}</p>
+                        </div>
+                        <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
                             <TipTapEditor
                                 content={data.text_tk}
@@ -329,6 +356,16 @@ const EditBlog = () => {
                                 onChange={(e) => handleEditorChange('title_en', e.target.value)}
                                 className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                             />
+                        </div>
+                        <div className="mb-4">
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.seoTitle')}</label>
+                            <input
+                                type="text"
+                                value={data.seo_title_en}
+                                onChange={(e) => handleEditorChange('seo_title_en', e.target.value)}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                            />
+                            <p className="mt-1 text-xs text-gray-500">{t('form.seoTitleHint')}</p>
                         </div>
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>
@@ -350,6 +387,16 @@ const EditBlog = () => {
                                 onChange={(e) => handleEditorChange('title_ru', e.target.value)}
                                 className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
                             />
+                        </div>
+                        <div className="mb-4">
+                            <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.seoTitle')}</label>
+                            <input
+                                type="text"
+                                value={data.seo_title_ru}
+                                onChange={(e) => handleEditorChange('seo_title_ru', e.target.value)}
+                                className="w-full rounded-md border border-sand bg-white px-3 py-2 text-ink outline-none transition focus:border-tileLight"
+                            />
+                            <p className="mt-1 text-xs text-gray-500">{t('form.seoTitleHint')}</p>
                         </div>
                         <div className="mb-4">
                             <label className="mb-1 block text-sm font-medium text-inkMuted">{t('form.text')}</label>

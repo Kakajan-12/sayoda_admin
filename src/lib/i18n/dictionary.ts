@@ -111,6 +111,14 @@ export const dictionary = {
 
     // ─── формы ───
     'form.title': { ru: 'Заголовок', en: 'Title' },
+    'form.seoTitle': {
+        ru: 'Заголовок для поиска',
+        en: 'Title for search engines',
+    },
+    'form.seoTitleHint': {
+        ru: 'Необязательно. Эта строка встанет заголовком в Google и Яндексе вместо обычной. Пишите фразой, которую человек набирает в поиске: «Тур к кратеру Дарваза — 3 дня из Ашхабада». Видно около 60 знаков. Пусто — заголовок соберётся сам, как раньше',
+        en: 'Optional. Replaces the page title shown in Google and Yandex. Write it the way people search: “Darvaza Crater Tour — 3 Days from Ashgabat”. About 60 characters are visible. Leave empty to keep the title built automatically',
+    },
     'form.text': { ru: 'Текст', en: 'Text' },
     'form.image': { ru: 'Картинка', en: 'Image' },
     'form.newImage': { ru: 'Новая картинка', en: 'New image' },
